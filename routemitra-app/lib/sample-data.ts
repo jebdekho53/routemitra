@@ -60,6 +60,17 @@ export const ROUTES: Record<string, SampleRoute> = {
       { mode: "flight", operator: "IndiGo 6E-2312", price: 3999, duration_min: 135, departure: "15:20", arrival: "17:35", link: "https://www.goibibo.com/" },
     ],
   },
+  "delhi|varanasi": {
+    from: "Delhi",
+    to: "Varanasi",
+    options: [
+      { mode: "bus", operator: "UPSRTC AC Sleeper", price: 1250, duration_min: 780, departure: "18:30", arrival: "07:30", link: "https://www.redbus.in/" },
+      { mode: "train", operator: "Vande Bharat Express (22436)", price: 1720, duration_min: 480, departure: "06:00", arrival: "14:00", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Shiv Ganga Express (12560)", price: 640, duration_min: 690, departure: "20:10", arrival: "07:40", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-2053", price: 3650, duration_min: 85, departure: "09:35", arrival: "11:00", link: "https://www.cleartrip.com/" },
+      { mode: "flight", operator: "Air India AI-405", price: 4120, duration_min: 90, departure: "17:10", arrival: "18:40", link: "https://www.goibibo.com/" },
+    ],
+  },
 };
 
 function slugCity(s: string): string {

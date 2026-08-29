@@ -29,8 +29,16 @@ function norm(s: string): string {
   return s.trim().toLowerCase().replace(/\s+/g, "-");
 }
 
-export function searchCacheKey(from: string, to: string, date: string | null) {
-  return `search:${norm(from)}:${norm(to)}:${date ?? "any"}`;
+export function searchCacheKey(
+  from: string,
+  to: string,
+  date: string | null,
+  origin?: string | null,
+  destination?: string | null,
+) {
+  const base = `search:${norm(from)}:${norm(to)}:${date ?? "any"}`;
+  if (!origin && !destination) return base;
+  return `${base}:d2d:${norm(origin ?? "")}>${norm(destination ?? "")}`;
 }
 
 export async function getCachedSearch(

@@ -109,55 +109,85 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
       → pehli baar `MISS`, doosri baar `HIT` (aur 2nd response tez, adapter latency skip).
 
 ### Phase 4 — Real flight data: Duffel (Day 7–9)
-- [ ] `duffel.com` par free account, sandbox API key lo
-- [ ] `lib/adapters/flight.ts` mein Duffel ka flight-search call karo
-- [ ] Duffel response ko normalized shape mein map karo
-- [ ] Sandbox/test mode se ek route verify karo (Duffel test airlines deta hai)
-- **Acceptance:** Kam se kam ek route par real (sandbox) flight results dikhein.
+- [ ] `duffel.com` par free account, sandbox API key lo  ← manual step, tum karoge
+- [x] `lib/adapters/flight.ts` — `DUFFEL_API_KEY` set ho to Duffel `air/offer_requests`
+      call karta hai; response normalized shape mein map hota hai (IATA codes `lib/iata.ts` se)
+- [x] Key/IATA na ho ya call fail ho to sample flights par graceful fallback
+- **Acceptance:** ⏳ code taiyaar; sandbox key daal kar ek route verify karna baaki
+      (`DUFFEL_API_KEY=...` → `/api/search?from=Delhi&to=Mumbai` → `source: "duffel"` dikhe).
 
 ### Phase 5 — Bus data (Day 10–12)
-- [ ] Interim: RapidAPI ka koi bus-aggregator try karo
-- [ ] Parallel mein RedBus ko `partner_support@redbus.com` par mail bhej do (Seat Seller/GDS API maango
-  — Blueprint ke "official contacts" section mein poora template hai)
-- [ ] `lib/adapters/bus.ts` ko jo bhi API mile usse implement karo
-- **Acceptance:** Ek route par bus results dikhein (interim API se), aur RedBus ko reply ka wait parallel
-  mein chal raha ho.
+- [x] `lib/adapters/bus.ts` — `BUS_PROVIDER_API_URL` + `_KEY` (+ `_HOST`) set ho to generic
+      RapidAPI-style HTTP call, defensive JSON mapping, `indicative: true` badge, sample fallback
+- [ ] RapidAPI par ek bus-aggregator choose karke uska URL/key `.env.local` mein daalo  ← tum
+- [ ] RedBus ko mail bhej do — draft ready: `routemitra-app/docs/outreach/redbus.md`  ← tum
+- **Acceptance:** ⏳ code taiyaar; provider URL daalte hi bus results interim API se aayenge,
+      RedBus reply ka wait parallel mein.
 
 ### Phase 6 — Train data (Day 13–16, sabse slow step)
-- [ ] ConfirmTkt (`confirmtkt.com/partners.php`) aur RailYatri (`sales@railyatri.in`) dono ko mail
-  bhej do — jo pehle reply kare
-- [ ] Interim: RapidAPI ke IRCTC wrapper se demo-quality data dikhao, clearly label karo "indicative fare"
-- [ ] Official access milne par `lib/adapters/train.ts` ko real API se badal do
-- **Acceptance:** Train card dikh raha ho (interim data se sahi), aur PSP contact process shuru ho chuka ho.
+- [x] `lib/adapters/train.ts` — `TRAIN_PROVIDER_API_URL` + `_KEY` (+ `_HOST`) set ho to
+      RapidAPI-style call, defensive mapping, `indicative` badge (UI mein dikhata hai), sample fallback
+- [ ] RapidAPI IRCTC wrapper ka URL/key `.env.local` mein daalo  ← tum
+- [ ] ConfirmTkt + RailYatri ko mail — draft ready: `routemitra-app/docs/outreach/train-psps.md`  ← tum
+- **Acceptance:** ⏳ code taiyaar; `indicative` label mechanism live hai (sample trains bhi label ho
+      sakte hain), PSP contact process draft se shuru karna baaki.
 
 ### Phase 7 — Deep links + click tracking (Day 17–18)
-- [ ] Har card ke "Book karein" link mein UTM/ref params add karo
-- [ ] Simple click-tracking (Plausible custom event ya DB table) — kaunsa mode/operator click hua, ye
-  data future partner-negotiation (RedBus/ConfirmTkt se "hamare paas itna traffic hai" dikhane) mein
-  kaam aayega
-- **Acceptance:** Click hone par analytics event log ho raha ho.
+- [x] Har "Book karein" link par UTM + `ref=routemitra:...` params (`lib/links.ts`, `lib/normalize.ts`
+      mein har option ke link par lagta hai)
+- [x] Click tracking: `BookButton.tsx` `navigator.sendBeacon` se `POST /api/track` bhejta hai +
+      Plausible custom event ("Book click"). `DATABASE_URL` ho to Postgres `clicks` table mein insert
+      (`lib/db.ts`, auto-schema), warna `console.log`. `GET /api/track` → clicks-by-mode + top-routes
+      (partner pitch ke liye traction number)
+- [ ] Neon/Supabase Postgres + Plausible account bana ke `DATABASE_URL` / `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
+      daalo  ← tum
+- **Acceptance:** ✅ click par `/api/track` beacon jaata hai; bina DB ke `console.log` dikhta hai,
+      DB daalte hi row insert hota hai.
 
 ### Phase 8 — Polish (Day 19–21)
-- [ ] Loading skeletons, error states, "route not found" state
-- [ ] SEO: popular routes ke liye static pages (`/routes/pune-to-bengaluru`) — organic traffic ka
-  main source yahi hoga
-- [ ] Mobile responsive check
-- [ ] Basic `sitemap.xml`
-- **Acceptance:** Lighthouse performance/SEO score 90+.
+- [x] Loading skeleton cards, error state, "koi option nahi mila" state
+- [x] SEO: `/routes/[slug]` static pages (`generateStaticParams` se dono direction, sample routes),
+      per-page `generateMetadata` + canonical + JSON-LD FAQ. Home + route pages par internal linking grid
+- [x] `app/sitemap.ts` + `app/robots.ts` (`NEXT_PUBLIC_SITE_URL` se host), `metadataBase` layout mein
+- [x] Mobile: demo ke responsive breakpoints port ho chuke (search form, cards)
+- **Acceptance:** ✅ build par 10 route pages pre-render; sitemap/robots resolve. ⏳ Lighthouse 90+
+      production deploy ke baad verify karna (checklist `docs/DEPLOY.md`).
 
 ### Phase 9 — Launch (Day 22)
-- [ ] Vercel production deploy, custom domain
-- [ ] Analytics live
-- [ ] 10–20 log (dost/family) ko bhej kar real feedback lo
-- **Acceptance:** App publicly live hai aur real users use kar rahe hain.
+- [x] Deploy checklist + smoke-test steps: `routemitra-app/docs/DEPLOY.md` (Vercel root dir =
+      `routemitra-app`, env vars list, custom domain, Lighthouse check)
+- [x] `README.md` updated (arch diagram, env fallback table, routes)
+- [ ] Vercel production deploy + custom domain  ← tum (account chahiye)
+- [ ] Analytics live, 10–20 logon ko bhej kar feedback  ← tum
+- **Acceptance:** ⏳ deploy ke baad app publicly live.
 
 ### Phase 10 — Growth loop (ongoing, launch ke baad)
-- [ ] Traffic data collect karo — kaunse routes zyada search ho rahe hain
-- [ ] Us data ke saath Skyscanner Travel API ke liye apply karo (unhe 100k+ monthly users chahiye —
-  pehle organic traffic badhao, phir apply karo)
-- [ ] RedBus/ConfirmTkt/RailYatri ko traction dikha kar follow-up karo
-- [ ] Business-model section implement karo — affiliate links properly track karo, commission aana
-  shuru ho
+- [x] Data collection code ready: `GET /api/track` (clicks by mode, top routes) + Plausible events.
+      Full ops checklist: `routemitra-app/docs/GROWTH.md`
+- [ ] Skyscanner apply (100k+ users pe), partner follow-ups, affiliate links + commission reconcile
+      — ye business ops hai, `docs/GROWTH.md` follow karo  ← tum, ongoing
+
+### Phase 11 — Ghar se ghar tak (door-to-door fare) (Day 23–27)
+
+Ab tak sirf city-to-city fare tha (jaise Delhi → Varanasi). Ye phase asli trip jodta hai:
+ghar (jaise Indirapuram) se nearest hub tak, aur destination hub se final address (jaise Lanka,
+Varanasi) tak — dono local legs ka fare intercity fare ke saath jud kar ek total number banaye.
+Poora detail Blueprint ke Stop 9 mein hai: https://claude.ai/code/artifact/5ba4103a-e59f-4e05-b6a3-814de3be1cc8
+
+- [x] Geocoding — `lib/geo.ts`: free-text address → lat/lng via OpenStreetMap Nominatim (free,
+      no key). `GOOGLE_MAPS_API_KEY` ho to Google Geocoding. Results Redis mein cache hote hain
+- [x] `lib/city-hubs.ts` — 9 cities (Delhi, Mumbai, Pune, Bengaluru, Goa, Jaipur, Chennai,
+      Hyderabad, Varanasi) ke flight/train/bus hub lat/lng ke saath. `nearestHub()` haversine se
+- [x] `lib/adapters/local.ts` — Leg 1/Leg 3 ka distance-based cab fare + ETA estimate (clearly
+      `est.` labelled). Uber universal deep-link banata hai. Ola/Rapido: deep-link only (no API)
+- [ ] Uber Price Estimates API register + `UBER_SERVER_TOKEN` daalo (optional; abhi estimate math
+      chal raha hai). Ola: `affiliates@olacabs.com` ko mail  ← tum, optional
+- [x] Total = Leg1 + intercity + Leg3 + buffer (flight 90m / train 20m / bus 15m) — `lib/door-to-door.ts`
+- [x] UI: result card mein "🏠 Ghar se ghar tak: ₹X · Yh Zm" strip + 3-leg breakdown.
+      SearchForm mein "Ghar-se-ghar fare (beta)" collapsible fields
+- **Acceptance:** ✅ Indirapuram, Ghaziabad → Lanka, Varanasi (Delhi→Varanasi) par har option ka
+      poora door-to-door total teeno legs + buffer ke breakdown ke saath calculate hota hai
+      (flight → DEL/VNS airport legs, train → NDLS/BSB station legs).
 
 ---
 

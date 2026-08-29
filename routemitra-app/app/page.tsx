@@ -1,6 +1,10 @@
+import Link from "next/link";
 import SearchForm from "@/components/SearchForm";
+import { popularRouteSlugs, fromSlug } from "@/lib/routes";
 
 export default function Home() {
+  const routes = popularRouteSlugs();
+
   return (
     <>
       <header className="masthead">
@@ -23,6 +27,20 @@ export default function Home() {
 
       <main className="wrap">
         <SearchForm />
+
+        <nav className="popular">
+          <h2>Popular routes</h2>
+          <div className="popular-grid">
+            {routes.map((slug) => {
+              const r = fromSlug(slug)!;
+              return (
+                <Link key={slug} href={`/routes/${slug}`}>
+                  {r.from} → {r.to}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       </main>
 
       <footer className="site-footer">

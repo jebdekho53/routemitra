@@ -12,19 +12,32 @@ const CITIES = Array.from(
 export default function SearchForm({
   initialFrom = "",
   initialTo = "",
+  initialOrigin = "",
+  initialDestination = "",
 }: {
   initialFrom?: string;
   initialTo?: string;
+  initialOrigin?: string;
+  initialDestination?: string;
 }) {
   const router = useRouter();
   const [from, setFrom] = useState(initialFrom);
   const [to, setTo] = useState(initialTo);
+  const [originAddr, setOriginAddr] = useState(initialOrigin);
+  const [destAddr, setDestAddr] = useState(initialDestination);
+  const [showD2d, setShowD2d] = useState(
+    Boolean(initialOrigin || initialDestination),
+  );
 
   function go(nextFrom: string, nextTo: string) {
     const f = nextFrom.trim();
     const t = nextTo.trim();
     if (!f || !t) return;
     const qs = new URLSearchParams({ from: f, to: t });
+    if (showD2d && originAddr.trim() && destAddr.trim()) {
+      qs.set("origin", originAddr.trim());
+      qs.set("destination", destAddr.trim());
+    }
     router.push(`/search?${qs.toString()}`);
   }
 
@@ -92,6 +105,40 @@ export default function SearchForm({
           Dhoondo
         </button>
       </form>
+
+      <button
+        type="button"
+        className="d2d-toggle"
+        onClick={() => setShowD2d((v) => !v)}
+        aria-expanded={showD2d}
+      >
+        {showD2d ? "− " : "+ "}Ghar-se-ghar fare (beta)
+      </button>
+
+      {showD2d && (
+        <div className="d2d-fields">
+          <div className="field">
+            <label htmlFor="origin">Ghar ka address</label>
+            <input
+              id="origin"
+              type="text"
+              placeholder="e.g. Indirapuram, Ghaziabad"
+              value={originAddr}
+              onChange={(e) => setOriginAddr(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="destination">Final address</label>
+            <input
+              id="destination"
+              type="text"
+              placeholder="e.g. Lanka, Varanasi"
+              value={destAddr}
+              onChange={(e) => setDestAddr(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="examples">
         {SAMPLE_ROUTES.map(({ from: f, to: t }) => (
