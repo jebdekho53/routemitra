@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-// Shared site footer. Phase 14 will add the real legal pages; the links are
-// here now so the structure is stable.
+// Shared site footer. Legal pages (Privacy/Terms/About/Help) are real as of
+// Phase 14 — DPDP-compliant privacy policy, ToS, cookie-consent banner.
 export default function SiteFooter() {
   return (
     <footer className="site-footer">

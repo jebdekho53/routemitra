@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import Providers from "./providers";
+import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -54,6 +55,7 @@ export default function RootLayout({
         className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
       >
         <Providers>{children}</Providers>
+        <CookieConsent />
         {plausibleDomain && (
           <Script
             defer

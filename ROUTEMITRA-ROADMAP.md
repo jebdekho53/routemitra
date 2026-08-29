@@ -31,7 +31,7 @@ mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
 | Door-to-door (ghar se ghar) | ✅ Phase 11 |
 | **Accounts — signup/login/logout** | ✅ Phase 12 (code ready; DB + AUTH_SECRET baaki) |
 | **Saved searches, price alerts** | ✅ Phase 13 (code ready; DB baaki) |
-| **Legal — privacy, terms, cookie consent** | ⚠️ Phase 14 (stub pages hain, content baaki) |
+| **Legal — privacy, terms, cookie consent** | ✅ Phase 14 (legal entity/grievance-officer env vars baaki) |
 | **Security — CAPTCHA, rate-limit, monitoring** | ✅ Phase 15 (Sentry + uptime monitor baaki) |
 | **Polish — remove demo feel, PWA, error pages** | ✅ Phase 16 |
 | **Testing/CI** | ✅ Phase 17 |
@@ -254,25 +254,31 @@ jaisi cheezein possible hoti hain.
 - **Acceptance:** ⏳ DB ke saath: logged-in user route watch kare → cron chale → `last_price` se
       kam fare pe email (Resend ya console). Cron endpoint bina DB ke bhi safe (`checked: 0`).
 
-### Phase 14 — Legal, trust & compliance (Day 35–36)
+### Phase 14 — Legal, trust & compliance (Day 35–36)  ✅
 
-Ek search-and-redirect site ke liye bhi ye zaroori hai — bina iske koi bhi real user trust
-nahi karega, aur India ke DPDP Act 2023 ke hisaab se data collect karne par disclosure zaroori
-bhi hai.
-
-- [ ] **Privacy Policy** — kya data collect hota hai (email, search history, click events),
-  kaise use hota hai, delete kaise karayein
-- [ ] **Terms of Service**
-- [ ] **Cookie consent banner** — pehli visit par (Plausible + click-tracking cookies ke liye)
-- [ ] **Affiliate disclosure** — "Hum kuch bookings par commission kama sakte hain" — Skyscanner
-  bhi ye clearly likhta hai, transparency trust badhata hai
-- [ ] **Booking disclaimer** — clarify karo ki actual booking RedBus/IRCTC/airline ki site par
-  hoti hai, RouteMitra us transaction ko control nahi karta (refund/cancellation unki policy se)
-- [ ] **Help/Contact page** — real support email, FAQ
-- [ ] **About page**
-- [ ] Footer redesign — sab legal links + social + copyright, har page par consistent
-- **Acceptance:** Har legal page live aur footer se ek click mein accessible; cookie banner
-  pehli visit par dikhta hai aur dismiss hone ke baad wapas nahi aata.
+- [x] **Privacy Policy** (`app/privacy/page.tsx`) — DPDP Act 2023 shaped: itemised data/purpose
+  table, consent mechanics, cookies (§5 — Plausible is cookieless, only cookie is the login
+  session), sharing/processors + cross-border disclosure, retention table, Data Principal
+  rights (access/correct/erase/nominate/grievance), named Grievance Officer, contact
+- [x] **Terms of Service** (`app/terms/page.tsx`) — what RouteMitra is (search only, not the
+  seller), eligibility, acceptable use, fares/indicative disclaimer, booking/refund disclaimer,
+  affiliate/commission disclosure, IP, liability, termination, governing law
+- [x] **Cookie consent banner** (`components/CookieConsent.tsx`, wired in `app/layout.tsx`) —
+  shows once (localStorage), honest copy (nothing non-essential to consent to yet — see §5)
+- [x] Affiliate disclosure — in Terms §6 and `SiteFooter`
+- [x] Booking disclaimer — Terms §5, Help page, footer
+- [x] Help/Contact page (`app/help/page.tsx`) — booking FAQ, fare-accuracy FAQ, data-rights FAQ,
+  grievance-officer contact, support email
+- [x] About page (`app/about/page.tsx`)
+- [x] `lib/site.ts` — legal identity (`LEGAL_ENTITY_NAME`, `LEGAL_ADDRESS`,
+  `GRIEVANCE_OFFICER_NAME/EMAIL`, `SUPPORT_EMAIL`) is env-driven with an honest
+  pre-incorporation fallback — nothing fabricated ships in the repo
+- [ ] Set the real values: `.env.local` → `NEXT_PUBLIC_SUPPORT_EMAIL`,
+  `NEXT_PUBLIC_GRIEVANCE_OFFICER_NAME` (your real name — DPDP requires a *named* officer),
+  optionally `NEXT_PUBLIC_LEGAL_ENTITY_NAME`/`_ADDRESS` once incorporated  ← tum
+- **Acceptance:** ✅ `npx tsc --noEmit` + `npm run lint` clean. Har legal page live, footer se
+  1 click mein accessible; cookie banner pehli visit par dikhta hai, dismiss ke baad wapas
+  nahi aata. ⏳ Grievance-officer real naam/email set karna baaki (tum).
 
 ### Phase 15 — Security & reliability (Day 37–39)
 
@@ -302,7 +308,7 @@ bhi hai.
 - [x] Shared `Masthead` + `SiteFooter` components — har page ka header/footer ab ek jagah se
       (pehle har page apna "Demo build" text carry karta tha)
 - [x] "Demo"/"sample" text sabhi pages se hataya; footer mein booking + affiliate + indicative
-      disclosure. Legal stub pages: `/about /help /privacy /terms` (Phase 14 content bharega)
+      disclosure. Legal pages: `/about /help /privacy /terms` — full DPDP-shaped content as of Phase 14
 - [x] `indicative` badge: chhota, tooltip ke saath "kyun estimate hai"
 - [ ] Professional contact email domain milne par (`hello@routemitra.com`)  ← tum
 - **Acceptance:** ✅ prod build mein "demo"/"sample" text nahi (indicative badge ke alawa);

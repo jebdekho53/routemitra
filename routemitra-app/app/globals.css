@@ -961,3 +961,125 @@ h2 {
   color: var(--ink-soft);
   margin-top: 8px;
 }
+
+/* Phase 14 — legal pages (Privacy / Terms / About / Help) */
+.prose {
+  max-width: 68ch;
+  padding: 8px 0 56px;
+}
+.prose h2 {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 600;
+  font-size: 19px;
+  margin: 32px 0 10px;
+  text-wrap: balance;
+}
+.prose h2:first-of-type {
+  margin-top: 8px;
+}
+.prose p {
+  margin: 0 0 14px;
+  line-height: 1.65;
+}
+.prose ul {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prose li {
+  line-height: 1.6;
+}
+.prose a {
+  color: var(--accent);
+}
+.prose-updated {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+.prose-note {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 0 18px;
+}
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.legal-table th,
+.legal-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.legal-table th {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+/* Cookie consent banner */
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.cookie-banner-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+}
+.cookie-banner-inner p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+.cookie-banner-inner a {
+  color: var(--accent);
+}
+.cookie-ack {
+  font: inherit;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cookie-ack:hover {
+  filter: brightness(1.06);
+}
+.cookie-ack:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
