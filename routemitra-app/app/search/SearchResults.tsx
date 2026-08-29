@@ -8,6 +8,8 @@ import { listSampleRoutes } from "@/lib/sample-data";
 import ResultCard from "@/components/ResultCard";
 import SortTabs from "@/components/SortTabs";
 import SearchForm from "@/components/SearchForm";
+import Masthead from "@/components/Masthead";
+import SiteFooter from "@/components/SiteFooter";
 
 type Status = "loading" | "results" | "empty" | "error";
 
@@ -80,19 +82,7 @@ export default function SearchResults() {
 
   return (
     <>
-      <header className="masthead">
-        <div className="wrap">
-          <div className="brand">
-            <div className="line-dots">
-              <span />
-              <span />
-              <span />
-            </div>
-            <span className="eyebrow">Demo build · sample data</span>
-          </div>
-          <h1>RouteMitra</h1>
-        </div>
-      </header>
+      <Masthead />
 
       <main className="wrap">
         <SearchForm
@@ -194,14 +184,7 @@ export default function SearchResults() {
         </Link>
       </main>
 
-      <footer className="site-footer">
-        <div className="wrap">
-          <p>
-            Ye sample/dummy data hai — koi live booking nahi hoti. &quot;Book
-            karein&quot; dabane par respective platform khulega.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

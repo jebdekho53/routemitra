@@ -31,17 +31,17 @@ mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
 | Door-to-door (ghar se ghar) | ✅ Phase 11 |
 | **Accounts — signup/login/logout** | ❌ Phase 12 |
 | **Saved searches, price alerts** | ❌ Phase 13 |
-| **Legal — privacy, terms, cookie consent** | ❌ Phase 14 |
+| **Legal — privacy, terms, cookie consent** | ⚠️ Phase 14 (stub pages hain, content baaki) |
 | **Security — CAPTCHA, rate-limit, monitoring** | ❌ Phase 15 |
-| **Polish — remove demo feel, PWA, error pages** | ❌ Phase 16 |
-| **Testing/CI** | ❌ Phase 17 |
-| **Admin dashboard** | ❌ Phase 18 |
+| **Polish — remove demo feel, PWA, error pages** | ✅ Phase 16 |
+| **Testing/CI** | ✅ Phase 17 |
+| **Admin dashboard** | ✅ Phase 18 |
 
-**"Demo" text ka fix:** `app/page.tsx` mein literally "Demo build · sample data" aur "Ye ek
-working demo hai" likha hua tha (purane static demo se copy-paste reh gaya tha) — ye already
-fix kar diya gaya hai. Result cards par "indicative" badge abhi bhi dikhega jab tak real
-bus/train API key na lage — wo intentional hai (Skyscanner/ixigo bhi jab fare estimate hota hai
-to disclose karte hain), poori site "demo" nahi honi chahiye.
+**"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
+`Masthead` + `SiteFooter` components se aata hai — kahin "Demo build · sample data" ya
+"working demo" text nahi. Result cards par "indicative" badge sirf estimate fares par dikhta
+hai — wo intentional disclosure hai (Skyscanner/ixigo bhi fare estimate disclose karte hain),
+poori site "demo" nahi.
 
 ---
 
@@ -282,35 +282,46 @@ bhi hai.
 - **Acceptance:** Sentry mein ek test error log ho; rapid-fire requests par rate-limit 429
   return kare; uptime monitor live URL ping kar raha ho.
 
-### Phase 16 — Polish: real-website feel (Day 40–42)
+### Phase 16 — Polish: real-website feel (Day 40–42)  ✅
 
-- [ ] Real logo + favicon (abhi default hai)
-- [ ] Custom 404 aur 500 error pages (Next.js default se professional)
-- [ ] PWA manifest — mobile par "Add to Home Screen" se app jaisa feel
-- [ ] Result cards par "indicative" badge ka design polish karo — chhota, subtle, tooltip ke
-  saath "why this is estimated" — poori site "demo" nahi lagni chahiye, sirf jahan fare
-  estimate hai wahi honestly label ho
-- [ ] Professional contact email (`hello@routemitra.com` jaisa, personal Gmail nahi) jab domain
-  mil jaaye
-- **Acceptance:** Production build mein kahin bhi "demo"/"sample" text na dikhe (indicative-fare
-  badge ke alawa); Chrome mobile par "Install app" prompt aaye.
+- [x] Brandmark logo (`components/Brandmark.tsx` — 3-mode dots tile) + `app/icon.svg` favicon +
+      `app/apple-icon.png` (default Next favicon hataya)
+- [x] Custom `app/not-found.tsx` (404, popular-route links) + `app/error.tsx` (500, retry +
+      error beacon) + `app/global-error.tsx`
+- [x] PWA: `app/manifest.ts` (standalone, theme-color, 192/512 + maskable icons), `viewport`
+      themeColor layout mein
+- [x] Shared `Masthead` + `SiteFooter` components — har page ka header/footer ab ek jagah se
+      (pehle har page apna "Demo build" text carry karta tha)
+- [x] "Demo"/"sample" text sabhi pages se hataya; footer mein booking + affiliate + indicative
+      disclosure. Legal stub pages: `/about /help /privacy /terms` (Phase 14 content bharega)
+- [x] `indicative` badge: chhota, tooltip ke saath "kyun estimate hai"
+- [ ] Professional contact email domain milne par (`hello@routemitra.com`)  ← tum
+- **Acceptance:** ✅ prod build mein "demo"/"sample" text nahi (indicative badge ke alawa);
+      manifest + maskable icons serve hote hain (Chrome "Install app" ready).
 
-### Phase 17 — Testing & CI (Day 43–44)
+### Phase 17 — Testing & CI (Day 43–44)  ✅
 
-- [ ] Unit tests — adapters (`bus.ts`, `train.ts`, `flight.ts`) aur `normalize.ts` ke liye
-  (Vitest)
-- [ ] E2E test — search flow (Playwright): home → search → results dikhein → "Book karein"
-  click → sahi URL khule
-- [ ] GitHub Actions CI — har push par lint + test + build chale
-- **Acceptance:** `npm test` pass, GitHub par har PR/push par CI green badge.
+- [x] Vitest unit tests (`tests/unit/`): `normalize` (merge/validate/tracking-links/sort),
+      adapters (sample fallback, mode filter, either-direction, unknown route), route slugs +
+      cache key. **17 tests pass.**
+- [x] Playwright E2E (`tests/e2e/search.spec.ts`): home→search→results→book-link tracking,
+      sort reorders, unknown-route empty state, static route page + JSON-LD, 404. **5 pass.**
+- [x] GitHub Actions CI (`.github/workflows/ci.yml`): push/PR par `npm ci` → lint → test →
+      build, phir alag job mein Playwright E2E
+- **Acceptance:** ✅ `npm test` + `npm run test:e2e` dono green locally. CI GitHub par push hone
+      par chalega.
 
-### Phase 18 — Admin visibility (Day 45)
+### Phase 18 — Admin visibility (Day 45)  ✅
 
-- [ ] Password/role-protected `/admin` page — total clicks, top routes, recent errors ek
-  jagah dikhein (`/api/track` data + Sentry summary)
-- [ ] Provider status indicator — kaunse adapters live hain (real API) vs sample-data fallback
-  par hain, ek glance mein
-- **Acceptance:** Admin login karke dashboard dekh sake ki app ka real health/traction kya hai.
+- [x] `/admin` — Basic Auth se protected (`proxy.ts`, `ADMIN_USER`/`ADMIN_PASSWORD`; env unset
+      ho to `/admin` 503). Dikhata hai: total clicks, clicks-by-mode, top routes, recent errors
+- [x] Provider status table — flight/bus/train/cache/db/geocode/analytics/errors har ek "live"
+      (real API) hai ya "fallback" par, `lib/status.ts` se
+- [x] `errors` table + `POST /api/client-error` beacon (`app/error.tsx` se) — Sentry (Phase 15)
+      tak ke liye stopgap
+- [ ] `.env.local` mein `ADMIN_USER` + `ADMIN_PASSWORD` set karo  ← tum
+- **Acceptance:** ✅ creds ke saath `/admin` 200 (dashboard), bina creds 401, env unset 503.
+      Verified: `curl -u admin:… /admin`.
 
 ---
 

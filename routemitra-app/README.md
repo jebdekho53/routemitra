@@ -40,16 +40,31 @@ runs. Fill in keys as providers are approved — see `.env.example`.
 | Click tracking | `DATABASE_URL` | `console.log` only |
 | Analytics | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | script not loaded |
 | Canonical URLs | `NEXT_PUBLIC_SITE_URL` | `https://routemitra.vercel.app` |
+| Geocoding (door-to-door) | `GOOGLE_MAPS_API_KEY` | free OSM Nominatim |
+| Admin dashboard | `ADMIN_USER` + `ADMIN_PASSWORD` | `/admin` returns 503 |
 
 ## Routes
 
 - `/` — search + popular routes
-- `/search?from=&to=` — client-fetched results (sort by cheapest / fastest)
+- `/search?from=&to=` — client-fetched results (sort by cheapest / fastest);
+  optional `&origin=&destination=` for door-to-door totals
 - `/routes/pune-to-bengaluru` — static, pre-rendered, SEO pages (one per popular
   route; JSON-LD FAQ, in `generateStaticParams`)
+- `/about`, `/help`, `/privacy`, `/terms` — legal/info (stubs; Phase 14)
+- `/admin` — Basic-Auth dashboard: clicks, top routes, provider status, errors
 - `GET /api/search` — aggregator JSON (`x-cache: HIT|MISS` header)
 - `POST /api/track` — click beacon · `GET /api/track` — click aggregate
-- `/sitemap.xml`, `/robots.txt`
+- `/manifest.webmanifest`, `/sitemap.xml`, `/robots.txt`
+
+## Tests
+
+```bash
+npm test         # Vitest unit tests (normalize, adapters, routes)
+npm run test:e2e # Playwright E2E (search flow) — needs: npx playwright install chromium
+```
+
+CI (`.github/workflows/ci.yml`, repo root) runs lint + unit + build, then E2E,
+on every push/PR to `main`.
 
 ## Deploy
 

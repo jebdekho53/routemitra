@@ -27,7 +27,10 @@ export default function ResultCard({
         <div className="operator">
           {option.operator}
           {option.indicative && (
-            <span className="badge" title="Estimated fare, not a live quote">
+            <span
+              className="badge"
+              title="Live provider API abhi connect nahi — ye fare interim source se estimate hai. Final price booking page par confirm karo."
+            >
               indicative
             </span>
           )}

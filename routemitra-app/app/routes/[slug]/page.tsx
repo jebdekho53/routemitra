@@ -10,6 +10,8 @@ import { runSearch } from "@/lib/search";
 import { formatDuration, formatPrice } from "@/lib/format";
 import SearchForm from "@/components/SearchForm";
 import ResultCard from "@/components/ResultCard";
+import Masthead from "@/components/Masthead";
+import SiteFooter from "@/components/SiteFooter";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -88,24 +90,14 @@ export default async function RoutePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <header className="masthead">
-        <div className="wrap">
-          <div className="brand">
-            <div className="line-dots">
-              <span />
-              <span />
-              <span />
-            </div>
-            <span className="eyebrow">Demo build · sample data</span>
-          </div>
-          <h1>
-            {from} → {to}
-          </h1>
-          <p className="tagline">
+      <Masthead
+        title={`${from} → ${to}`}
+        tagline={
+          <>
             {from} se {to} — <b>bus, train aur flight</b> ek jagah compare karo.
-          </p>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <main className="wrap">
         <SearchForm initialFrom={from} initialTo={to} />
@@ -138,8 +130,8 @@ export default async function RoutePage({
         )}
 
         <p className="route-note">
-          Fares indicative hain — live price ke liye &quot;Book karein&quot; se
-          respective platform par jao.
+          Kuch fares indicative ho sakte hain — live price ke liye &quot;Book
+          karein&quot; se respective platform par jao.
         </p>
 
         <nav className="popular">
@@ -164,14 +156,7 @@ export default async function RoutePage({
         </Link>
       </main>
 
-      <footer className="site-footer">
-        <div className="wrap">
-          <p>
-            Ye sample/dummy data hai — koi live booking nahi hoti. Real prices
-            connect karne ka plan roadmap mein hai.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

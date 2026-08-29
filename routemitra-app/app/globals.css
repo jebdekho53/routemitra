@@ -74,10 +74,18 @@ h2 {
   padding: 44px 0 28px;
 }
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 6px;
+  text-decoration: none;
+}
+.brand:hover .eyebrow {
+  color: var(--accent);
+}
+.brand svg {
+  display: block;
+  border-radius: 8px;
 }
 
 .line-dots {
@@ -409,12 +417,129 @@ h2 {
 
 .site-footer {
   border-top: 1px solid var(--line);
-  padding: 20px 0 48px;
+  padding: 24px 0 48px;
   color: var(--ink-soft);
   font-size: 13px;
 }
 .site-footer a {
   color: var(--accent);
+}
+.site-footer p {
+  max-width: 68ch;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12.5px;
+}
+.footer-links a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.footer-links a:hover {
+  color: var(--accent);
+}
+.footer-copy {
+  margin-top: 10px;
+  opacity: 0.75;
+}
+
+/* 404 / 500 state cards */
+.state-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 32px 24px;
+  text-align: center;
+  margin: 8px 0 40px;
+  box-shadow: var(--shadow);
+}
+.state-code {
+  font-family: var(--font-fraunces), serif;
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+.state-digest {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 14px;
+}
+
+/* admin dashboard */
+.admin {
+  padding-top: 32px;
+  padding-bottom: 60px;
+}
+.admin h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.admin-block {
+  margin-bottom: 28px;
+}
+.admin-block h2 {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.admin-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.admin-table .muted {
+  color: var(--ink-soft);
+}
+.admin .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+.admin .dot.on {
+  background: var(--mode-bus);
+}
+.admin .dot.off {
+  background: var(--mode-flight);
+}
+.admin .muted {
+  color: var(--ink-soft);
+}
+
+/* simple prose pages (about / help / privacy / terms) */
+.prose {
+  max-width: 62ch;
+  margin: 8px 0 48px;
+}
+.prose h2 {
+  font-size: 17px;
+  margin: 24px 0 8px;
+}
+.prose p,
+.prose li {
+  color: var(--ink-soft);
+}
+.prose a {
+  color: var(--accent);
+}
+.prose-note {
+  font-size: 12.5px;
+  font-style: italic;
+  border-left: 2px solid var(--line);
+  padding-left: 12px;
 }
 
 .back-link {

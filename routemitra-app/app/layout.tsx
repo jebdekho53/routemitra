@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
@@ -31,6 +31,15 @@ export const metadata: Metadata = {
   description:
     "Ek city se dusri city — bus, train aur flight teeno options ek hi jagah compare karo.",
   openGraph: { siteName: "RouteMitra", type: "website" },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "RouteMitra" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef1ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#10151a" },
+  ],
 };
 
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;

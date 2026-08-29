@@ -33,6 +33,16 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS clicks_created_at_idx ON clicks (created_at)`;
       await sql`CREATE INDEX IF NOT EXISTS clicks_route_idx ON clicks (from_city, to_city)`;
+      await sql`
+        CREATE TABLE IF NOT EXISTS errors (
+          id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          created_at  timestamptz NOT NULL DEFAULT now(),
+          message     text NOT NULL,
+          digest      text,
+          path        text
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS errors_created_at_idx ON errors (created_at)`;
     })().catch((err) => {
       console.error("[db] ensureSchema failed:", err);
       schemaReady = null; // allow a retry on the next request
