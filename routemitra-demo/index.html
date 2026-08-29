@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RouteMitra — Bus, Train &amp; Flight ek jagah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="wrap">
+      <div class="brand">
+        <div class="line-dots"><span></span><span></span><span></span></div>
+        <span class="eyebrow">Demo build · sample data</span>
+      </div>
+      <h1>RouteMitra</h1>
+      <p class="tagline">Ek city se dusri city — <b>bus, train aur flight</b> teeno options ek hi jagah compare karo. Ye ek working demo hai, sample data ke saath.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section class="search-card">
+      <form id="search-form" autocomplete="off">
+        <div class="field">
+          <label for="from">Kahan se</label>
+          <input id="from" name="from" type="text" list="cities" placeholder="e.g. Pune" required />
+        </div>
+        <div class="swap" id="swap-btn" title="Swap">⇄</div>
+        <div class="field">
+          <label for="to">Kahan tak</label>
+          <input id="to" name="to" type="text" list="cities" placeholder="e.g. Bengaluru" required />
+        </div>
+        <datalist id="cities"></datalist>
+        <button type="submit" class="go-btn">Dhoondo</button>
+      </form>
+      <div class="examples" id="examples"></div>
+    </section>
+
+    <section id="results" class="results" hidden>
+      <div class="results-head">
+        <h2 id="results-title"></h2>
+        <div class="sort-tabs">
+          <button class="sort-tab active" data-sort="price">Sabse sasta</button>
+          <button class="sort-tab" data-sort="duration_min">Sabse tez</button>
+        </div>
+      </div>
+      <div id="cards" class="cards"></div>
+    </section>
+
+    <section id="empty" class="empty-state" hidden>
+      <p><b>Ye route abhi demo data mein nahi hai.</b> Neeche diye gaye sample routes try karo:</p>
+      <div class="examples" id="empty-examples"></div>
+    </section>
+
+    <section id="loading" class="loading-state" hidden>
+      <div class="spinner"></div>
+      <p>Bus, train aur flight options la rahe hain…</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Ye sample/dummy data hai — koi live booking nahi hoti. Real bus/train/flight prices connect karne ka plan <a href="https://claude.ai/code/artifact/5ba4103a-e59f-4e05-b6a3-814de3be1cc8" target="_blank" rel="noopener">RouteMitra Blueprint</a> mein hai. "Book karein" dabane par respective platform khulega.</p>
+    </div>
+  </footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
