@@ -14,6 +14,14 @@
    - `DUFFEL_API_KEY`
    - `DATABASE_URL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` (when ready)
    - bus/train provider vars (when ready)
+   - `ADMIN_USER`, `ADMIN_PASSWORD` (else `/admin` is 503)
+   - **Auth (Phase 12):** `AUTH_SECRET` (run `npx auth secret`), and for Google
+     login `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` with the OAuth redirect URI
+     set to `https://<your-domain>/api/auth/callback/google`
+   - `RESEND_API_KEY` + `EMAIL_FROM` for real emails (else they print to logs)
+   - `CRON_SECRET` — Vercel Cron auto-sends it to `/api/cron/price-check`
+     (schedule is in `vercel.json`, daily 06:00 UTC)
+   - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` for signup CAPTCHA
 6. Deploy. Every push to `main` now auto-deploys.
 
 ## Custom domain (optional)

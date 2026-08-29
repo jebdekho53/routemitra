@@ -29,10 +29,10 @@ mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
 | Cache, real flight/bus/train adapters | ✅ Phase 3–6 (code ready, keys baaki) |
 | Click-tracking, SEO, deploy, growth | ✅ Phase 7–10 |
 | Door-to-door (ghar se ghar) | ✅ Phase 11 |
-| **Accounts — signup/login/logout** | ❌ Phase 12 |
-| **Saved searches, price alerts** | ❌ Phase 13 |
+| **Accounts — signup/login/logout** | ✅ Phase 12 (code ready; DB + AUTH_SECRET baaki) |
+| **Saved searches, price alerts** | ✅ Phase 13 (code ready; DB baaki) |
 | **Legal — privacy, terms, cookie consent** | ⚠️ Phase 14 (stub pages hain, content baaki) |
-| **Security — CAPTCHA, rate-limit, monitoring** | ❌ Phase 15 |
+| **Security — CAPTCHA, rate-limit, monitoring** | ✅ Phase 15 (Sentry + uptime monitor baaki) |
 | **Polish — remove demo feel, PWA, error pages** | ✅ Phase 16 |
 | **Testing/CI** | ✅ Phase 17 |
 | **Admin dashboard** | ✅ Phase 18 |
@@ -220,33 +220,39 @@ Abhi tak sab kuch anonymous hai. Real product (Ola/Skyscanner jaisa) mein user a
 hai, login karta hai, logout karta hai — tabhi saved searches, price alerts, booking history
 jaisi cheezein possible hoti hain.
 
-- [ ] Auth library: **Auth.js (NextAuth v5)** — Next.js ke saath sabse better fit, email+password
-  aur OAuth dono handle karta hai, session cookies khud manage karta hai
-- [ ] `users` table Postgres mein: `id, email, name, password_hash, email_verified_at,
-  oauth_provider, created_at`
-- [ ] **Signup** — email + password form, password `bcrypt`/`argon2` se hash, ek verification
-  email bhejo (link click → `email_verified_at` set)
-- [ ] **Login** — email+password + "Continue with Google" button (India mein Google login
-  sabse zyada use hota hai — kam friction)
-- [ ] **Logout** — session/cookie clear, `/` par redirect
-- [ ] **Forgot password** — reset-link email flow
-- [ ] Header mein login state: logged-out par "Login" button, logged-in par "Hi, {name} ▾"
-  dropdown (Account, Logout)
-- [ ] Account settings page — naam/email update, password change, **delete account** (data
-  privacy ke liye zaroori — user apna data delete kar sake)
-- [ ] Login/signup par basic rate-limit (Upstash Redis already hai — usi se IP-based limiter)
-- **Acceptance:** Naya user signup kare → verification email aaye → login kare → header mein
-  naam dikhe → logout kare → session clear ho jaaye. Google se bhi login chale.
+- [x] **Auth.js (NextAuth v5)** — `auth.ts` (JWT sessions), `app/api/auth/[...nextauth]`,
+      `SessionProvider` layout mein
+- [x] `users` + `auth_tokens` tables (`lib/db.ts` ensureSchema mein). Hand-rolled queries:
+      `lib/auth/users.ts`. Password hash: Node `scrypt` (`lib/auth/password.ts`)
+- [x] **Signup** — `/signup` + `POST /api/auth/signup` (zod + rate-limit + Turnstile), verify
+      email → `GET /api/auth/verify?token=` → `email_verified_at` set
+- [x] **Login** — `/login`, Credentials provider + "Continue with Google" (button sirf tab jab
+      `AUTH_GOOGLE_ID`+`SECRET` set hon)
+- [x] **Logout** — `UserMenu` se `signOut()`, `/` par redirect
+- [x] **Forgot/reset** — `/forgot` + `/reset` + `POST /api/auth/forgot|reset` (token hashed,
+      1hr expiry, no email-enumeration leak)
+- [x] Header: `UserMenu` — logged-out "Login", logged-in "Hi, {name} ▾" (Dashboard/Account/Logout)
+- [x] `/account` — naam/email update, password change, **delete account** (cascade delete)
+      via server actions
+- [x] Signup/login/forgot/reset par IP rate-limit (`lib/ratelimit.ts` — Upstash, no-op bina Redis)
+- [ ] `.env.local`: `AUTH_SECRET` (`npx auth secret`), optionally `AUTH_GOOGLE_ID/SECRET`,
+      `RESEND_API_KEY` (warna verification email console mein print hoga)  ← tum
+- **Acceptance:** ⏳ code + flows taiyaar. DB + `AUTH_SECRET` daalne ke baad end-to-end chalega
+      (signup → console/email link → verify → login → header naam → logout). Protected routes
+      (`/account`, `/dashboard`) bina login `/login?callbackUrl=` par redirect hote hain ✅ (E2E).
 
 ### Phase 13 — Logged-in user features (Day 32–34)
 
-- [ ] Saved/recent searches — logged-in user ki last 10 searches DB mein save ho, dashboard
-  par dikhein
-- [ ] Price alerts — user ek route "watch" kare, agar fare kam ho to email jaaye (daily cron
-  check — Vercel Cron ya GitHub Actions scheduled job)
-- [ ] Wishlist/favourite routes
-- **Acceptance:** Logged-in user ek route watch kare, test mein fare-drop simulate karke email
-  aata dikhe.
+- [x] Recent searches — `/api/search` logged-in user ki search DB mein save karta hai (last 10
+      cap, fire-and-forget). `lib/user-data.ts`, `saved_searches` table
+- [x] Price alerts — `route_watches` table, "🔔 Watch price" button (`RouteActions`),
+      `POST /api/watches`. Cron: `app/api/cron/price-check` (Bearer `CRON_SECRET`) re-prices
+      har active watch, fare gire to `priceAlertEmail` bhejta hai, `last_price` update.
+      `vercel.json` — roz 6am
+- [x] Favourite routes — `favourite_routes` table, "☆ Save route" button, `POST /api/favourites`
+- [x] `/dashboard` — recent searches + watches + favourites, har item se remove
+- **Acceptance:** ⏳ DB ke saath: logged-in user route watch kare → cron chale → `last_price` se
+      kam fare pe email (Resend ya console). Cron endpoint bina DB ke bhi safe (`checked: 0`).
 
 ### Phase 14 — Legal, trust & compliance (Day 35–36)
 
@@ -270,17 +276,20 @@ bhi hai.
 
 ### Phase 15 — Security & reliability (Day 37–39)
 
-- [ ] Security headers — CSP, HSTS, X-Frame-Options (`next.config.ts` mein)
-- [ ] Form validation — `zod` se signup/login/search input sanitize + validate
-- [ ] CAPTCHA on signup — **Cloudflare Turnstile** (free, privacy-friendly, Google reCAPTCHA se
-  behtar UX)
-- [ ] API rate-limiting — `@upstash/ratelimit` (Redis already hai) `/api/search` aur auth
-  endpoints par
-- [ ] Error monitoring — **Sentry** free tier, frontend + API dono
-- [ ] Uptime monitoring — UptimeRobot ya Better Uptime free tier, site down hone par alert
-- [ ] Postgres backup verify — Neon/Supabase ka auto-backup on hai ye confirm karo
-- **Acceptance:** Sentry mein ek test error log ho; rapid-fire requests par rate-limit 429
-  return kare; uptime monitor live URL ping kar raha ho.
+- [x] Security headers — `next.config.ts`: CSP, HSTS, X-Frame-Options DENY, X-Content-Type-Options,
+      Referrer-Policy, Permissions-Policy, `poweredByHeader: false` (E2E se verify)
+- [x] Form validation — `lib/validation.ts` (zod) — signup/login/forgot/reset/search/watch schemas,
+      routes mein `parse()` se
+- [x] CAPTCHA — Cloudflare Turnstile: `components/auth/Turnstile.tsx` + `lib/turnstile.ts`
+      server verify. Keys unset ho to widget hidden + verification skip (dev)
+- [x] Rate-limiting — `lib/ratelimit.ts` (`@upstash/ratelimit`): `/api/search` (60/min), signup
+      (5/10min), forgot/reset. Redis na ho to no-op
+- [x] `/api/health` — uptime monitor ping target
+- [x] Error capture stopgap — `errors` table + `/api/client-error` (Phase 18 se), admin par dikhta
+- [ ] **Sentry** proper integration — `@sentry/nextjs` install + `SENTRY_DSN`. Uptime monitor
+      (UptimeRobot → `/api/health`). Neon/Supabase auto-backup confirm  ← tum
+- **Acceptance:** ✅ security headers live; rate-limit 429 deta hai jab Redis configured; zod
+      invalid input par 400. ⏳ Sentry + external uptime monitor tumhare accounts se.
 
 ### Phase 16 — Polish: real-website feel (Day 40–42)  ✅
 

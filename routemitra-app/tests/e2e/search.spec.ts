@@ -56,3 +56,30 @@ test("404 page for a bad route slug", async ({ page }) => {
   expect(res?.status()).toBe(404);
   await expect(page.getByText("404")).toBeVisible();
 });
+
+test("login and signup pages render", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByLabel("Email")).toBeVisible();
+  await expect(page.getByLabel("Password")).toBeVisible();
+  await page.goto("/signup");
+  await expect(page.getByRole("button", { name: /Account banao/ })).toBeVisible();
+});
+
+test("protected routes redirect to login", async ({ page }) => {
+  await page.goto("/dashboard");
+  await expect(page).toHaveURL(/\/login\?callbackUrl=\/dashboard/);
+  await page.goto("/account");
+  await expect(page).toHaveURL(/\/login\?callbackUrl=\/account/);
+});
+
+test("security headers are set", async ({ request }) => {
+  const res = await request.get("/");
+  expect(res.headers()["content-security-policy"]).toContain("default-src 'self'");
+  expect(res.headers()["x-frame-options"]).toBe("DENY");
+});
+
+test("health endpoint responds", async ({ request }) => {
+  const res = await request.get("/api/health");
+  expect(res.ok()).toBe(true);
+  expect((await res.json()).ok).toBe(true);
+});

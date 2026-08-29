@@ -42,6 +42,11 @@ runs. Fill in keys as providers are approved — see `.env.example`.
 | Canonical URLs | `NEXT_PUBLIC_SITE_URL` | `https://routemitra.vercel.app` |
 | Geocoding (door-to-door) | `GOOGLE_MAPS_API_KEY` | free OSM Nominatim |
 | Admin dashboard | `ADMIN_USER` + `ADMIN_PASSWORD` | `/admin` returns 503 |
+| Accounts (Auth.js) | `AUTH_SECRET` (+ DB) | auth routes 503 |
+| Google login | `AUTH_GOOGLE_ID` + `AUTH_GOOGLE_SECRET` | button hidden |
+| Transactional email | `RESEND_API_KEY` | emails printed to console |
+| Signup CAPTCHA | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` | skipped |
+| Price-alert cron | `CRON_SECRET` | endpoint open (dev) |
 
 ## Routes
 
@@ -51,9 +56,15 @@ runs. Fill in keys as providers are approved — see `.env.example`.
 - `/routes/pune-to-bengaluru` — static, pre-rendered, SEO pages (one per popular
   route; JSON-LD FAQ, in `generateStaticParams`)
 - `/about`, `/help`, `/privacy`, `/terms` — legal/info (stubs; Phase 14)
+- `/login`, `/signup`, `/forgot`, `/reset` — auth (Auth.js / NextAuth v5)
+- `/dashboard` — recent searches, price watches, favourites (auth-gated)
+- `/account` — profile / password / delete account (auth-gated)
 - `/admin` — Basic-Auth dashboard: clicks, top routes, provider status, errors
-- `GET /api/search` — aggregator JSON (`x-cache: HIT|MISS` header)
+- `GET /api/search` — aggregator JSON (`x-cache: HIT|MISS`; zod-validated; rate-limited)
 - `POST /api/track` — click beacon · `GET /api/track` — click aggregate
+- `POST /api/watches` · `POST /api/favourites` — save routes (auth)
+- `GET /api/cron/price-check` — price-alert cron (Bearer `CRON_SECRET`)
+- `GET /api/health` — uptime ping
 - `/manifest.webmanifest`, `/sitemap.xml`, `/robots.txt`
 
 ## Tests

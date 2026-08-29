@@ -10,6 +10,7 @@ import SortTabs from "@/components/SortTabs";
 import SearchForm from "@/components/SearchForm";
 import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
+import RouteActions from "@/components/RouteActions";
 
 type Status = "loading" | "results" | "empty" | "error";
 
@@ -142,6 +143,11 @@ export default function SearchResults() {
               </h2>
               <SortTabs value={sort} onChange={setSort} />
             </div>
+            <RouteActions
+              from={data.from}
+              to={data.to}
+              cheapestPrice={sortedOptions[0]?.price}
+            />
             <div className="cards">
               {sortedOptions.map((opt, i) => (
                 <ResultCard

@@ -43,6 +43,67 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS errors_created_at_idx ON errors (created_at)`;
+
+      // --- Phase 12: accounts ---
+      await sql`
+        CREATE TABLE IF NOT EXISTS users (
+          id                bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          email             text NOT NULL UNIQUE,
+          name              text,
+          password_hash     text,
+          image             text,
+          oauth_provider    text,
+          email_verified_at timestamptz,
+          created_at        timestamptz NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS auth_tokens (
+          id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          user_id     bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          kind        text NOT NULL,            -- 'verify' | 'reset'
+          token_hash  text NOT NULL,
+          expires_at  timestamptz NOT NULL,
+          created_at  timestamptz NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS auth_tokens_hash_idx ON auth_tokens (token_hash)`;
+
+      // --- Phase 13: logged-in features ---
+      await sql`
+        CREATE TABLE IF NOT EXISTS saved_searches (
+          id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          user_id     bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          from_city   text NOT NULL,
+          to_city     text NOT NULL,
+          date        text,
+          created_at  timestamptz NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS saved_searches_user_idx ON saved_searches (user_id, created_at DESC)`;
+      await sql`
+        CREATE TABLE IF NOT EXISTS route_watches (
+          id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          user_id       bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          from_city     text NOT NULL,
+          to_city       text NOT NULL,
+          last_price    integer,
+          active        boolean NOT NULL DEFAULT true,
+          last_checked_at timestamptz,
+          created_at    timestamptz NOT NULL DEFAULT now(),
+          UNIQUE (user_id, from_city, to_city)
+        )
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS favourite_routes (
+          id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          user_id     bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          from_city   text NOT NULL,
+          to_city     text NOT NULL,
+          created_at  timestamptz NOT NULL DEFAULT now(),
+          UNIQUE (user_id, from_city, to_city)
+        )
+      `;
     })().catch((err) => {
       console.error("[db] ensureSchema failed:", err);
       schemaReady = null; // allow a retry on the next request
