@@ -15,12 +15,12 @@ export default function Home() {
               <span />
               <span />
             </div>
-            <span className="eyebrow">Demo build · sample data</span>
+            <span className="eyebrow">Bus · Train · Flight · one search</span>
           </div>
           <h1>RouteMitra</h1>
           <p className="tagline">
             Ek city se dusri city — <b>bus, train aur flight</b> teeno options ek
-            hi jagah compare karo. Ye ek working demo hai, sample data ke saath.
+            hi jagah compare karo, sabse sasta ya sabse tez chuno.
           </p>
         </div>
       </header>

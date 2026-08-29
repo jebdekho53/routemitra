@@ -18,6 +18,31 @@ Related docs:
 
 Is roadmap ka kaam hai us demo ko ek real, production-ready app mein badalna.
 
+**Update (is roadmap ka v2):** Phases 0–11 (search + door-to-door) code-complete hain — lekin
+"real website jaisa" feel karne ke liye sirf search kaafi nahi hai. Skyscanner/Ola jaisi site
+mein login/signup/logout, legal pages, security, aur polish bhi hota hai — wo sab Phase 12–18
+mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
+
+| Category | Status |
+|---|---|
+| Search + compare (bus/train/flight) | ✅ Phase 0–2 |
+| Cache, real flight/bus/train adapters | ✅ Phase 3–6 (code ready, keys baaki) |
+| Click-tracking, SEO, deploy, growth | ✅ Phase 7–10 |
+| Door-to-door (ghar se ghar) | ✅ Phase 11 |
+| **Accounts — signup/login/logout** | ❌ Phase 12 |
+| **Saved searches, price alerts** | ❌ Phase 13 |
+| **Legal — privacy, terms, cookie consent** | ❌ Phase 14 |
+| **Security — CAPTCHA, rate-limit, monitoring** | ❌ Phase 15 |
+| **Polish — remove demo feel, PWA, error pages** | ❌ Phase 16 |
+| **Testing/CI** | ❌ Phase 17 |
+| **Admin dashboard** | ❌ Phase 18 |
+
+**"Demo" text ka fix:** `app/page.tsx` mein literally "Demo build · sample data" aur "Ye ek
+working demo hai" likha hua tha (purane static demo se copy-paste reh gaya tha) — ye already
+fix kar diya gaya hai. Result cards par "indicative" badge abhi bhi dikhega jab tak real
+bus/train API key na lage — wo intentional hai (Skyscanner/ixigo bhi jab fare estimate hota hai
+to disclose karte hain), poori site "demo" nahi honi chahiye.
+
 ---
 
 ## Final tech stack (ab lock kar rahe hain)
@@ -188,6 +213,104 @@ Poora detail Blueprint ke Stop 9 mein hai: https://claude.ai/code/artifact/5ba41
 - **Acceptance:** ✅ Indirapuram, Ghaziabad → Lanka, Varanasi (Delhi→Varanasi) par har option ka
       poora door-to-door total teeno legs + buffer ke breakdown ke saath calculate hota hai
       (flight → DEL/VNS airport legs, train → NDLS/BSB station legs).
+
+### Phase 12 — Accounts: Signup, Login, Logout (Day 28–31)
+
+Abhi tak sab kuch anonymous hai. Real product (Ola/Skyscanner jaisa) mein user account banata
+hai, login karta hai, logout karta hai — tabhi saved searches, price alerts, booking history
+jaisi cheezein possible hoti hain.
+
+- [ ] Auth library: **Auth.js (NextAuth v5)** — Next.js ke saath sabse better fit, email+password
+  aur OAuth dono handle karta hai, session cookies khud manage karta hai
+- [ ] `users` table Postgres mein: `id, email, name, password_hash, email_verified_at,
+  oauth_provider, created_at`
+- [ ] **Signup** — email + password form, password `bcrypt`/`argon2` se hash, ek verification
+  email bhejo (link click → `email_verified_at` set)
+- [ ] **Login** — email+password + "Continue with Google" button (India mein Google login
+  sabse zyada use hota hai — kam friction)
+- [ ] **Logout** — session/cookie clear, `/` par redirect
+- [ ] **Forgot password** — reset-link email flow
+- [ ] Header mein login state: logged-out par "Login" button, logged-in par "Hi, {name} ▾"
+  dropdown (Account, Logout)
+- [ ] Account settings page — naam/email update, password change, **delete account** (data
+  privacy ke liye zaroori — user apna data delete kar sake)
+- [ ] Login/signup par basic rate-limit (Upstash Redis already hai — usi se IP-based limiter)
+- **Acceptance:** Naya user signup kare → verification email aaye → login kare → header mein
+  naam dikhe → logout kare → session clear ho jaaye. Google se bhi login chale.
+
+### Phase 13 — Logged-in user features (Day 32–34)
+
+- [ ] Saved/recent searches — logged-in user ki last 10 searches DB mein save ho, dashboard
+  par dikhein
+- [ ] Price alerts — user ek route "watch" kare, agar fare kam ho to email jaaye (daily cron
+  check — Vercel Cron ya GitHub Actions scheduled job)
+- [ ] Wishlist/favourite routes
+- **Acceptance:** Logged-in user ek route watch kare, test mein fare-drop simulate karke email
+  aata dikhe.
+
+### Phase 14 — Legal, trust & compliance (Day 35–36)
+
+Ek search-and-redirect site ke liye bhi ye zaroori hai — bina iske koi bhi real user trust
+nahi karega, aur India ke DPDP Act 2023 ke hisaab se data collect karne par disclosure zaroori
+bhi hai.
+
+- [ ] **Privacy Policy** — kya data collect hota hai (email, search history, click events),
+  kaise use hota hai, delete kaise karayein
+- [ ] **Terms of Service**
+- [ ] **Cookie consent banner** — pehli visit par (Plausible + click-tracking cookies ke liye)
+- [ ] **Affiliate disclosure** — "Hum kuch bookings par commission kama sakte hain" — Skyscanner
+  bhi ye clearly likhta hai, transparency trust badhata hai
+- [ ] **Booking disclaimer** — clarify karo ki actual booking RedBus/IRCTC/airline ki site par
+  hoti hai, RouteMitra us transaction ko control nahi karta (refund/cancellation unki policy se)
+- [ ] **Help/Contact page** — real support email, FAQ
+- [ ] **About page**
+- [ ] Footer redesign — sab legal links + social + copyright, har page par consistent
+- **Acceptance:** Har legal page live aur footer se ek click mein accessible; cookie banner
+  pehli visit par dikhta hai aur dismiss hone ke baad wapas nahi aata.
+
+### Phase 15 — Security & reliability (Day 37–39)
+
+- [ ] Security headers — CSP, HSTS, X-Frame-Options (`next.config.ts` mein)
+- [ ] Form validation — `zod` se signup/login/search input sanitize + validate
+- [ ] CAPTCHA on signup — **Cloudflare Turnstile** (free, privacy-friendly, Google reCAPTCHA se
+  behtar UX)
+- [ ] API rate-limiting — `@upstash/ratelimit` (Redis already hai) `/api/search` aur auth
+  endpoints par
+- [ ] Error monitoring — **Sentry** free tier, frontend + API dono
+- [ ] Uptime monitoring — UptimeRobot ya Better Uptime free tier, site down hone par alert
+- [ ] Postgres backup verify — Neon/Supabase ka auto-backup on hai ye confirm karo
+- **Acceptance:** Sentry mein ek test error log ho; rapid-fire requests par rate-limit 429
+  return kare; uptime monitor live URL ping kar raha ho.
+
+### Phase 16 — Polish: real-website feel (Day 40–42)
+
+- [ ] Real logo + favicon (abhi default hai)
+- [ ] Custom 404 aur 500 error pages (Next.js default se professional)
+- [ ] PWA manifest — mobile par "Add to Home Screen" se app jaisa feel
+- [ ] Result cards par "indicative" badge ka design polish karo — chhota, subtle, tooltip ke
+  saath "why this is estimated" — poori site "demo" nahi lagni chahiye, sirf jahan fare
+  estimate hai wahi honestly label ho
+- [ ] Professional contact email (`hello@routemitra.com` jaisa, personal Gmail nahi) jab domain
+  mil jaaye
+- **Acceptance:** Production build mein kahin bhi "demo"/"sample" text na dikhe (indicative-fare
+  badge ke alawa); Chrome mobile par "Install app" prompt aaye.
+
+### Phase 17 — Testing & CI (Day 43–44)
+
+- [ ] Unit tests — adapters (`bus.ts`, `train.ts`, `flight.ts`) aur `normalize.ts` ke liye
+  (Vitest)
+- [ ] E2E test — search flow (Playwright): home → search → results dikhein → "Book karein"
+  click → sahi URL khule
+- [ ] GitHub Actions CI — har push par lint + test + build chale
+- **Acceptance:** `npm test` pass, GitHub par har PR/push par CI green badge.
+
+### Phase 18 — Admin visibility (Day 45)
+
+- [ ] Password/role-protected `/admin` page — total clicks, top routes, recent errors ek
+  jagah dikhein (`/api/track` data + Sentry summary)
+- [ ] Provider status indicator — kaunse adapters live hain (real API) vs sample-data fallback
+  par hain, ek glance mein
+- **Acceptance:** Admin login karke dashboard dekh sake ki app ka real health/traction kya hai.
 
 ---
 
