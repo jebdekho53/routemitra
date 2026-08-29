@@ -98,10 +98,15 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
   `{ from, to, date, options[] }` normalized shape mein aata hai. `npm run build` clean pass.
 
 ### Phase 3 — Redis caching (Day 6)
-- [ ] Upstash Redis ka free account banao, keys `.env.local` mein daalo
-- [ ] `lib/cache.ts` — `route+date` key se get/set, TTL ~5–10 min
-- [ ] `/api/search` mein pehle cache check, tab hi adapters call karo
-- **Acceptance:** Same query dobara karne par 2nd response fast ho (log se cache-hit verify karo).
+- [ ] Upstash Redis ka free account banao, keys `.env.local` mein daalo  ← manual step, tum karoge
+      (console.upstash.com → Create Database → REST section se URL + TOKEN copy karo)
+- [x] `lib/cache.ts` — `search:from:to:date` key se get/set, TTL 600s (10 min). Keys na hon to
+      no-op (dev bina Upstash ke chalta rahe).
+- [x] `/api/search` mein pehle cache check (HIT → seedha return), miss par hi adapters. Non-empty
+      results hi cache hote hain. Response par `x-cache: HIT|MISS` header + server log.
+- **Acceptance:** keys daalne ke baad — same query 2 baar:
+      `curl -sD - -o /dev/null "localhost:3000/api/search?from=Pune&to=Bengaluru&date=2026-09-01" | grep x-cache`
+      → pehli baar `MISS`, doosri baar `HIT` (aur 2nd response tez, adapter latency skip).
 
 ### Phase 4 — Real flight data: Duffel (Day 7–9)
 - [ ] `duffel.com` par free account, sandbox API key lo
