@@ -65,6 +65,45 @@ test("sticky app bar stays put while scrolling", async ({ page }) => {
   expect(Math.abs(top)).toBeLessThan(2); // still pinned to the top
 });
 
+test("hamburger opens the nav sheet with links + theme control", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Menu" }).click();
+  const sheet = page.locator(".nav-sheet");
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole("link", { name: "My dashboard" })).toBeVisible();
+  await expect(sheet.getByRole("button", { name: "Light" })).toBeVisible();
+  await page.waitForTimeout(300); // let the slide-in settle
+  // sheet fills the viewport height; page must not scroll horizontally
+  const m = await page.evaluate(() => {
+    const s = document.querySelector(".nav-sheet")!.getBoundingClientRect();
+    return {
+      h: s.height,
+      vh: window.innerHeight,
+      docOverflow:
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    };
+  });
+  expect(m.h).toBeGreaterThan(m.vh - 2);
+  expect(m.docOverflow).toBeLessThanOrEqual(1);
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
+});
+
+test("bottom tab bar: shown on mobile, hidden on desktop", async ({ page }) => {
+  await page.goto("/");
+  const nav = page.locator(".bottom-nav");
+  const isMobile = page.viewportSize()!.width < 768;
+  if (isMobile) {
+    await expect(nav).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Search" })).toBeVisible();
+  } else {
+    await expect(nav).toBeHidden();
+  }
+});
+
 test("mobile search flow works end to end", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");

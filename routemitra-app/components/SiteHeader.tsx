@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Brandmark from "@/components/Brandmark";
-import UserMenu from "@/components/UserMenu";
-import ThemeToggle from "@/components/ThemeToggle";
+import NavMenu from "@/components/NavMenu";
 
 // Sticky translucent app bar, shared by every page. Adds a hairline border
 // once the page is scrolled so it separates cleanly from content.
@@ -26,10 +25,7 @@ export default function SiteHeader() {
           <span className="brand-word">RouteMitra</span>
           <span className="eyebrow">Bus · Train · Flight · one search</span>
         </Link>
-        <div className="appbar-actions">
-          <ThemeToggle />
-          <UserMenu />
-        </div>
+        <NavMenu />
       </div>
     </header>
   );

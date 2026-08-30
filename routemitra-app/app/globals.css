@@ -311,93 +311,163 @@ main.wrap {
   display: contents;
 }
 
-/* ============ User menu ============ */
-.appbar-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  flex-shrink: 0;
-}
-.theme-toggle {
-  width: 40px;
-  height: 40px;
+/* ============ Nav: hamburger button + slide-in sheet ============ */
+.nav-menu-btn {
+  width: 44px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
   background: var(--surface);
+  color: var(--ink);
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.nav-menu-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.nav-menu-btn:active {
+  transform: scale(0.94);
+}
+
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(20, 18, 15, 0.4);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden; /* clip the sliding sheet so it can't widen the page */
+  animation: fade-in 0.15s ease both;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.nav-sheet {
+  width: min(340px, 86vw);
+  height: 100%;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  padding: var(--s-4) var(--s-4)
+    calc(var(--s-5) + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  animation: sheet-in 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+@keyframes sheet-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-scrim,
+  .nav-sheet {
+    animation: none;
+  }
+}
+.nav-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
   color: var(--ink-soft);
   font-size: 15px;
   cursor: pointer;
 }
-.theme-toggle:hover {
+.nav-close:hover {
   color: var(--accent);
-  border-color: var(--accent);
 }
-.theme-toggle:active {
-  transform: scale(0.94);
-}
-
-.usermenu {
-  position: relative;
-  flex-shrink: 0;
-}
-.usermenu-login,
-.usermenu-trigger {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  padding: 0 14px;
-  cursor: pointer;
-  text-decoration: none;
-}
-.usermenu-login:active,
-.usermenu-trigger:active {
-  transform: scale(0.97);
-}
-.usermenu-login:hover,
-.usermenu-trigger:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.usermenu-drop {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-lg);
+.nav-list,
+.nav-secondary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  min-width: 170px;
-  z-index: 40;
-  overflow: hidden;
-  padding: var(--s-1);
 }
-.usermenu-drop a,
-.usermenu-drop button {
-  font-size: 14px;
-  text-align: left;
-  padding: 11px 12px;
-  background: none;
-  border: none;
-  border-radius: var(--r-sm);
+.nav-list a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--ink);
   text-decoration: none;
-  cursor: pointer;
-  min-height: 44px;
+  border-bottom: 1px solid var(--line);
 }
-.usermenu-drop a:hover,
-.usermenu-drop button:hover {
-  background: var(--surface-2);
+.nav-list a:hover {
+  color: var(--accent);
+}
+.nav-auth {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.nav-auth .go-btn,
+.nav-auth .oauth-btn {
+  width: 100%;
+  text-decoration: none;
+}
+.nav-theme {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.nav-theme-opts {
+  display: flex;
+}
+.nav-theme-opts .sort-tab {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid var(--line);
+}
+.nav-theme-opts .sort-tab:not(:first-child) {
+  border-left: none;
+}
+.nav-theme-opts .sort-tab:first-child {
+  border-radius: var(--r-sm) 0 0 var(--r-sm);
+}
+.nav-theme-opts .sort-tab:last-child {
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+.nav-theme-opts .sort-tab.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.nav-secondary {
+  margin-top: auto;
+}
+.nav-secondary a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.nav-secondary a:hover {
   color: var(--accent);
 }
 
@@ -1642,4 +1712,68 @@ main.wrap {
 
 .search-main {
   padding-top: var(--s-5);
+}
+
+/* ============ Bottom tab bar (mobile) ============ */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: saturate(1.6) blur(12px);
+  backdrop-filter: saturate(1.6) blur(12px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bottom-nav {
+    background: var(--surface);
+  }
+}
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 58px;
+  text-decoration: none;
+  color: var(--ink-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.bottom-nav-item.active {
+  color: var(--accent);
+}
+.bottom-nav-item:active {
+  background: var(--surface-2);
+}
+.bottom-nav-icon {
+  display: flex;
+  line-height: 0;
+}
+
+/* hide the bottom bar on tablet+ ; on mobile give the page room for it */
+@media (min-width: 48em) {
+  .bottom-nav {
+    display: none;
+  }
+}
+@media (max-width: 47.99em) {
+  body {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+  .site-footer {
+    padding-bottom: var(--s-5);
+  }
+  /* cookie banner sits above the tab bar */
+  .cookie-banner {
+    bottom: calc(58px + env(safe-area-inset-bottom));
+    padding-bottom: 0;
+  }
 }

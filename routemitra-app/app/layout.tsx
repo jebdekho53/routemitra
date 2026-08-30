@@ -4,6 +4,7 @@ import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import Providers from "./providers";
 import CookieConsent from "@/components/CookieConsent";
+import BottomNav from "@/components/BottomNav";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -68,7 +69,10 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <BottomNav />
+        </Providers>
         <CookieConsent />
         {plausibleDomain && (
           <Script
