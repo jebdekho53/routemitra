@@ -41,6 +41,17 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // `next dev` blocks its own CSS/JS chunks when the page is opened from an
+  // origin other than localhost (e.g. a phone hitting the LAN IP) — which
+  // shows up as an unstyled page. Allow local network hosts in dev.
+  allowedDevOrigins: [
+    "192.168.1.7",
+    "192.168.1.*",
+    "192.168.0.*",
+    "10.0.0.*",
+    "172.20.10.*",
+    "*.local",
+  ],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
