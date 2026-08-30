@@ -36,4 +36,26 @@ describe("bookingLink — route-aware deep links", () => {
     const l = bookingLink("train", "Vasco Da Gama", "Hubli", "x");
     expect(l).toContain("vasco-da-gama-to-hubli");
   });
+
+  it("threads the date into each platform's format", () => {
+    const d = "2026-09-05";
+    expect(bookingLink("bus", "Pune", "Goa", "x", d)).toContain(
+      "onward=05-Sep-2026",
+    );
+    expect(bookingLink("train", "Pune", "Goa", "x", d)).toContain(
+      "date=05-09-2026",
+    );
+    expect(bookingLink("flight", "Mumbai", "Goa", "x", d)).toContain(
+      "/bom/goi/260905/",
+    );
+    expect(bookingLink("flight", "Nowhere", "Elsewhere", "x", d)).toContain(
+      "on+2026-09-05",
+    );
+  });
+
+  it("omits date params when no date is given", () => {
+    expect(bookingLink("bus", "Pune", "Goa", "x")).not.toContain("onward");
+    expect(bookingLink("train", "Pune", "Goa", "x")).not.toContain("date=");
+    expect(bookingLink("flight", "Mumbai", "Goa", "x")).toMatch(/\/bom\/goi\/\?/);
+  });
 });

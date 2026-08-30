@@ -8,12 +8,11 @@
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
-import { bookingLink } from "@/lib/links";
 
 function sampleTrains(from: string, to: string): RouteOption[] {
   return getSampleOptions(from, to)
     .filter((o) => o.mode === "train")
-    .map((o) => ({ ...o, source: "sample" }));
+    .map((o) => ({ ...o, source: "sample", indicative: true }));
 }
 
 function parseDuration(s: string): number {
@@ -25,11 +24,7 @@ function parseDuration(s: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function mapTrainResponse(
-  json: unknown,
-  from: string,
-  to: string,
-): RouteOption[] {
+function mapTrainResponse(json: unknown): RouteOption[] {
   const rows: Record<string, unknown>[] =
     (json as { data?: unknown[] })?.data as Record<string, unknown>[] ??
     (json as { trains?: unknown[] })?.trains as Record<string, unknown>[] ??
@@ -55,7 +50,7 @@ function mapTrainResponse(
             : parseDuration(String(durRaw ?? "")),
         departure: dep.slice(0, 5) || "--:--",
         arrival: arr.slice(0, 5) || "--:--",
-        link: bookingLink("train", from, to, "https://www.confirmtkt.com/"),
+        link: "https://www.confirmtkt.com/", // normalize() -> route+date deep link
         indicative: true,
         source: "rapidapi",
       };
@@ -93,7 +88,7 @@ export async function searchTrain({
       console.error(`[train] provider ${res.status}: ${await res.text()}`);
       return sampleTrains(from, to);
     }
-    const mapped = mapTrainResponse(await res.json(), from, to);
+    const mapped = mapTrainResponse(await res.json());
     return mapped.length > 0 ? mapped : sampleTrains(from, to);
   } catch (err) {
     console.error("[train] provider call failed:", err);

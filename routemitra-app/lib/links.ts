@@ -1,12 +1,12 @@
 // Phase 7 — deep links + tracking params.
 //
 // "Book karein" should land the user on the partner site *already searching
-// the same route*, not on the partner's homepage. We build per-platform
-// deep links by mode:
+// the same route (and date, if given)*, not on the partner's homepage.
 //
-//   bus    -> redbus.in/bus-tickets/<from>-to-<to>
-//   train  -> confirmtkt.com/trains/<from>-to-<to>-train-tickets
-//   flight -> skyscanner (when we know both IATA codes) else Google Flights
+//   bus    -> redbus.in/bus-tickets/<from>-to-<to>              [?onward=DD-Mon-YYYY]
+//   train  -> confirmtkt.com/trains/<from>-to-<to>-train-tickets [?date=DD-MM-YYYY]
+//   flight -> skyscanner.co.in/transport/flights/<iata>/<iata>/  [<yymmdd>/]
+//             else google.com/travel/flights?q=flights from X to Y [on YYYY-MM-DD]
 //
 // Every link also carries UTM + ref params for attribution.
 
@@ -28,6 +28,22 @@ function slug(s: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+function isoParts(date?: string | null) {
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  const [y, m, d] = date.split("-");
+  return { y, m, d };
+}
+const fmtDMY = (p: { y: string; m: string; d: string }) => `${p.d}-${p.m}-${p.y}`;
+const fmtDMonY = (p: { y: string; m: string; d: string }) =>
+  `${p.d}-${MONTHS[+p.m - 1]}-${p.y}`;
+const fmtYYMMDD = (p: { y: string; m: string; d: string }) =>
+  `${p.y.slice(2)}${p.m}${p.d}`;
 
 function withTracking(
   base: string,
@@ -55,9 +71,11 @@ export function bookingLink(
   from: string,
   to: string,
   fallbackUrl: string,
+  date?: string | null,
 ): string {
   const f = slug(from);
   const t = slug(to);
+  const p = isoParts(date);
 
   if (mode === "bus") {
     return withTracking(
@@ -65,6 +83,7 @@ export function bookingLink(
       mode,
       from,
       to,
+      p ? { onward: fmtDMonY(p) } : {},
     );
   }
 
@@ -74,6 +93,7 @@ export function bookingLink(
       mode,
       from,
       to,
+      p ? { date: fmtDMY(p) } : {},
     );
   }
 
@@ -81,15 +101,16 @@ export function bookingLink(
     const fi = toIata(from);
     const ti = toIata(to);
     if (fi && ti) {
+      const datePath = p ? `${fmtYYMMDD(p)}/` : "";
       return withTracking(
-        `https://www.skyscanner.co.in/transport/flights/${fi.toLowerCase()}/${ti.toLowerCase()}/`,
+        `https://www.skyscanner.co.in/transport/flights/${fi.toLowerCase()}/${ti.toLowerCase()}/${datePath}`,
         mode,
         from,
         to,
       );
     }
     return withTracking("https://www.google.com/travel/flights", mode, from, to, {
-      q: `flights from ${from} to ${to}`,
+      q: `flights from ${from} to ${to}${date ? ` on ${date}` : ""}`,
     });
   }
 

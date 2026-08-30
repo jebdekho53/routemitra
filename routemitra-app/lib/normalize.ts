@@ -25,7 +25,7 @@ function isValidOption(o: unknown): o is RouteOption {
 
 export function mergeResults(
   settled: PromiseSettledResult<RouteOption[]>[],
-  { from, to }: SearchParams,
+  { from, to, date }: SearchParams,
 ): RouteOption[] {
   const merged: RouteOption[] = [];
   for (const result of settled) {
@@ -36,7 +36,7 @@ export function mergeResults(
         ...opt,
         link: /[?&]utm_source=/.test(opt.link)
           ? opt.link
-          : bookingLink(opt.mode, from, to, opt.link),
+          : bookingLink(opt.mode, from, to, opt.link, date),
       });
     }
   }

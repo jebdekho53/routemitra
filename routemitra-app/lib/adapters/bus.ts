@@ -9,21 +9,16 @@
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
-import { bookingLink } from "@/lib/links";
 
 function sampleBuses(from: string, to: string): RouteOption[] {
   return getSampleOptions(from, to)
     .filter((o) => o.mode === "bus")
-    .map((o) => ({ ...o, source: "sample" }));
+    .map((o) => ({ ...o, source: "sample", indicative: true }));
 }
 
 // Best-effort mapper for a generic JSON bus-search response. Real provider
 // shapes vary — adjust the field paths once the provider is chosen.
-function mapBusResponse(
-  json: unknown,
-  from: string,
-  to: string,
-): RouteOption[] {
+function mapBusResponse(json: unknown): RouteOption[] {
   const rows: Record<string, unknown>[] =
     (json as { data?: unknown[]; results?: unknown[]; buses?: unknown[] })?.data as Record<string, unknown>[] ??
     (json as { results?: unknown[] })?.results as Record<string, unknown>[] ??
@@ -47,7 +42,7 @@ function mapBusResponse(
         duration_min,
         departure: dep.slice(0, 5) || "--:--",
         arrival: arr.slice(0, 5) || "--:--",
-        link: bookingLink("bus", from, to, "https://www.redbus.in/"),
+        link: "https://www.redbus.in/", // normalize() -> route+date deep link
         indicative: true,
         source: "rapidapi",
       };
@@ -95,7 +90,7 @@ export async function searchBus({
       console.error(`[bus] provider ${res.status}: ${await res.text()}`);
       return sampleBuses(from, to);
     }
-    const mapped = mapBusResponse(await res.json(), from, to);
+    const mapped = mapBusResponse(await res.json());
     return mapped.length > 0 ? mapped : sampleBuses(from, to);
   } catch (err) {
     console.error("[bus] provider call failed:", err);

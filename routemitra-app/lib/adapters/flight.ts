@@ -6,7 +6,6 @@
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
 import { toIata } from "@/lib/iata";
-import { bookingLink } from "@/lib/links";
 
 const DUFFEL_URL = "https://api.duffel.com/air/offer_requests?return_offers=true";
 const DUFFEL_VERSION = "v2";
@@ -14,7 +13,7 @@ const DUFFEL_VERSION = "v2";
 function sampleFlights(from: string, to: string): RouteOption[] {
   return getSampleOptions(from, to)
     .filter((o) => o.mode === "flight")
-    .map((o) => ({ ...o, source: "sample" }));
+    .map((o) => ({ ...o, source: "sample", indicative: true }));
 }
 
 function isoDurationToMin(iso: string): number {
@@ -102,7 +101,8 @@ export async function searchFlight({
           duration_min: isoDurationToMin(String(slice.duration ?? "")),
           departure: hhmm(String(first.departing_at ?? "")),
           arrival: hhmm(String(last.arriving_at ?? "")),
-          link: bookingLink("flight", from, to, "https://www.google.com/travel/flights"),
+          // normalize() turns this into a route+date deep link
+          link: "https://www.google.com/travel/flights",
           source: "duffel",
         };
       })

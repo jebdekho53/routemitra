@@ -89,6 +89,7 @@ export default function SearchResults() {
         <SearchForm
           initialFrom={from}
           initialTo={to}
+          initialDate={date ?? ""}
           initialOrigin={origin}
           initialDestination={destination}
         />
@@ -158,6 +159,13 @@ export default function SearchResults() {
                 />
               ))}
             </div>
+            {sortedOptions.some((o) => o.indicative) && (
+              <p className="route-note">
+                <b>indicative</b> wale fare approximate hain (live provider API
+                abhi connect nahi). Actual price aur availability booking page
+                par confirm hoti hai — usually thodi zyada ho sakti hai.
+              </p>
+            )}
           </section>
         )}
 
