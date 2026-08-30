@@ -53,6 +53,27 @@ test("unknown route shows empty state", async ({ page }) => {
   await expect(page.getByText(/koi option nahi mila/i)).toBeVisible();
 });
 
+test("ghar-se-ghar mode toggle reveals address fields and searches", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("tab", { name: /Ghar-se-ghar/ }).click();
+  await expect(page.getByLabel("Ghar ka poora address")).toBeVisible();
+  await expect(page.getByLabel("Pahunchne ka poora address")).toBeVisible();
+
+  await page.getByLabel("Ghar ka poora address").fill("Indirapuram, Ghaziabad");
+  await page.getByLabel("Kaunsi city se").fill("Delhi");
+  await page.getByLabel("Kaunsi city tak").fill("Varanasi");
+  await page.getByLabel("Pahunchne ka poora address").fill("Lanka, Varanasi");
+  await page.getByRole("button", { name: "Dhoondo" }).click();
+
+  await expect(page).toHaveURL(/origin=.+&destination=/);
+  // the door-to-door mode is remembered on the results page
+  await expect(page.getByLabel("Ghar ka poora address")).toHaveValue(
+    "Indirapuram, Ghaziabad",
+  );
+});
+
 test("static route page renders server-side with content", async ({ page }) => {
   const res = await page.goto("/routes/pune-to-bengaluru");
   expect(res?.status()).toBe(200);
