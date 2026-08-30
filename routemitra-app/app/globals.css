@@ -114,6 +114,10 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* clip (not hidden) contains stray horizontal overflow WITHOUT turning the
+     root into a scroll container — that container is what breaks
+     `position: sticky` (the app bar) on iOS Safari. */
+  overflow-x: clip;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -138,7 +142,9 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
 }
 
 img,
@@ -189,6 +195,11 @@ textarea {
   padding-left: var(--pad);
   padding-right: var(--pad);
 }
+/* main content wraps get the clip guard; the app-bar wrap is left alone so
+   the user-menu dropdown can still overhang. */
+main.wrap {
+  overflow-x: clip;
+}
 
 .muted {
   color: var(--ink-soft);
@@ -196,13 +207,22 @@ textarea {
 
 /* ============ App bar (shared sticky header) ============ */
 .appbar {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 30;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  width: 100%;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
   backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s ease, background 0.2s ease;
+}
+/* solid fallback where backdrop-filter isn't supported */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .appbar {
+    background: var(--bg);
+  }
 }
 .appbar[data-scrolled="true"] {
   border-bottom-color: var(--line);
@@ -452,7 +472,17 @@ textarea {
   background: var(--bg);
   color: var(--ink);
   width: 100%;
+  max-width: 100%;
+  min-width: 0; /* date/time inputs have an intrinsic min-width that overflows */
   appearance: none;
+  -webkit-appearance: none;
+}
+.field input[type="date"] {
+  /* iOS renders this taller and wider than declared without this */
+  display: block;
+}
+.field input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
 }
 .field input:focus {
   outline: none;

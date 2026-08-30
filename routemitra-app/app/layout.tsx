@@ -53,7 +53,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="hi" suppressHydrationWarning>
+    <html lang="hi" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* apply saved theme before paint — avoids a flash */}
         <script

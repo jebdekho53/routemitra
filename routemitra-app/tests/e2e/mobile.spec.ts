@@ -6,17 +6,42 @@ import { test, expect } from "@playwright/test";
 test("no horizontal overflow on key pages", async ({ page }) => {
   for (const path of [
     "/",
-    "/search?from=Mumbai&to=Goa",
+    "/search?from=Mumbai&to=Goa&date=2026-12-25",
     "/routes/pune-to-bengaluru",
+    "/dashboard",
     "/login",
+    "/signup",
     "/privacy",
+    "/admin",
   ]) {
     await page.goto(path);
     await page.waitForLoadState("networkidle");
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > window.innerWidth + 1,
+    // the page itself must not scroll horizontally
+    const docOverflow = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
     );
-    expect(overflow, `horizontal overflow on ${path}`).toBe(false);
+    expect(docOverflow, `document scrolls ${docOverflow}px on ${path}`).toBeLessThanOrEqual(1);
+
+    // and no visible element should extend past the right edge
+    const bad = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const offenders: string[] = [];
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>("body *"))) {
+        const cs = getComputedStyle(el);
+        if (cs.position === "fixed" || cs.visibility === "hidden") continue;
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.right > vw + 1) {
+          offenders.push(
+            `${el.tagName.toLowerCase()}.${(el.className || "?").toString().split(" ")[0]} right=${Math.round(r.right)}/vw=${vw}`,
+          );
+        }
+        if (offenders.length > 4) break;
+      }
+      return offenders;
+    });
+    expect(bad, `overflow on ${path}: ${bad.join(" | ")}`).toEqual([]);
   }
 });
 
