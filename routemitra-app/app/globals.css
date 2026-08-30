@@ -722,28 +722,98 @@ main.wrap {
   box-shadow: var(--shadow-sm);
 }
 
+/* ---- comparison summary + mode filter ---- */
+.results-summary {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 var(--s-3);
+}
+.results-summary b {
+  color: var(--ink);
+}
+
+.mode-filter {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin: 0 0 var(--s-3);
+  padding-bottom: 2px;
+}
+.mode-filter::-webkit-scrollbar {
+  display: none;
+}
+.mf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mf-chip:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.mf-chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.mf-chip.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.mf-chip.mf-bus.active {
+  background: var(--mode-bus);
+  border-color: var(--mode-bus);
+  color: #fff;
+}
+.mf-chip.mf-train.active {
+  background: var(--mode-train);
+  border-color: var(--mode-train);
+  color: #fff;
+}
+.mf-chip.mf-flight.active {
+  background: var(--mode-flight);
+  border-color: var(--mode-flight);
+  color: #fff;
+}
+.mf-n {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
 .cards {
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
   margin-bottom: var(--s-6);
 }
-
-/* gentle stagger-in for real result cards (not skeletons) */
 @media (prefers-reduced-motion: no-preference) {
-  .cards .card:not(.card-skeleton) {
-    animation: card-in 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  .cards .rc:not(.rc-skeleton) {
+    animation: card-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both;
   }
-  .cards .card:nth-child(2) {
+  .cards .rc:nth-child(2) {
     animation-delay: 0.04s;
   }
-  .cards .card:nth-child(3) {
+  .cards .rc:nth-child(3) {
     animation-delay: 0.08s;
   }
-  .cards .card:nth-child(4) {
+  .cards .rc:nth-child(4) {
     animation-delay: 0.12s;
   }
-  .cards .card:nth-child(n + 5) {
+  .cards .rc:nth-child(n + 5) {
     animation-delay: 0.16s;
   }
 }
@@ -754,116 +824,249 @@ main.wrap {
   }
 }
 
-.card {
-  display: grid;
-  grid-template-columns: 3px auto 1fr;
-  grid-template-areas:
-    "bar mode  cta"
-    "bar body  body";
-  align-items: start;
-  column-gap: var(--s-3);
-  row-gap: var(--s-2);
+/* ---- result card v2 ---- */
+.rc {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: var(--s-4);
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  border-left: 4px solid var(--line);
 }
-.card:hover {
+.rc:hover {
   box-shadow: var(--shadow-md);
 }
-.card .bar {
-  grid-area: bar;
-  align-self: stretch;
-  border-radius: var(--r-pill);
-  min-height: 100%;
+.rc.bus {
+  border-left-color: var(--mode-bus);
 }
-.card .mode-label {
-  grid-area: mode;
+.rc.train {
+  border-left-color: var(--mode-train);
 }
-.card .card-body {
-  grid-area: body;
-  min-width: 0;
+.rc.flight {
+  border-left-color: var(--mode-flight);
 }
-.card .book-btn {
-  grid-area: cta;
-  justify-self: end;
+
+.rc-main {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "op    fare"
+    "time  time";
+  gap: var(--s-3) var(--s-3);
+  padding: var(--s-4);
+  align-items: start;
 }
-@media (min-width: 34em) {
-  .card {
-    grid-template-columns: 3px 96px 1fr auto;
-    grid-template-areas: "bar mode body cta";
+@media (min-width: 40em) {
+  .rc-main {
+    grid-template-columns: minmax(150px, 1.1fr) minmax(180px, 1.4fr) auto;
+    grid-template-areas: "op time fare";
     align-items: center;
-    column-gap: var(--s-4);
+    gap: var(--s-4);
   }
 }
 
-.card.bus .bar {
-  background: var(--mode-bus);
+.rc-op {
+  grid-area: op;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
 }
-.card.train .bar {
-  background: var(--mode-train);
+.rc-logo {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  font-size: 16px;
+  overflow: hidden;
 }
-.card.flight .bar {
-  background: var(--mode-flight);
+.rc-logo img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
-
-.mode-label {
-  font-family: var(--font-plex-mono), monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.card.bus .mode-label {
+.rc-logo-bus {
   color: var(--mode-bus);
 }
-.card.train .mode-label {
+.rc-logo-train {
   color: var(--mode-train);
 }
-.card.flight .mode-label {
+.rc-logo-flight {
   color: var(--mode-flight);
 }
-
-.card-body .operator {
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: var(--s-1);
-  line-height: 1.35;
-}
-.card-body .meta {
+.rc-op-text {
+  min-width: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 2px var(--s-3);
-  font-size: 13.5px;
-  color: var(--ink-soft);
+  flex-direction: column;
+  gap: 1px;
+}
+.rc-mode {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.rc.bus .rc-mode {
+  color: var(--mode-bus);
+}
+.rc.train .rc-mode {
+  color: var(--mode-train);
+}
+.rc.flight .rc-mode {
+  color: var(--mode-flight);
+}
+.rc-operator {
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.3;
+}
+
+.rc-timeline {
+  grid-area: time;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
   font-variant-numeric: tabular-nums;
 }
-.card-body .meta .price {
-  color: var(--ink);
-  font-weight: 700;
+.rc-t {
   font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.rc-line {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 48px;
+}
+.rc-dur {
+  font-size: 11px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.rc-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+.rc-track i {
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  transform: translateY(-50%);
+}
+.rc-track i:first-child {
+  left: 0;
+}
+.rc-track i:last-child {
+  right: 0;
+}
+.rc.bus .rc-track i {
+  background: var(--mode-bus);
+}
+.rc.train .rc-track i {
+  background: var(--mode-train);
+}
+.rc.flight .rc-track i {
+  background: var(--mode-flight);
+}
+.rc-stops {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rc-fare {
+  grid-area: fare;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.rc-price {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.rc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+.rc-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.rc-tag.tag-cheap {
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
+  color: var(--ok);
+}
+.rc-tag.tag-fast {
+  background: color-mix(in srgb, var(--mode-train) 16%, transparent);
+  color: var(--mode-train);
+}
+.rc-tag.tag-value {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .book-btn {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 38px;
+  padding: 0 14px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--line-strong);
-  background: var(--bg);
-  color: var(--ink);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
   text-decoration: none;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
 }
 .book-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-tint);
+  filter: brightness(1.06);
+}
+
+.rc-skeleton {
+  box-shadow: none;
+  border-left-color: var(--line);
+}
+.rc-skeleton .rc-main {
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "op fare";
+  align-items: center;
+}
+.rc-skeleton .rc-op {
+  grid-area: op;
+}
+.rc-skeleton .skeleton-line[style*="70%"] {
+  grid-area: unset;
 }
 
 /* ============ Empty / loading / error states ============ */
@@ -954,12 +1157,6 @@ main.wrap {
 .skeleton-line {
   height: 12px;
   display: block;
-}
-.card-skeleton {
-  box-shadow: none;
-}
-.card-skeleton .card-body {
-  width: 100%;
 }
 .loading-note {
   display: flex;
@@ -1566,8 +1763,8 @@ main.wrap {
 
 /* ============ Door-to-door ============ */
 .d2d {
-  margin-top: var(--s-3);
-  padding-top: var(--s-3);
+  margin: 0 var(--s-4);
+  padding: var(--s-3) 0 var(--s-4);
   border-top: 1px dashed var(--line-strong);
 }
 .d2d-total {

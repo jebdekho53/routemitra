@@ -111,7 +111,7 @@ test("mobile search flow works end to end", async ({ page }) => {
   await page.getByLabel("Kahan tak").fill("Chandigarh");
   await page.getByRole("button", { name: "Dhoondo" }).click();
   await expect(page).toHaveURL(/from=Delhi&to=Chandigarh/);
-  await expect(page.locator(".card").first()).toBeVisible();
+  await expect(page.locator(".rc:not(.rc-skeleton)").first()).toBeVisible();
   // form carried the query across the redirect
   await expect(page.getByLabel("Kahan se")).toHaveValue("Delhi");
 });

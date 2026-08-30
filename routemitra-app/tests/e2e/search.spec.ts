@@ -18,7 +18,7 @@ test("home -> search -> results -> book link", async ({ page }) => {
     page.getByRole("heading", { name: "Pune → Bengaluru" }),
   ).toBeVisible();
 
-  const cards = page.locator(".card").filter({ hasNot: page.locator(".card-skeleton") });
+  const cards = page.locator(".rc:not(.rc-skeleton)");
   await expect(cards.first()).toBeVisible();
   expect(await cards.count()).toBeGreaterThan(1);
 
@@ -34,16 +34,16 @@ test("landing route card navigates to that route", async ({ page }) => {
   await page.goto("/");
   await page.locator(".route-card").first().click();
   await expect(page).toHaveURL(/\/routes\/[a-z-]+-to-[a-z-]+/);
-  await expect(page.locator(".card").first()).toBeVisible();
+  await expect(page.locator(".rc:not(.rc-skeleton)").first()).toBeVisible();
 });
 
 test("sort by fastest reorders results", async ({ page }) => {
   await page.goto("/search?from=Pune&to=Bengaluru");
-  await expect(page.locator(".card").first()).toBeVisible();
+  await expect(page.locator(".rc:not(.rc-skeleton)").first()).toBeVisible();
 
-  const firstBefore = await page.locator(".card .operator").first().textContent();
+  const firstBefore = await page.locator(".rc:not(.rc-skeleton) .rc-operator").first().textContent();
   await page.getByRole("button", { name: "Sabse tez" }).click();
-  const firstAfter = await page.locator(".card .operator").first().textContent();
+  const firstAfter = await page.locator(".rc:not(.rc-skeleton) .rc-operator").first().textContent();
 
   expect(firstAfter).not.toEqual(firstBefore);
 });
