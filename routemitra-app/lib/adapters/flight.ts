@@ -57,8 +57,12 @@ export async function searchFlight({
   const origin = toIata(from);
   const destination = toIata(to);
 
-  if (!key || !origin || !destination) {
-    await new Promise((r) => setTimeout(r, 300)); // keep loading state visible
+  // Don't burn provider quota during `next build` static generation — the
+  // /routes/* pages revalidate hourly and hit the live API at runtime anyway.
+  const isBuild = process.env.NEXT_PHASE === "phase-production-build";
+
+  if (!key || !origin || !destination || isBuild) {
+    if (!isBuild) await new Promise((r) => setTimeout(r, 300)); // keep loader visible
     return sampleFlights(from, to);
   }
 

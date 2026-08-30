@@ -41,9 +41,8 @@ export default function CookieConsent() {
     <div className="cookie-banner" role="region" aria-label="Cookie notice">
       <div className="wrap cookie-banner-inner">
         <p>
-          Login ke liye ek essential session cookie use hota hai — analytics
-          (Plausible) cookieless hai, koi tracking cookie nahi. Detail:{" "}
-          <a href="/privacy#cookies">Privacy Policy</a>.
+          Sirf ek essential login cookie — koi tracking cookie nahi (analytics
+          cookieless hai). <a href="/privacy#cookies">Detail</a>.
         </p>
         <button type="button" className="cookie-ack" onClick={dismiss}>
           Samajh gaya

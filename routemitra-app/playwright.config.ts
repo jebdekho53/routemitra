@@ -18,5 +18,8 @@ export default defineConfig({
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // E2E exercises our app logic on deterministic sample data. The live
+    // Duffel path (and its rate limits) is covered by flight-duffel.test.ts.
+    env: { DUFFEL_API_KEY: "" },
   },
 });

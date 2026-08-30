@@ -8,7 +8,7 @@ import { listSampleRoutes } from "@/lib/sample-data";
 import ResultCard from "@/components/ResultCard";
 import SortTabs from "@/components/SortTabs";
 import SearchForm from "@/components/SearchForm";
-import Masthead from "@/components/Masthead";
+import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RouteActions from "@/components/RouteActions";
 
@@ -83,9 +83,12 @@ export default function SearchResults() {
 
   return (
     <>
-      <Masthead />
+      <SiteHeader />
 
-      <main className="wrap" id="main">
+      <main className="wrap search-main" id="main">
+        <h1 className="sr-only">
+          {from && to ? `${from} to ${to} — options` : "Search"}
+        </h1>
         <SearchForm
           initialFrom={from}
           initialTo={to}

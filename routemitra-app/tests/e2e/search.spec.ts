@@ -5,7 +5,9 @@ test("home -> search -> results -> book link", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /Bus, train, flight/ }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "RouteMitra home" })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /RouteMitra/ }).first(),
+  ).toBeVisible();
 
   await page.getByLabel("Kahan se").fill("Pune");
   await page.getByLabel("Kahan tak").fill("Bengaluru");

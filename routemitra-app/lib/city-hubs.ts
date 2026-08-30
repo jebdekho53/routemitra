@@ -63,6 +63,36 @@ export const CITY_HUBS: Record<string, CityHubs> = {
     train: { code: "BSB", name: "Varanasi Junction", lat: 25.3271, lon: 82.9877 },
     bus: { code: "VNS-CK", name: "Cantt (Chaudhary Charan Singh) Bus Stand", lat: 25.3216, lon: 82.9905 },
   },
+  kolkata: {
+    flight: { code: "CCU", name: "NSC Bose Airport, Kolkata", lat: 22.6547, lon: 88.4467 },
+    train: { code: "HWH", name: "Howrah Junction", lat: 22.5839, lon: 88.3425 },
+    bus: { code: "CCU-EM", name: "Esplanade Bus Terminus", lat: 22.5646, lon: 88.3513 },
+  },
+  ahmedabad: {
+    flight: { code: "AMD", name: "SVP Airport, Ahmedabad", lat: 23.0772, lon: 72.6347 },
+    train: { code: "ADI", name: "Ahmedabad Junction", lat: 23.0273, lon: 72.6013 },
+    bus: { code: "AMD-GT", name: "Geeta Mandir Bus Stand", lat: 23.0169, lon: 72.5906 },
+  },
+  chandigarh: {
+    flight: { code: "IXC", name: "Chandigarh Airport", lat: 30.6735, lon: 76.7885 },
+    train: { code: "CDG", name: "Chandigarh Junction", lat: 30.7095, lon: 76.8156 },
+    bus: { code: "CHD-17", name: "ISBT Sector 17", lat: 30.7411, lon: 76.7822 },
+  },
+  lucknow: {
+    flight: { code: "LKO", name: "Chaudhary Charan Singh Airport, Lucknow", lat: 26.7606, lon: 80.8893 },
+    train: { code: "LKO", name: "Lucknow Charbagh", lat: 26.8313, lon: 80.9236 },
+    bus: { code: "LKO-AB", name: "Alambagh Bus Station", lat: 26.8121, lon: 80.9012 },
+  },
+  udaipur: {
+    flight: { code: "UDR", name: "Maharana Pratap Airport, Udaipur", lat: 24.6177, lon: 73.8961 },
+    train: { code: "UDZ", name: "Udaipur City", lat: 24.5799, lon: 73.6926 },
+    bus: { code: "UDR-CB", name: "Udaipur City Bus Stand", lat: 24.5776, lon: 73.6912 },
+  },
+  coimbatore: {
+    flight: { code: "CJB", name: "Coimbatore Airport", lat: 11.03, lon: 77.0434 },
+    train: { code: "CBE", name: "Coimbatore Junction", lat: 10.9977, lon: 76.9668 },
+    bus: { code: "CBE-GH", name: "Gandhipuram Bus Stand", lat: 11.0183, lon: 76.9668 },
+  },
 };
 
 export function hubForCity(city: string, mode: Mode): Hub | null {
