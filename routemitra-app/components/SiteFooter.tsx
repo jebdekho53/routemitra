@@ -22,9 +22,13 @@ export default function SiteFooter() {
           sakte hain.
         </p>
         <p className="footer-copy">
-          © {year} {LEGAL_ENTITY_NAME}
-          {LEGAL_ENTITY_NAME.toLowerCase() !== "routemitra" && (
-            <> · RouteMitra is a product of {LEGAL_ENTITY_NAME}</>
+          {LEGAL_ENTITY_NAME.toLowerCase() === "routemitra" ? (
+            <>© {year} RouteMitra</>
+          ) : (
+            <>
+              RouteMitra is a product of {LEGAL_ENTITY_NAME}. © {year}{" "}
+              {LEGAL_ENTITY_NAME}.
+            </>
           )}
         </p>
       </div>

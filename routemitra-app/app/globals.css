@@ -602,6 +602,31 @@ textarea {
   margin-bottom: var(--s-6);
 }
 
+/* gentle stagger-in for real result cards (not skeletons) */
+@media (prefers-reduced-motion: no-preference) {
+  .cards .card:not(.card-skeleton) {
+    animation: card-in 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .cards .card:nth-child(2) {
+    animation-delay: 0.04s;
+  }
+  .cards .card:nth-child(3) {
+    animation-delay: 0.08s;
+  }
+  .cards .card:nth-child(4) {
+    animation-delay: 0.12s;
+  }
+  .cards .card:nth-child(n + 5) {
+    animation-delay: 0.16s;
+  }
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 .card {
   display: grid;
   grid-template-columns: 3px auto 1fr;
