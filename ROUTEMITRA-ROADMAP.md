@@ -133,13 +133,18 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
       `curl -sD - -o /dev/null "localhost:3000/api/search?from=Pune&to=Bengaluru&date=2026-09-01" | grep x-cache`
       → pehli baar `MISS`, doosri baar `HIT` (aur 2nd response tez, adapter latency skip).
 
-### Phase 4 — Real flight data: Duffel (Day 7–9)
-- [ ] `duffel.com` par free account, sandbox API key lo  ← manual step, tum karoge
+### Phase 4 — Real flight data: Duffel (Day 7–9)  ✅
+- [x] Duffel test account + `duffel_test_…` key (`.env.local`, gitignored)
 - [x] `lib/adapters/flight.ts` — `DUFFEL_API_KEY` set ho to Duffel `air/offer_requests`
-      call karta hai; response normalized shape mein map hota hai (IATA codes `lib/iata.ts` se)
-- [x] Key/IATA na ho ya call fail ho to sample flights par graceful fallback
-- **Acceptance:** ⏳ code taiyaar; sandbox key daal kar ek route verify karna baaki
-      (`DUFFEL_API_KEY=...` → `/api/search?from=Delhi&to=Mumbai` → `source: "duffel"` dikhe).
+      (v2) call, offers normalized shape mein map (IATA `lib/iata.ts` se)
+- [x] Sandbox fares USD/GBP mein aate hain → `FX_TO_INR` se INR mein convert, converted
+      fare `indicative: true` (honest). Real INR Duffel offers as-is.
+- [x] Key/IATA na ho, call fail ho, ya **429 rate-limit** ho → sample flights par graceful fallback
+      (E2E ne 429 trigger kiya, fallback ne handle kiya, tests green)
+- [x] `scripts/test-duffel.mjs` (standalone check) + `tests/unit/flight-duffel.test.ts`
+      (live test, key ke bina auto-skip)
+- **Acceptance:** ✅ `/api/search?from=Mumbai&to=Goa` → 8 flight options `source: "duffel"`,
+      real airlines/times, INR-converted (~₹3,700+), bus/train ke saath sahi sort. 26 unit + 10 e2e pass.
 
 ### Phase 5 — Bus data (Day 10–12)
 - [x] `lib/adapters/bus.ts` — `BUS_PROVIDER_API_URL` + `_KEY` (+ `_HOST`) set ho to generic

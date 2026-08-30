@@ -18,6 +18,19 @@ function sampleFlights(from: string, to: string): RouteOption[] {
     .map((o) => ({ ...o, source: "sample", indicative: true }));
 }
 
+// Duffel's sandbox prices offers in USD/GBP/EUR, not INR. Convert to INR so
+// flights sort coherently against bus/train (which are INR). Static rates —
+// good enough for test data; swap for a live FX source (or INR-native Duffel
+// offers) before production. Converted fares are flagged `indicative`.
+const FX_TO_INR: Record<string, number> = {
+  INR: 1,
+  USD: 83,
+  GBP: 105,
+  EUR: 90,
+  AED: 22.6,
+  SGD: 62,
+};
+
 function isoDurationToMin(iso: string): number {
   const m = /PT(?:(\d+)H)?(?:(\d+)M)?/.exec(iso || "");
   if (!m) return 0;
@@ -93,17 +106,20 @@ export async function searchFlight({
         const flightNo = first.marketing_carrier_flight_number as string;
         const code = carrier.iata_code as string;
         const currency = String(o.total_currency ?? "INR");
-        const base =
+        const rate = FX_TO_INR[currency];
+        const amount = parseFloat(String(o.total_amount ?? "0"));
+        const priceInr = rate ? Math.round(amount * rate) : Math.round(amount);
+        const operator =
           code && flightNo
             ? `${owner.name ?? code} ${code}-${flightNo}`
             : String(owner.name ?? "Flight");
 
         return {
           mode: "flight" as const,
-          // sandbox offers are often priced in GBP/USD — show the currency so
-          // a non-INR test fare isn't mistaken for a rupee amount
-          operator: currency === "INR" ? base : `${base} · ${currency}`,
-          price: Math.round(parseFloat(String(o.total_amount ?? "0"))),
+          operator,
+          price: priceInr,
+          // a converted (non-INR) fare is an estimate, not a live rupee quote
+          indicative: currency !== "INR",
           duration_min: isoDurationToMin(String(slice.duration ?? "")),
           departure: hhmm(String(first.departing_at ?? "")),
           arrival: hhmm(String(last.arriving_at ?? "")),
