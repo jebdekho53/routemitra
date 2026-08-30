@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fromSlug, popularRouteSlugs } from "@/lib/routes";
-import { runSearch } from "@/lib/search";
+import { sampleSearch } from "@/lib/search";
 import { formatDuration, formatPrice } from "@/lib/format";
 import SearchForm from "@/components/SearchForm";
 import ResultCard from "@/components/ResultCard";
@@ -49,7 +49,7 @@ export default async function RoutePage({
   if (!route) notFound();
 
   const { from, to } = route;
-  const { result } = await runSearch({ from, to, date: null });
+  const result = sampleSearch(from, to);
   const options = [...result.options].sort((a, b) => a.price - b.price);
 
   const cheapest = options[0];

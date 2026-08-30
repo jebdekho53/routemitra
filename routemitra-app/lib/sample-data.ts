@@ -202,3 +202,17 @@ export function getSampleOptions(from: string, to: string): RouteOption[] {
 export function listSampleRoutes(): { from: string; to: string }[] {
   return Object.values(ROUTES).map((r) => ({ from: r.from, to: r.to }));
 }
+
+// Cheapest + fastest from sample data only — for the landing / route-card
+// teasers, which must render instantly and never call a live provider.
+export function sampleRouteSummary(
+  from: string,
+  to: string,
+): { cheapest: RouteOption; fastest: RouteOption } | null {
+  const opts = getSampleOptions(from, to);
+  if (opts.length === 0) return null;
+  return {
+    cheapest: opts.reduce((a, b) => (a.price <= b.price ? a : b)),
+    fastest: opts.reduce((a, b) => (a.duration_min <= b.duration_min ? a : b)),
+  };
+}

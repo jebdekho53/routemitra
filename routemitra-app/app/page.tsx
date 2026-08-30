@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import SearchForm from "@/components/SearchForm";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import { listSampleRoutes } from "@/lib/sample-data";
+import { listSampleRoutes, sampleRouteSummary } from "@/lib/sample-data";
 import { toSlug } from "@/lib/routes";
-import { runSearch } from "@/lib/search";
 import { formatPrice, formatDuration } from "@/lib/format";
 
 export const revalidate = 3600;
@@ -15,25 +14,25 @@ export const metadata: Metadata = {
     "Ek city se dusri city — bus, train aur flight ek jagah compare karo. Sabse sasta ya sabse tez chuno, phir seedha booking platform par jao.",
 };
 
-async function heroRoutes() {
-  const routes = listSampleRoutes().slice(0, 6);
-  return Promise.all(
-    routes.map(async ({ from, to }) => {
-      const { result } = await runSearch({ from, to, date: null });
-      const opts = result.options;
-      const cheapest = opts.length
-        ? opts.reduce((a, b) => (a.price <= b.price ? a : b))
-        : null;
-      const fastest = opts.length
-        ? opts.reduce((a, b) => (a.duration_min <= b.duration_min ? a : b))
-        : null;
-      return { from, to, slug: toSlug(from, to), cheapest, fastest };
-    }),
-  );
+// Landing route cards are teasers — sample data only, so this page renders
+// instantly and never calls a live provider (Duffel / Travelpayouts / IRCTC).
+function heroRoutes() {
+  return listSampleRoutes()
+    .slice(0, 6)
+    .map(({ from, to }) => {
+      const s = sampleRouteSummary(from, to);
+      return {
+        from,
+        to,
+        slug: toSlug(from, to),
+        cheapest: s?.cheapest ?? null,
+        fastest: s?.fastest ?? null,
+      };
+    });
 }
 
-export default async function Home() {
-  const routes = await heroRoutes();
+export default function Home() {
+  const routes = heroRoutes();
 
   return (
     <>

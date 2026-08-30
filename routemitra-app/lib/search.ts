@@ -11,11 +11,36 @@ import {
   searchCacheKey,
 } from "@/lib/cache";
 import { attachDoorToDoor } from "@/lib/door-to-door";
-import type { RouteResult, SearchParams } from "@/types/route";
+import { getSampleOptions } from "@/lib/sample-data";
+import type {
+  RouteResult,
+  SearchParams,
+  RouteOption,
+  Mode,
+} from "@/types/route";
 
 export interface SearchOutcome {
   result: RouteResult;
   cache: "HIT" | "MISS";
+}
+
+// Sample-only result with normalized (tracked) links — for the always-static
+// /routes/[slug] pages so they never call a live provider.
+export function sampleSearch(from: string, to: string): RouteResult {
+  const byMode = getSampleOptions(from, to).reduce<
+    Record<Mode, RouteOption[]>
+  >(
+    (acc, o) => {
+      acc[o.mode].push({ ...o, source: "sample", indicative: true });
+      return acc;
+    },
+    { bus: [], train: [], flight: [] },
+  );
+  const settled: PromiseSettledResult<RouteOption[]>[] = (
+    ["bus", "train", "flight"] as const
+  ).map((m) => ({ status: "fulfilled", value: byMode[m] }));
+  const options = mergeResults(settled, { from, to, date: null });
+  return { from, to, date: null, options };
 }
 
 export async function runSearch(params: SearchParams): Promise<SearchOutcome> {
