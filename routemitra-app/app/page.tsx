@@ -1,39 +1,152 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import SearchForm from "@/components/SearchForm";
-import Masthead from "@/components/Masthead";
+import Brandmark from "@/components/Brandmark";
+import UserMenu from "@/components/UserMenu";
 import SiteFooter from "@/components/SiteFooter";
-import { popularRouteSlugs, fromSlug } from "@/lib/routes";
+import { listSampleRoutes } from "@/lib/sample-data";
+import { toSlug } from "@/lib/routes";
+import { runSearch } from "@/lib/search";
+import { formatPrice, formatDuration } from "@/lib/format";
 
-export default function Home() {
-  const routes = popularRouteSlugs();
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  description:
+    "Ek city se dusri city — bus, train aur flight ek jagah compare karo. Sabse sasta ya sabse tez chuno, phir seedha booking platform par jao.",
+};
+
+async function heroRoutes() {
+  const routes = listSampleRoutes().slice(0, 6);
+  return Promise.all(
+    routes.map(async ({ from, to }) => {
+      const { result } = await runSearch({ from, to, date: null });
+      const opts = result.options;
+      const cheapest = opts.length
+        ? opts.reduce((a, b) => (a.price <= b.price ? a : b))
+        : null;
+      const fastest = opts.length
+        ? opts.reduce((a, b) => (a.duration_min <= b.duration_min ? a : b))
+        : null;
+      return { from, to, slug: toSlug(from, to), cheapest, fastest };
+    }),
+  );
+}
+
+export default async function Home() {
+  const routes = await heroRoutes();
 
   return (
     <>
-      <Masthead
-        tagline={
-          <>
-            Ek city se dusri city — <b>bus, train aur flight</b> teeno options ek
-            hi jagah compare karo, sabse sasta ya sabse tez chuno.
-          </>
-        }
-      />
+      <header className="landing-top">
+        <div className="wrap">
+          <Link href="/" className="brand" aria-label="RouteMitra home">
+            <Brandmark size={26} />
+            <span className="eyebrow">Bus · Train · Flight · one search</span>
+          </Link>
+          <UserMenu />
+        </div>
+      </header>
+
+      <section className="hero">
+        <div className="wrap">
+          <h1>
+            Ek jagah. <span className="hero-modes">Bus</span>,{" "}
+            <span className="hero-modes">train</span>,{" "}
+            <span className="hero-modes">flight</span>.
+          </h1>
+          <p className="hero-sub">
+            Do city ke beech saare options ek saath compare karo — sabse sasta ya
+            sabse tez chuno, phir seedha booking platform par jao.
+          </p>
+
+          <SearchForm />
+
+          <p className="hero-note">
+            Chaho to <b>ghar-se-ghar</b> fare bhi — local cab legs jod kar poora
+            total. Login karke price alert laga sakte ho.
+          </p>
+        </div>
+      </section>
 
       <main className="wrap">
-        <SearchForm />
-
-        <nav className="popular">
-          <h2>Popular routes</h2>
-          <div className="popular-grid">
-            {routes.map((slug) => {
-              const r = fromSlug(slug)!;
-              return (
-                <Link key={slug} href={`/routes/${slug}`}>
-                  {r.from} → {r.to}
-                </Link>
-              );
-            })}
+        <section className="home-routes">
+          <div className="home-routes-head">
+            <h2>Popular routes</h2>
+            <span className="muted">Tap karke seedha results par jao</span>
           </div>
-        </nav>
+          <div className="route-cards">
+            {routes.map(({ from, to, slug, cheapest, fastest }) => (
+              <Link key={slug} href={`/routes/${slug}`} className="route-card">
+                <span className="route-card-name">
+                  {from} <span aria-hidden>→</span> {to}
+                </span>
+                <span className="route-card-stats">
+                  {cheapest ? (
+                    <>
+                      <b>{formatPrice(cheapest.price)}</b> se ·{" "}
+                      {fastest ? formatDuration(fastest.duration_min) : "—"} sabse
+                      tez
+                    </>
+                  ) : (
+                    "options dekho"
+                  )}
+                </span>
+                <span className="route-card-dots" aria-hidden>
+                  <i className="d-bus" />
+                  <i className="d-train" />
+                  <i className="d-flight" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-how">
+          <h2>Kaise kaam karta hai</h2>
+          <ol className="how-steps">
+            <li>
+              <span className="how-n">1</span>
+              <b>Search karo</b>
+              <span className="muted">Kahan se, kahan tak.</span>
+            </li>
+            <li>
+              <span className="how-n">2</span>
+              <b>Compare karo</b>
+              <span className="muted">
+                Bus, train, flight — price aur time saath-saath.
+              </span>
+            </li>
+            <li>
+              <span className="how-n">3</span>
+              <b>Book karo</b>
+              <span className="muted">
+                Seedha RedBus / IRCTC / airline par — hum sirf bhejte hain.
+              </span>
+            </li>
+          </ol>
+        </section>
+
+        <section className="home-features">
+          <div>
+            <b>Teeno modes, ek search</b>
+            <span className="muted">
+              Alag-alag apps kholne ki zaroorat nahi.
+            </span>
+          </div>
+          <div>
+            <b>Ghar-se-ghar fare</b>
+            <span className="muted">
+              Cab + intercity + cab — poora trip ka total.
+            </span>
+          </div>
+          <div>
+            <b>Price alerts</b>
+            <span className="muted">
+              Route watch karo, fare gire to email aayega.
+            </span>
+          </div>
+        </section>
       </main>
 
       <SiteFooter />

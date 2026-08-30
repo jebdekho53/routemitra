@@ -2,7 +2,10 @@ import { test, expect } from "@playwright/test";
 
 test("home -> search -> results -> book link", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "RouteMitra" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Bus, train, flight/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "RouteMitra home" })).toBeVisible();
 
   await page.getByLabel("Kahan se").fill("Pune");
   await page.getByLabel("Kahan tak").fill("Bengaluru");
@@ -23,6 +26,13 @@ test("home -> search -> results -> book link", async ({ page }) => {
     .first()
     .getAttribute("href");
   expect(href).toContain("utm_source=routemitra");
+});
+
+test("landing route card navigates to that route", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".route-card").first().click();
+  await expect(page).toHaveURL(/\/routes\/[a-z-]+-to-[a-z-]+/);
+  await expect(page.locator(".card").first()).toBeVisible();
 });
 
 test("sort by fastest reorders results", async ({ page }) => {
