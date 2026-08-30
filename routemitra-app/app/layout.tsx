@@ -53,7 +53,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="hi">
+    <html lang="hi" suppressHydrationWarning>
+      <head>
+        {/* apply saved theme before paint — avoids a flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('routemitra_theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}`,
+          }}
+        />
+      </head>
       <body
         className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
       >
