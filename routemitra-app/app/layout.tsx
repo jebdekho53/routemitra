@@ -38,9 +38,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eef1ef" },
-    { media: "(prefers-color-scheme: dark)", color: "#10151a" },
+    { media: "(prefers-color-scheme: light)", color: "#efece6" },
+    { media: "(prefers-color-scheme: dark)", color: "#17150f" },
   ],
 };
 
@@ -54,6 +57,9 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
       >
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         <Providers>{children}</Providers>
         <CookieConsent />
         {plausibleDomain && (

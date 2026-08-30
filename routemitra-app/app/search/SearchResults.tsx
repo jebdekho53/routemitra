@@ -85,7 +85,7 @@ export default function SearchResults() {
     <>
       <Masthead />
 
-      <main className="wrap">
+      <main className="wrap" id="main">
         <SearchForm
           initialFrom={from}
           initialTo={to}

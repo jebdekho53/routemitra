@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import SearchForm from "@/components/SearchForm";
-import Brandmark from "@/components/Brandmark";
-import UserMenu from "@/components/UserMenu";
+import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { listSampleRoutes } from "@/lib/sample-data";
 import { toSlug } from "@/lib/routes";
@@ -38,15 +37,7 @@ export default async function Home() {
 
   return (
     <>
-      <header className="landing-top">
-        <div className="wrap">
-          <Link href="/" className="brand" aria-label="RouteMitra home">
-            <Brandmark size={26} />
-            <span className="eyebrow">Bus · Train · Flight · one search</span>
-          </Link>
-          <UserMenu />
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="hero">
         <div className="wrap">
@@ -69,7 +60,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <main className="wrap">
+      <main className="wrap" id="main">
         <section className="home-routes">
           <div className="home-routes-head">
             <h2>Popular routes</h2>

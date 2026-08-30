@@ -1,9 +1,7 @@
-import Link from "next/link";
-import Brandmark from "@/components/Brandmark";
-import UserMenu from "@/components/UserMenu";
+import SiteHeader from "@/components/SiteHeader";
 
-// Shared site header. Keep every page's masthead here so they never drift
-// (they used to each carry their own "Demo build" copy).
+// Shared page header: the sticky app bar + a title block. Keeping this in one
+// place is why the "Demo build" copy could never drift back in.
 export default function Masthead({
   title = "RouteMitra",
   tagline,
@@ -15,18 +13,14 @@ export default function Masthead({
 }) {
   const Heading = as;
   return (
-    <header className="masthead">
-      <div className="wrap">
-        <div className="masthead-top">
-          <Link href="/" className="brand" aria-label="RouteMitra home">
-            <Brandmark size={26} />
-            <span className="eyebrow">Bus · Train · Flight · one search</span>
-          </Link>
-          <UserMenu />
+    <>
+      <SiteHeader />
+      <div className="masthead">
+        <div className="wrap">
+          <Heading>{title}</Heading>
+          {tagline && <p className="tagline">{tagline}</p>}
         </div>
-        <Heading>{title}</Heading>
-        {tagline && <p className="tagline">{tagline}</p>}
       </div>
-    </header>
+    </>
   );
 }
