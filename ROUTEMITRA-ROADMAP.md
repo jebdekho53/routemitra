@@ -384,6 +384,32 @@ identity ka premium polish.
       karte hain, search flow chalta hai — Playwright mobile project verify
       karta hai. Warm-editorial identity intact + polished.
 
+### Phase 20 — Free data sources + richer results UI  ✅
+
+**Data — sab env-gated, key na ho to sample:**
+- [x] **Flights**: `lib/adapters/flight.ts` priority Duffel > **Travelpayouts** > sample.
+      Travelpayouts (Aviasales `prices_for_dates`) = free, INR, cached fares +
+      commission (marker se). Airline name+logo (`lib/airlines.ts`,
+      `pics.avs.io`), `stops` field.
+- [x] **Trains**: `lib/adapters/train.ts` priority **RapidAPI irctc1** > generic > sample.
+      `trainBetweenStations` + city→station map (`lib/stations.ts`). Endpoint mein
+      fare nahi — `estimateFare(duration, train_type)` se estimate, `indicative`.
+- [x] **Buses**: koi free structured API nahi. Sample rahega jab tak RedBus/AbhiBus
+      **affiliate** (Cuelinks/INRDeals) sign na ho — tab "Book" links commission denge.
+- [ ] Keys: `TRAVELPAYOUTS_TOKEN`/`_MARKER` (travelpayouts.com), `RAPIDAPI_IRCTC_KEY`
+      (rapidapi.com/IRCTCAPI/api/irctc1)  ← tum
+- **Amadeus Self-Service band ho gaya (Jul 2026)** — skip.
+
+**UI v2 — richer product feel:**
+- [x] Result card redesign (`.rc`): airline logo / mode glyph, visual
+      departure–timeline–arrival with duration + stops, bada bold price,
+      **Cheapest / Fastest / Best value** tags (`lib/result-meta.ts`), filled Book CTA,
+      mode-coloured left border
+- [x] Comparison summary strip ("N options · ₹range · time range · sabse sasta …")
+- [x] Mode filter chips (Sab / Bus / Train / Flight, counts, coloured active)
+- **Acceptance:** ✅ Mumbai→Goa par 12 cards, timeline + logos + tags dikhte hain,
+      mode filter kaam karta hai, koi horizontal scroll nahi. 32 e2e + 26 unit green.
+
 ---
 
 ## Claude Code ke saath kaise use karein
