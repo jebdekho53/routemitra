@@ -15,7 +15,7 @@ test("no horizontal overflow on key pages", async ({ page }) => {
     "/admin",
   ]) {
     await page.goto(path);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
     // the page itself must not scroll horizontally
     const docOverflow = await page.evaluate(
       () =>
@@ -47,7 +47,7 @@ test("no horizontal overflow on key pages", async ({ page }) => {
 
 test("primary tap targets are at least 44px tall", async ({ page }) => {
   await page.goto("/");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   for (const sel of ["button[type=submit]", "input#from", ".brand"]) {
     const box = await page.locator(sel).first().boundingBox();
     expect(box, `${sel} has a box`).not.toBeNull();
@@ -59,7 +59,7 @@ test("sticky app bar stays put while scrolling", async ({ page }) => {
   await page.goto("/routes/pune-to-bengaluru");
   const bar = page.locator(".appbar");
   await expect(bar).toBeVisible();
-  await page.mouse.wheel(0, 1200);
+  await page.evaluate(() => window.scrollTo(0, 1200));
   await page.waitForTimeout(200);
   const top = await bar.evaluate((el) => el.getBoundingClientRect().top);
   expect(Math.abs(top)).toBeLessThan(2); // still pinned to the top
@@ -106,7 +106,7 @@ test("bottom tab bar: shown on mobile, hidden on desktop", async ({ page }) => {
 
 test("mobile search flow works end to end", async ({ page }) => {
   await page.goto("/");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByLabel("Kahan se").fill("Delhi");
   await page.getByLabel("Kahan tak").fill("Chandigarh");
   await page.getByRole("button", { name: "Dhoondo" }).click();

@@ -26,6 +26,14 @@ export default function CookieConsent() {
     }
   }, []);
 
+  // reserve space so the fixed banner never permanently hides page content
+  useEffect(() => {
+    const el = document.documentElement;
+    if (visible) el.classList.add("has-cookie-banner");
+    else el.classList.remove("has-cookie-banner");
+    return () => el.classList.remove("has-cookie-banner");
+  }, [visible]);
+
   function dismiss() {
     try {
       localStorage.setItem(STORAGE_KEY, "1");

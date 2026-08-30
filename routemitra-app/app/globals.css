@@ -1894,10 +1894,19 @@ main.wrap {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--s-3);
-  padding: var(--s-4) var(--pad);
+  gap: var(--s-2);
+  padding: var(--s-3) var(--pad);
   max-width: var(--wrap);
   margin: 0 auto;
+}
+/* reserve room so the fixed banner never permanently hides content */
+html.has-cookie-banner body {
+  padding-bottom: 140px;
+}
+@media (max-width: 47.99em) {
+  html.has-cookie-banner body {
+    padding-bottom: calc(200px + env(safe-area-inset-bottom));
+  }
 }
 @media (min-width: 40em) {
   .cookie-banner-inner {
