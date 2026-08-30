@@ -36,6 +36,8 @@ mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
 | **Polish — remove demo feel, PWA, error pages** | ✅ Phase 16 |
 | **Testing/CI** | ✅ Phase 17 |
 | **Admin dashboard** | ✅ Phase 18 |
+| **Mobile-first + premium visual refresh** | ✅ Phase 19 |
+| **Real flight data (Duffel sandbox)** | ✅ Phase 4 (live) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
 `Masthead` + `SiteFooter` components se aata hai — kahin "Demo build · sample data" ya
@@ -342,6 +344,34 @@ jaisi cheezein possible hoti hain.
 - [ ] `.env.local` mein `ADMIN_USER` + `ADMIN_PASSWORD` set karo  ← tum
 - **Acceptance:** ✅ creds ke saath `/admin` 200 (dashboard), bina creds 401, env unset 503.
       Verified: `curl -u admin:… /admin`.
+
+### Phase 19 — Mobile-first + premium visual refresh (autonomous session)  ✅
+
+Sabse zyada users mobile par — poori site mobile-first rebuild + warm-editorial
+identity ka premium polish.
+
+- [x] `globals.css` mobile-first rewrite: token scale (space/radius/elevation),
+      16px inputs (iOS zoom fix), 44px+ touch targets, `env(safe-area-inset)`,
+      `overflow-x` guard, `prefers-reduced-motion`, focus-visible rings. Palette
+      gehri (warm paper), dark mode behtar, elevation scale.
+- [x] Naya `SiteHeader` — sticky translucent app bar (brand + user menu),
+      scroll par hairline border. Har page use karta hai (`Masthead` bhi).
+- [x] Result cards, sort tabs (segmented pill), search form, auth cards, empty/
+      loading/error states, cookie banner — sab redesign, mobile pe stack.
+- [x] Operator identity: RouteMitra ko **UrbanMove Services Private Limited**
+      operate karti hai — `lib/site.ts` "registered" wording, footer credit,
+      named grievance officer (Rahul Seth). `.env.local` mein set.
+- [x] Data expand: 18 routes, ~55 cities (IATA), 15 city-hubs (door-to-door).
+      60 static pages.
+- [x] PWA manifest: shortcuts, categories, maskable icon, portrait.
+- [x] a11y: skip-link, `id="main"`, `sr-only` headings.
+- [x] Tests: Playwright `mobile` project (Pixel 7) + `tests/e2e/mobile.spec.ts`
+      (no horizontal overflow, 44px targets, sticky bar, mobile search flow).
+      **28 e2e + 26 unit green.**
+- [x] `next build` Duffel skip (NEXT_PHASE) — quota bachaya, build shaant.
+- **Acceptance:** ✅ 375px viewport par koi horizontal scroll nahi, tap targets
+      44px+, sticky header, search flow kaam karta hai — Playwright mobile
+      project verify karta hai. Warm-editorial identity intact + polished.
 
 ---
 
