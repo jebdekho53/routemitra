@@ -354,10 +354,19 @@ identity ka premium polish.
       16px inputs (iOS zoom fix), 44px+ touch targets, `env(safe-area-inset)`,
       `overflow-x` guard, `prefers-reduced-motion`, focus-visible rings. Palette
       gehri (warm paper), dark mode behtar, elevation scale.
-- [x] Naya `SiteHeader` — sticky translucent app bar (brand + user menu),
+- [x] Naya `SiteHeader` — sticky translucent app bar (brand + hamburger),
       scroll par hairline border. Har page use karta hai (`Masthead` bhi).
-- [x] Result cards, sort tabs (segmented pill), search form, auth cards, empty/
-      loading/error states, cookie banner — sab redesign, mobile pe stack.
+- [x] **Mobile nav**: `BottomNav` — fixed 3-tab bar (Search / Saved / Account,
+      SVG icons, active state, ≥48em pe hide). `NavMenu` — hamburger se
+      full-height right drawer (links + Login/Logout + Auto/Light/Dark theme
+      control + secondary links). Portal se `<body>` mein render (appbar ka
+      backdrop-filter position:fixed ko trap kar deta tha). `UserMenu` +
+      standalone `ThemeToggle` ismein fold ho gaye.
+- [x] Sticky/overflow iOS fix: `overflow-x: hidden` → `clip` (hidden sticky
+      todta hai), date-input `min-width: 0`, `-webkit-` prefixes.
+- [x] Result cards (stagger-in), sort tabs (segmented pill), search form, auth
+      cards, empty/loading/error states, cookie banner — sab redesign, mobile
+      pe stack. Theme toggle (Auto/Light/Dark). Dynamic OG image.
 - [x] Operator identity: RouteMitra ko **UrbanMove Services Private Limited**
       operate karti hai — `lib/site.ts` "registered" wording, footer credit,
       named grievance officer (Rahul Seth). `.env.local` mein set.
@@ -366,12 +375,14 @@ identity ka premium polish.
 - [x] PWA manifest: shortcuts, categories, maskable icon, portrait.
 - [x] a11y: skip-link, `id="main"`, `sr-only` headings.
 - [x] Tests: Playwright `mobile` project (Pixel 7) + `tests/e2e/mobile.spec.ts`
-      (no horizontal overflow, 44px targets, sticky bar, mobile search flow).
-      **28 e2e + 26 unit green.**
+      (horizontal overflow per-element on 8 pages, 44px targets, sticky bar,
+      hamburger sheet, bottom-nav visibility, mobile search flow).
+      **32 e2e + 26 unit green.**
 - [x] `next build` Duffel skip (NEXT_PHASE) — quota bachaya, build shaant.
 - **Acceptance:** ✅ 375px viewport par koi horizontal scroll nahi, tap targets
-      44px+, sticky header, search flow kaam karta hai — Playwright mobile
-      project verify karta hai. Warm-editorial identity intact + polished.
+      44px+, sticky header stick hota hai, bottom nav + hamburger sheet kaam
+      karte hain, search flow chalta hai — Playwright mobile project verify
+      karta hai. Warm-editorial identity intact + polished.
 
 ---
 
