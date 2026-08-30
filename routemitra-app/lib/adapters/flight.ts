@@ -7,7 +7,9 @@ import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
 import { toIata } from "@/lib/iata";
 
-const DUFFEL_URL = "https://api.duffel.com/air/offer_requests?return_offers=true";
+// supplier_timeout keeps Duffel's own upstream wait under our AbortSignal.
+const DUFFEL_URL =
+  "https://api.duffel.com/air/offer_requests?return_offers=true&supplier_timeout=10000";
 const DUFFEL_VERSION = "v2";
 
 function sampleFlights(from: string, to: string): RouteOption[] {
@@ -66,7 +68,7 @@ export async function searchFlight({
         },
       }),
       // don't let a slow provider hang the whole aggregator forever
-      signal: AbortSignal.timeout(12_000),
+      signal: AbortSignal.timeout(15_000),
     });
 
     if (!res.ok) {
@@ -90,13 +92,17 @@ export async function searchFlight({
           (first.marketing_carrier as Record<string, unknown>) ?? {};
         const flightNo = first.marketing_carrier_flight_number as string;
         const code = carrier.iata_code as string;
+        const currency = String(o.total_currency ?? "INR");
+        const base =
+          code && flightNo
+            ? `${owner.name ?? code} ${code}-${flightNo}`
+            : String(owner.name ?? "Flight");
 
         return {
           mode: "flight" as const,
-          operator:
-            code && flightNo
-              ? `${owner.name ?? code} ${code}-${flightNo}`
-              : String(owner.name ?? "Flight"),
+          // sandbox offers are often priced in GBP/USD — show the currency so
+          // a non-INR test fare isn't mistaken for a rupee amount
+          operator: currency === "INR" ? base : `${base} · ${currency}`,
           price: Math.round(parseFloat(String(o.total_amount ?? "0"))),
           duration_min: isoDurationToMin(String(slice.duration ?? "")),
           departure: hhmm(String(first.departing_at ?? "")),
