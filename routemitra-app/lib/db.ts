@@ -1,20 +1,53 @@
-// Postgres access (Neon serverless driver). Used for click tracking (Phase 7)
-// and later for saved searches / users.
+// Postgres access via node-postgres (`pg`). Works with a plain local Postgres
+// and with hosted Postgres (Neon / Supabase) using the same DATABASE_URL.
 //
-// No-op when DATABASE_URL is unset so the app runs without a database.
+// No-op when DATABASE_URL is unset so the app still runs without a database.
+//
+// `sql` is a tagged-template helper compatible with the small surface we use:
+//   const rows = await sql<Row>`SELECT * FROM t WHERE id = ${id}`;
+// Interpolated values become $1, $2, … bind parameters (never string-spliced).
 
-import { neon } from "@neondatabase/serverless";
+import { Pool } from "pg";
 
 const connStr = process.env.DATABASE_URL;
 
 export const dbEnabled = Boolean(connStr);
 
-export const sql = connStr ? neon(connStr) : null;
+function makePool(): Pool {
+  const needsSsl = /sslmode=require|neon\.tech|supabase\.co|pooler\.supabase/.test(
+    connStr!,
+  );
+  return new Pool({
+    connectionString: connStr,
+    max: 10,
+    idleTimeoutMillis: 30_000,
+    ssl: needsSsl ? { rejectUnauthorized: false } : undefined,
+  });
+}
+
+// Reuse the pool across hot-reloads in dev.
+const g = globalThis as unknown as { __rmPool?: Pool };
+const pool = connStr ? (g.__rmPool ??= makePool()) : null;
+
+export type SqlTag = <T = Record<string, unknown>>(
+  strings: TemplateStringsArray,
+  ...values: unknown[]
+) => Promise<T[]>;
+
+export const sql: SqlTag | null = pool
+  ? (<T>(strings: TemplateStringsArray, ...values: unknown[]) => {
+      let text = strings[0];
+      for (let i = 0; i < values.length; i++) {
+        text += `$${i + 1}${strings[i + 1]}`;
+      }
+      return pool.query(text, values as unknown[]).then((r) => r.rows as T[]);
+    })
+  : null;
 
 let schemaReady: Promise<void> | null = null;
 
-// Lazily create the clicks table on first write. Fine for a small app;
-// swap for a real migration tool if the schema grows.
+// Lazily create tables on first use. Fine for an app this size; move to a
+// migration tool if the schema keeps growing.
 export function ensureSchema(): Promise<void> {
   if (!sql) return Promise.resolve();
   if (!schemaReady) {
