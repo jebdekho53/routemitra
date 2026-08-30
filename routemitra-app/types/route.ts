@@ -14,8 +14,12 @@ export interface RouteOption {
   link: string; // deep link to the booking platform (with tracking params)
   /** true when the fare is a best-effort estimate, not a live quote */
   indicative?: boolean;
-  /** where this option came from: "duffel", "rapidapi", "sample", ... */
+  /** where this option came from: "duffel", "travelpayouts", "irctc", "sample", ... */
   source?: string;
+  /** logo image URL (airlines via pics.avs.io); undefined -> UI uses a mode glyph */
+  logo?: string;
+  /** number of stops / transfers (flights, some trains); 0 = direct */
+  stops?: number;
   /** Phase 11 — full trip incl. local legs, when origin/destination addresses given */
   door_to_door?: DoorToDoor;
 }
