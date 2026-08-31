@@ -18,8 +18,8 @@ export default function GlobalError({
           alignItems: "center",
           justifyContent: "center",
           margin: 0,
-          background: "#eef1ef",
-          color: "#1b2430",
+          background: "#f2f4f7",
+          color: "#16181d",
         }}
       >
         <div style={{ textAlign: "center", padding: 24 }}>
@@ -33,7 +33,7 @@ export default function GlobalError({
               padding: "10px 20px",
               border: "none",
               borderRadius: 8,
-              background: "#c1502e",
+              background: "#0a6ed1",
               color: "#fff",
               fontSize: 15,
               cursor: "pointer",

@@ -1,39 +1,39 @@
 /* ============================================================================
    RouteMitra — design system
-   Warm-editorial identity: Fraunces display, IBM Plex body/mono, terracotta.
+   Clean travel-app identity: Inter throughout, IBM Plex Mono for labels, blue accent.
    Mobile-first: base rules target small screens; min-width queries scale up.
    ========================================================================== */
 
 :root {
-  /* ---- palette (light) ---- */
-  --paper: #f4f2ee;
-  --bg: #efece6;
+  /* ---- palette (light) — clean travel-app: white cards, cool grays, blue ---- */
+  --paper: #f7f8fa;
+  --bg: #f2f4f7;
   --surface: #ffffff;
-  --surface-2: #eae6df;
-  --surface-3: #e0dbd1;
-  --ink: #1c1a17;
-  --ink-soft: #5c574e;
-  --ink-faint: #8a8377;
-  --line: #ddd7cc;
-  --line-strong: #c9c2b3;
+  --surface-2: #eef1f5;
+  --surface-3: #e2e7ee;
+  --ink: #16181d;
+  --ink-soft: #55606f;
+  --ink-faint: #8a94a3;
+  --line: #e4e7ec;
+  --line-strong: #d0d5dd;
 
-  --accent: #bf4d2a;
-  --accent-strong: #a53f1f;
-  --accent-soft: #bf4d2a1a;
-  --accent-tint: #bf4d2a10;
+  --accent: #0a6ed1;
+  --accent-strong: #085aac;
+  --accent-soft: rgba(10, 110, 209, 0.1);
+  --accent-tint: rgba(10, 110, 209, 0.055);
 
-  --ok: #2f7d5b;
-  --warn: #a3701f;
-  --danger: #b3261e;
+  --ok: #17945a;
+  --warn: #b7791f;
+  --danger: #d93a2c;
 
-  --mode-bus: #2f7d63;
-  --mode-train: #2b4c7e;
-  --mode-flight: #a3701f;
+  --mode-bus: #17945a;
+  --mode-train: #3f57c4;
+  --mode-flight: #d97706;
 
   /* ---- elevation ---- */
-  --shadow-sm: 0 1px 2px rgba(28, 26, 23, 0.06);
-  --shadow-md: 0 1px 2px rgba(28, 26, 23, 0.06), 0 6px 16px rgba(28, 26, 23, 0.06);
-  --shadow-lg: 0 2px 4px rgba(28, 26, 23, 0.06), 0 16px 40px rgba(28, 26, 23, 0.1);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 1px 2px rgba(16, 24, 40, 0.06), 0 6px 16px rgba(16, 24, 40, 0.06);
+  --shadow-lg: 0 2px 4px rgba(16, 24, 40, 0.06), 0 16px 40px rgba(16, 24, 40, 0.1);
   --shadow: var(--shadow-md);
 
   /* ---- radius ---- */
@@ -63,36 +63,66 @@
   }
 }
 
+/* dark palette — defined once, applied for system-dark and the explicit toggle */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #14120f;
-    --bg: #17150f;
-    --surface: #1f1c16;
-    --surface-2: #262219;
-    --surface-3: #2f2a20;
-    --ink: #f0ece3;
-    --ink-soft: #b3aa9a;
-    --ink-faint: #8b8271;
-    --line: #322d22;
-    --line-strong: #453f30;
+    --paper: #0f1115;
+    --bg: #12141a;
+    --surface: #191c23;
+    --surface-2: #21252e;
+    --surface-3: #2a2f3a;
+    --ink: #eef1f6;
+    --ink-soft: #a8b0bd;
+    --ink-faint: #79828f;
+    --line: #2a2f39;
+    --line-strong: #3a4150;
 
-    --accent: #e0794f;
-    --accent-strong: #ec8a63;
-    --accent-soft: #e0794f26;
-    --accent-tint: #e0794f14;
+    --accent: #4d9fe8;
+    --accent-strong: #6bb2ef;
+    --accent-soft: rgba(77, 159, 232, 0.16);
+    --accent-tint: rgba(77, 159, 232, 0.1);
 
-    --ok: #57b98c;
-    --warn: #d9a94b;
-    --danger: #e6796f;
+    --ok: #46b880;
+    --warn: #d9a441;
+    --danger: #ec6a5c;
 
-    --mode-bus: #57b98c;
-    --mode-train: #86a8d6;
-    --mode-flight: #e0b45d;
+    --mode-bus: #46b880;
+    --mode-train: #7d92e6;
+    --mode-flight: #e0a24d;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.45), 0 20px 48px rgba(0, 0, 0, 0.55);
   }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1115;
+  --bg: #12141a;
+  --surface: #191c23;
+  --surface-2: #21252e;
+  --surface-3: #2a2f3a;
+  --ink: #eef1f6;
+  --ink-soft: #a8b0bd;
+  --ink-faint: #79828f;
+  --line: #2a2f39;
+  --line-strong: #3a4150;
+
+  --accent: #4d9fe8;
+  --accent-strong: #6bb2ef;
+  --accent-soft: rgba(77, 159, 232, 0.16);
+  --accent-tint: rgba(77, 159, 232, 0.1);
+
+  --ok: #46b880;
+  --warn: #d9a441;
+  --danger: #ec6a5c;
+
+  --mode-bus: #46b880;
+  --mode-train: #7d92e6;
+  --mode-flight: #e0a24d;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.45), 0 20px 48px rgba(0, 0, 0, 0.55);
 }
 
 /* ---- reset / base (plain CSS, no framework — Tailwind removed: its @layer
@@ -156,7 +186,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system,
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
     sans-serif;
   font-size: 16px;
   line-height: 1.6;
@@ -179,7 +209,7 @@ video {
 h1,
 h2,
 h3 {
-  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 600;
   text-wrap: balance;
   letter-spacing: -0.015em;
@@ -278,7 +308,7 @@ main.wrap {
   flex-shrink: 0;
 }
 .brand-word {
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 600;
   font-size: 18px;
   letter-spacing: -0.02em;
@@ -289,7 +319,7 @@ main.wrap {
 }
 
 .eyebrow {
-  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -490,7 +520,7 @@ main.wrap {
   display: flex;
   align-items: center;
   min-height: 40px;
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12.5px;
   color: var(--ink-soft);
   text-decoration: none;
@@ -554,7 +584,7 @@ main.wrap {
   min-width: 0;
 }
 .field label {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -682,7 +712,7 @@ main.wrap {
 }
 .example-chip,
 .chip-btn {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12.5px;
   min-height: 38px;
   padding: 0 14px;
@@ -702,7 +732,7 @@ main.wrap {
 }
 .chip-btn {
   background: var(--surface);
-  font-family: var(--font-plex-sans);
+  font-family: var(--font-sans);
   font-weight: 500;
 }
 .chip-btn:disabled {
@@ -934,7 +964,7 @@ main.wrap {
   gap: 1px;
 }
 .rc-mode {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1142,14 +1172,14 @@ main.wrap {
   }
 }
 .state-code {
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 44px;
   font-weight: 600;
   color: var(--accent);
   margin: 0 0 var(--s-2);
 }
 .state-digest {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px;
   color: var(--ink-faint);
   margin-top: var(--s-4);
@@ -1222,7 +1252,7 @@ main.wrap {
   flex-wrap: wrap;
   gap: var(--s-2) var(--s-4);
   margin-bottom: var(--s-3);
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12.5px;
 }
 .footer-links a {
@@ -1426,7 +1456,7 @@ main.wrap {
   color: var(--accent);
 }
 .prose-updated {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1469,7 +1499,7 @@ main.wrap {
   border-bottom: none;
 }
 .legal-table th {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1483,7 +1513,7 @@ main.wrap {
   align-items: center;
   min-height: 40px;
   margin: var(--s-4) 0 var(--s-2);
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12.5px;
   color: var(--ink-soft);
   text-decoration: none;
@@ -1498,7 +1528,7 @@ main.wrap {
   margin-left: var(--s-2);
   padding: 2px 8px;
   border-radius: var(--r-pill);
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 9.5px;
   font-weight: 500;
   letter-spacing: 0.05em;
@@ -1721,7 +1751,7 @@ main.wrap {
   font-size: 13.5px;
 }
 .how-n {
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 22px;
   font-weight: 600;
   color: var(--accent);
@@ -1848,7 +1878,7 @@ main.wrap {
   box-shadow: var(--shadow-sm);
 }
 .sf-beta {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2062,7 +2092,7 @@ html.has-cookie-banner body {
   border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--ink);
-  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
@@ -2099,7 +2129,7 @@ html.has-cookie-banner body {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(15, 12, 8, 0.5);
+  background: rgba(16, 24, 40, 0.55);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -2135,7 +2165,7 @@ html.has-cookie-banner body {
   margin-bottom: 14px;
 }
 .feedback-head b {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 17px;
 }
 .feedback-close {
@@ -2188,7 +2218,7 @@ html.has-cookie-banner body {
 .fb-textarea,
 .fb-input {
   width: 100%;
-  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 15px;
   color: var(--ink);
   background: var(--bg);
@@ -2228,7 +2258,7 @@ html.has-cookie-banner body {
   margin-bottom: var(--s-5);
 }
 .faq-cat h2 {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 18px;
   margin: 0 0 10px;
   color: var(--ink);
@@ -2288,7 +2318,7 @@ html.has-cookie-banner body {
   }
 }
 .contact-channels h2 {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 17px;
   margin: 0 0 12px;
 }
@@ -2368,7 +2398,7 @@ html.has-cookie-banner body {
   background: var(--accent-tint);
 }
 .admin-card .n {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 26px;
   font-weight: 600;
   color: var(--ink);
@@ -2527,14 +2557,14 @@ html.has-cookie-banner body {
   padding: 0 8px;
 }
 .admin-brand a {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 600;
   font-size: 16px;
   color: var(--ink);
   text-decoration: none;
 }
 .admin-brand span {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;

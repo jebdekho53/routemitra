@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Inter, IBM_Plex_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import Providers from "./providers";
 import CookieConsent from "@/components/CookieConsent";
@@ -8,22 +8,16 @@ import BottomNav from "@/components/BottomNav";
 import FeedbackButton from "@/components/FeedbackButton";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-fraunces",
-});
-
-const plexSans = IBM_Plex_Sans({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-sans",
+  variable: "--font-sans",
 });
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-plex-mono",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -44,8 +38,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#efece6" },
-    { media: "(prefers-color-scheme: dark)", color: "#17150f" },
+    { media: "(prefers-color-scheme: light)", color: "#f2f4f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#12141a" },
   ],
 };
 
@@ -65,7 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}
+        className={`${inter.variable} ${plexMono.variable}`}
       >
         <a href="#main" className="skip-link">
           Skip to content

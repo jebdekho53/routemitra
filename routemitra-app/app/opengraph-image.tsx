@@ -16,7 +16,7 @@ export default function OgImage() {
           justifyContent: "center",
           padding: "80px",
           background:
-            "radial-gradient(1000px 500px at 10% -20%, #bf4d2a22, transparent), #efece6",
+            "radial-gradient(1000px 500px at 10% -20%, #0a6ed122, transparent), #f2f4f7",
           fontFamily: "Georgia, serif",
         }}
       >
@@ -26,7 +26,7 @@ export default function OgImage() {
               width: 64,
               height: 64,
               borderRadius: 16,
-              background: "#bf4d2a",
+              background: "#0a6ed1",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -42,7 +42,7 @@ export default function OgImage() {
               fontSize: 30,
               letterSpacing: 4,
               textTransform: "uppercase",
-              color: "#5c574e",
+              color: "#55606f",
               fontFamily: "monospace",
             }}
           >
@@ -57,13 +57,13 @@ export default function OgImage() {
             marginTop: 40,
             fontSize: 76,
             lineHeight: 1.05,
-            color: "#1c1a17",
+            color: "#16181d",
             fontWeight: 600,
             maxWidth: 950,
           }}
         >
           <span>Ek jagah.</span>
-          <span style={{ color: "#bf4d2a", fontStyle: "italic" }}>
+          <span style={{ color: "#0a6ed1", fontStyle: "italic" }}>
             Bus, train, flight.
           </span>
         </div>
@@ -72,7 +72,7 @@ export default function OgImage() {
             display: "flex",
             marginTop: 28,
             fontSize: 30,
-            color: "#5c574e",
+            color: "#55606f",
             maxWidth: 820,
           }}
         >
