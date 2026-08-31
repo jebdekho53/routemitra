@@ -5,6 +5,7 @@ import {
   LEGAL_ENTITY_NAME,
   LEGAL_ENTITY_STATUS,
   LEGAL_ADDRESS,
+  LEGAL_CIN,
   GRIEVANCE_OFFICER_NAME,
   GRIEVANCE_OFFICER_EMAIL,
   SUPPORT_EMAIL,
@@ -30,7 +31,8 @@ export default function PrivacyPage() {
           {LEGAL_ENTITY_STATUS === "registered" ? (
             <p>
               This policy is issued by <b>{LEGAL_ENTITY_NAME}</b>
-              {LEGAL_ADDRESS ? <>, {LEGAL_ADDRESS}</> : null} (the &quot;Data
+              {LEGAL_ADDRESS ? <>, {LEGAL_ADDRESS}</> : null}
+              {LEGAL_CIN ? <> (CIN: {LEGAL_CIN})</> : null} (the &quot;Data
               Fiduciary&quot; under India&apos;s Digital Personal Data
               Protection Act, 2023 — &quot;DPDP Act&quot;) for the RouteMitra
               website and service.

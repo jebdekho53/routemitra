@@ -22,6 +22,9 @@ export const LEGAL_ENTITY_STATUS =
 
 export const LEGAL_ADDRESS = process.env.NEXT_PUBLIC_LEGAL_ADDRESS || null;
 
+// MCA Corporate Identification Number — public record once registered.
+export const LEGAL_CIN = process.env.NEXT_PUBLIC_LEGAL_CIN || null;
+
 export const GRIEVANCE_OFFICER_NAME =
   process.env.NEXT_PUBLIC_GRIEVANCE_OFFICER_NAME || "Grievance Officer";
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LEGAL_ENTITY_NAME } from "@/lib/site";
+import { LEGAL_ENTITY_NAME, LEGAL_CIN } from "@/lib/site";
 
 // Shared site footer. Legal pages (Privacy/Terms/About/Help) are real as of
 // Phase 14 — DPDP-compliant privacy policy, ToS, cookie-consent banner.
@@ -27,7 +27,7 @@ export default function SiteFooter() {
           ) : (
             <>
               RouteMitra is a product of {LEGAL_ENTITY_NAME}. © {year}{" "}
-              {LEGAL_ENTITY_NAME}.
+              {LEGAL_ENTITY_NAME}.{LEGAL_CIN ? <> CIN: {LEGAL_CIN}.</> : null}
             </>
           )}
         </p>
