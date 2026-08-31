@@ -20,15 +20,15 @@ export default function LoginPage() {
           </Suspense>
           {googleEnabled && (
             <>
-              <div className="auth-or">ya</div>
+              <div className="auth-or">or</div>
               <Suspense fallback={null}>
                 <GoogleButton />
               </Suspense>
             </>
           )}
           <p className="auth-links">
-            <Link href="/forgot">Password bhool gaye?</Link>
-            <Link href="/signup">Naya account banao</Link>
+            <Link href="/forgot">Forgot password?</Link>
+            <Link href="/signup">Create an account</Link>
           </p>
         </div>
       </main>

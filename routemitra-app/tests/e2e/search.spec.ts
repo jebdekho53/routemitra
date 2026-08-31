@@ -9,9 +9,9 @@ test("home -> search -> results -> book link", async ({ page }) => {
     page.getByRole("link", { name: /RouteMitra/ }).first(),
   ).toBeVisible();
 
-  await page.getByLabel("Kahan se").fill("Pune");
-  await page.getByLabel("Kahan tak").fill("Bengaluru");
-  await page.getByRole("button", { name: "Dhoondo" }).click();
+  await page.getByLabel("From", { exact: true }).fill("Pune");
+  await page.getByLabel("To", { exact: true }).fill("Bengaluru");
+  await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page).toHaveURL(/\/search\?from=Pune&to=Bengaluru/);
   await expect(
@@ -24,7 +24,7 @@ test("home -> search -> results -> book link", async ({ page }) => {
 
   // booking links carry tracking params
   const href = await page
-    .getByRole("link", { name: /Book karein/ })
+    .getByRole("link", { name: /Book now/ })
     .first()
     .getAttribute("href");
   expect(href).toContain("utm_source=routemitra");
@@ -42,7 +42,7 @@ test("sort by fastest reorders results", async ({ page }) => {
   await expect(page.locator(".rc:not(.rc-skeleton)").first()).toBeVisible();
 
   const firstBefore = await page.locator(".rc:not(.rc-skeleton) .rc-operator").first().textContent();
-  await page.getByRole("button", { name: "Sabse tez" }).click();
+  await page.getByRole("button", { name: "Fastest" }).click();
   const firstAfter = await page.locator(".rc:not(.rc-skeleton) .rc-operator").first().textContent();
 
   expect(firstAfter).not.toEqual(firstBefore);
@@ -50,26 +50,26 @@ test("sort by fastest reorders results", async ({ page }) => {
 
 test("unknown route shows empty state", async ({ page }) => {
   await page.goto("/search?from=Nowhere&to=Elsewhere");
-  await expect(page.getByText(/koi option nahi mila/i)).toBeVisible();
+  await expect(page.getByText(/No options found for this route/i)).toBeVisible();
 });
 
 test("ghar-se-ghar mode toggle reveals address fields and searches", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("tab", { name: /Ghar-se-ghar/ }).click();
-  await expect(page.getByLabel("Ghar ka poora address")).toBeVisible();
-  await expect(page.getByLabel("Pahunchne ka poora address")).toBeVisible();
+  await page.getByRole("tab", { name: /Door-to-door/ }).click();
+  await expect(page.getByLabel("Full pickup address")).toBeVisible();
+  await expect(page.getByLabel("Full drop-off address")).toBeVisible();
 
-  await page.getByLabel("Ghar ka poora address").fill("Indirapuram, Ghaziabad");
-  await page.getByLabel("Kaunsi city se").fill("Delhi");
-  await page.getByLabel("Kaunsi city tak").fill("Varanasi");
-  await page.getByLabel("Pahunchne ka poora address").fill("Lanka, Varanasi");
-  await page.getByRole("button", { name: "Dhoondo" }).click();
+  await page.getByLabel("Full pickup address").fill("Indirapuram, Ghaziabad");
+  await page.getByLabel("From city").fill("Delhi");
+  await page.getByLabel("To city").fill("Varanasi");
+  await page.getByLabel("Full drop-off address").fill("Lanka, Varanasi");
+  await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page).toHaveURL(/origin=.+&destination=/);
   // the door-to-door mode is remembered on the results page
-  await expect(page.getByLabel("Ghar ka poora address")).toHaveValue(
+  await expect(page.getByLabel("Full pickup address")).toHaveValue(
     "Indirapuram, Ghaziabad",
   );
 });
@@ -95,7 +95,7 @@ test("login and signup pages render", async ({ page }) => {
   await expect(page.getByLabel("Email")).toBeVisible();
   await expect(page.getByLabel("Password")).toBeVisible();
   await page.goto("/signup");
-  await expect(page.getByRole("button", { name: /Account banao/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Create account/ })).toBeVisible();
 });
 
 test("protected routes redirect to login", async ({ page }) => {

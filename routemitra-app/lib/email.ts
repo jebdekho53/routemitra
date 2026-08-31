@@ -48,8 +48,8 @@ export function verificationEmail(to: string, token: string): Mail {
   const url = `${SITE_URL}/api/auth/verify?token=${token}`;
   return {
     to,
-    subject: "RouteMitra — email verify karo",
-    text: `Namaste!\n\nApna email verify karne ke liye ye link kholo:\n${url}\n\nYe link 24 ghante mein expire ho jaayega.\n\n— RouteMitra`,
+    subject: "RouteMitra — verify your email",
+    text: `Hi,\n\nOpen this link to verify your email:\n${url}\n\nThis link expires in 24 hours.\n\n— RouteMitra`,
   };
 }
 
@@ -58,7 +58,7 @@ export function resetEmail(to: string, token: string): Mail {
   return {
     to,
     subject: "RouteMitra — password reset",
-    text: `Password reset request mila.\n\nNaya password set karne ke liye:\n${url}\n\nAgar tumne request nahi ki, is email ko ignore karo. Link 1 ghante mein expire hoga.\n\n— RouteMitra`,
+    text: `We received a password reset request.\n\nSet a new password here:\n${url}\n\nIf you didn’t request this, ignore this email. The link expires in 1 hour.\n\n— RouteMitra`,
   };
 }
 
@@ -70,7 +70,7 @@ export function priceAlertEmail(
 ): Mail {
   return {
     to,
-    subject: `${route.from} → ${route.to}: fare gir gaya (₹${newPrice})`,
-    text: `Jis route ko tumne watch kiya tha uska fare kam ho gaya:\n\n${route.from} → ${route.to}\nPehle: ₹${oldPrice}\nAb: ₹${newPrice}\n\nDekho: ${SITE_URL}/search?from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}\n\n— RouteMitra`,
+    subject: `${route.from} → ${route.to}: fare dropped (₹${newPrice})`,
+    text: `A route you’re watching just got cheaper:\n\n${route.from} → ${route.to}\nWas: ₹${oldPrice}\nNow: ₹${newPrice}\n\nView: ${SITE_URL}/search?from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}\n\n— RouteMitra`,
   };
 }

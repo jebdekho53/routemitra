@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   const rl = await rateLimit("reset", clientIp(request), 10, "15 m");
   if (!rl.ok) {
-    return NextResponse.json({ error: "Thodi der baad try karo." }, { status: 429 });
+    return NextResponse.json({ error: "Please try again in a moment." }, { status: 429 });
   }
 
   const { data, errors } = parse(resetSchema, await request.json().catch(() => ({})));
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const userId = await consumeToken(data.token, "reset").catch(() => null);
   if (!userId) {
     return NextResponse.json(
-      { error: "Reset link invalid ya expire ho gaya. Naya request karo." },
+      { error: "This reset link is invalid or has expired. Request a new one." },
       { status: 400 },
     );
   }

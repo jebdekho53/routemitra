@@ -88,7 +88,7 @@ export default function PrivacyPage() {
             product needs to:
           </p>
           <ul>
-            <li><b>The platform you book on</b> — clicking &quot;Book karein&quot; sends you to RedBus, IRCTC/a rail partner, an airline or OTA. What happens on their site is covered by their own privacy policy, not ours.</li>
+            <li><b>The platform you book on</b> — clicking &quot;Book now&quot; sends you to RedBus, IRCTC/a rail partner, an airline or OTA. What happens on their site is covered by their own privacy policy, not ours.</li>
             <li><b>Infrastructure we run on</b> — hosting (Vercel), cache/rate-limiting (Upstash Redis), database (Neon/Supabase Postgres), transactional email (Resend), bot-protection (Cloudflare Turnstile), error monitoring (Sentry, once enabled), privacy-first analytics (Plausible — see §5). These process data on our behalf under their own security terms, not for their own purposes.</li>
           </ul>
           <p>

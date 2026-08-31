@@ -26,9 +26,9 @@ export default function RouteActions({
     return (
       <p className="route-actions muted">
         <Link href={`/login?callbackUrl=/search?from=${encodeURIComponent(from)}%26to=${encodeURIComponent(to)}`}>
-          Login
+          Sign in
         </Link>{" "}
-        karo is route ko watch ya save karne ke liye.
+        to watch or save this route.
       </p>
     );
   }

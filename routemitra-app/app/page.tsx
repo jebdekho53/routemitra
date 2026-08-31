@@ -11,7 +11,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   description:
-    "Ek city se dusri city — bus, train aur flight ek jagah compare karo. Sabse sasta ya sabse tez chuno, phir seedha booking platform par jao.",
+    "Compare buses, trains and flights between two cities in one place. Pick the cheapest or the fastest, then book on the operator's own site.",
 };
 
 // Landing route cards are teasers — sample data only, so this page renders
@@ -41,20 +41,20 @@ export default function Home() {
       <section className="hero">
         <div className="wrap">
           <h1>
-            Ek jagah. <span className="hero-modes">Bus</span>,{" "}
+            One place. <span className="hero-modes">Bus</span>,{" "}
             <span className="hero-modes">train</span>,{" "}
             <span className="hero-modes">flight</span>.
           </h1>
           <p className="hero-sub">
-            Do city ke beech saare options ek saath compare karo — sabse sasta ya
-            sabse tez chuno, phir seedha booking platform par jao.
+            Compare every option between two cities side by side — choose the
+            cheapest or the fastest, then head straight to the booking platform.
           </p>
 
           <SearchForm />
 
           <p className="hero-note">
-            Chaho to <b>ghar-se-ghar</b> fare bhi — local cab legs jod kar poora
-            total. Login karke price alert laga sakte ho.
+            Prefer a <b>door-to-door</b> total? We add the local cab legs so you
+            see the full trip. Sign in to set a price alert.
           </p>
         </div>
       </section>
@@ -63,7 +63,7 @@ export default function Home() {
         <section className="home-routes">
           <div className="home-routes-head">
             <h2>Popular routes</h2>
-            <span className="muted">Tap karke seedha results par jao</span>
+            <span className="muted">Tap to jump straight to results</span>
           </div>
           <div className="route-cards">
             {routes.map(({ from, to, slug, cheapest, fastest }) => (
@@ -74,12 +74,12 @@ export default function Home() {
                 <span className="route-card-stats">
                   {cheapest ? (
                     <>
-                      <b>{formatPrice(cheapest.price)}</b> se ·{" "}
-                      {fastest ? formatDuration(fastest.duration_min) : "—"} sabse
-                      tez
+                      from <b>{formatPrice(cheapest.price)}</b> ·{" "}
+                      {fastest ? formatDuration(fastest.duration_min) : "—"}{" "}
+                      fastest
                     </>
                   ) : (
-                    "options dekho"
+                    "see options"
                   )}
                 </span>
                 <span className="route-card-dots" aria-hidden>
@@ -93,25 +93,26 @@ export default function Home() {
         </section>
 
         <section className="home-how">
-          <h2>Kaise kaam karta hai</h2>
+          <h2>How it works</h2>
           <ol className="how-steps">
             <li>
               <span className="how-n">1</span>
-              <b>Search karo</b>
-              <span className="muted">Kahan se, kahan tak.</span>
+              <b>Search</b>
+              <span className="muted">From where, to where.</span>
             </li>
             <li>
               <span className="how-n">2</span>
-              <b>Compare karo</b>
+              <b>Compare</b>
               <span className="muted">
-                Bus, train, flight — price aur time saath-saath.
+                Bus, train, flight — price and time side by side.
               </span>
             </li>
             <li>
               <span className="how-n">3</span>
-              <b>Book karo</b>
+              <b>Book</b>
               <span className="muted">
-                Seedha RedBus / IRCTC / airline par — hum sirf bhejte hain.
+                Straight on RedBus / IRCTC / the airline — we only send you
+                there.
               </span>
             </li>
           </ol>
@@ -119,21 +120,19 @@ export default function Home() {
 
         <section className="home-features">
           <div>
-            <b>Teeno modes, ek search</b>
-            <span className="muted">
-              Alag-alag apps kholne ki zaroorat nahi.
-            </span>
+            <b>Three modes, one search</b>
+            <span className="muted">No need to open a different app each time.</span>
           </div>
           <div>
-            <b>Ghar-se-ghar fare</b>
+            <b>Door-to-door fare</b>
             <span className="muted">
-              Cab + intercity + cab — poora trip ka total.
+              Cab + intercity + cab — the total for the whole trip.
             </span>
           </div>
           <div>
             <b>Price alerts</b>
             <span className="muted">
-              Route watch karo, fare gire to email aayega.
+              Watch a route and get an email when the fare drops.
             </span>
           </div>
         </section>

@@ -3,8 +3,8 @@
 import type { SortKey } from "@/types/route";
 
 const TABS: { key: SortKey; label: string }[] = [
-  { key: "price", label: "Sabse sasta" },
-  { key: "duration_min", label: "Sabse tez" },
+  { key: "price", label: "Cheapest" },
+  { key: "duration_min", label: "Fastest" },
 ];
 
 export default function SortTabs({

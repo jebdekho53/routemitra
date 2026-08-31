@@ -7,10 +7,10 @@ import { feedbackKinds } from "@/lib/validation";
 
 const KIND_LABEL: Record<string, string> = {
   idea: "💡 Idea",
-  bug: "🐞 Kuch toota",
-  fare: "₹ Fare galat",
-  support: "🙋 Help chahiye",
-  other: "💬 Aur kuch",
+  bug: "🐞 Something broke",
+  fare: "₹ Fare looks wrong",
+  support: "🙋 Need help",
+  other: "💬 Something else",
 };
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -55,7 +55,7 @@ export default function FeedbackButton() {
     e.preventDefault();
     if (message.trim().length < 4) {
       setStatus("error");
-      setErrMsg("Thoda detail likho.");
+      setErrMsg("Please add a little more detail.");
       return;
     }
     setStatus("sending");
@@ -75,15 +75,15 @@ export default function FeedbackButton() {
         setStatus("error");
         setErrMsg(
           j.error ||
-            (j.errors && Object.values(j.errors)[0] as string) ||
-            "Kuch galat ho gaya.",
+            ((j.errors && Object.values(j.errors)[0]) as string) ||
+            "Something went wrong.",
         );
         return;
       }
       setStatus("sent");
     } catch {
       setStatus("error");
-      setErrMsg("Network problem — dobara try karo.");
+      setErrMsg("Network problem — please try again.");
     }
   }
 
@@ -102,11 +102,11 @@ export default function FeedbackButton() {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="feedback-head">
-          <b id={`${formId}-title`}>Feedback bhejo</b>
+          <b id={`${formId}-title`}>Send feedback</b>
           <button
             type="button"
             className="feedback-close"
-            aria-label="Band karo"
+            aria-label="Close"
             onClick={() => setOpen(false)}
           >
             ✕
@@ -115,11 +115,11 @@ export default function FeedbackButton() {
 
         {status === "sent" ? (
           <div className="feedback-sent">
-            <p>Mil gaya — shukriya! 🙏</p>
+            <p>Got it — thank you! 🙏</p>
             <p className="muted">
-              Zaroorat padi to{" "}
-              {email.trim() ? "isi email par" : "reply nahi kar paayenge (email nahi diya)"}
-              .
+              {email.trim()
+                ? "We'll reply at that email if needed."
+                : "We can't reply (no email given)."}
             </p>
             <button
               type="button"
@@ -129,7 +129,7 @@ export default function FeedbackButton() {
                 setOpen(false);
               }}
             >
-              Theek hai
+              Done
             </button>
           </div>
         ) : (
@@ -149,28 +149,28 @@ export default function FeedbackButton() {
             </div>
 
             <label htmlFor={`${formId}-msg`} className="fb-label">
-              Kya kehna hai?
+              What would you like to tell us?
             </label>
             <textarea
               id={`${formId}-msg`}
               className="fb-textarea"
               rows={4}
               maxLength={4000}
-              placeholder="Jo bhi acha / bura / missing laga…"
+              placeholder="Anything that felt good, broken, or missing…"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
             />
 
             <label htmlFor={`${formId}-email`} className="fb-label">
-              Email <span className="muted">(optional — reply ke liye)</span>
+              Email <span className="muted">(optional — for a reply)</span>
             </label>
             <input
               id={`${formId}-email`}
               className="fb-input"
               type="email"
               autoComplete="email"
-              placeholder="tumhara@email.com"
+              placeholder="you@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -182,11 +182,11 @@ export default function FeedbackButton() {
               className="go-btn"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "Bhej rahe hain…" : "Bhejo"}
+              {status === "sending" ? "Sending…" : "Send"}
             </button>
             <p className="fb-fineprint muted">
-              Privacy / data complaint ke liye{" "}
-              <a href="/contact">Contact page</a> use karo.
+              For a privacy / data complaint, use the{" "}
+              <a href="/contact">Contact page</a>.
             </p>
           </form>
         )}
@@ -199,7 +199,7 @@ export default function FeedbackButton() {
       <button
         type="button"
         className="feedback-fab"
-        aria-label="Feedback bhejo"
+        aria-label="Send feedback"
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}

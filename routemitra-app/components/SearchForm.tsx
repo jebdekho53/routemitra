@@ -70,7 +70,7 @@ export default function SearchForm({
           className={`sf-mode-tab${mode === "d2d" ? " active" : ""}`}
           onClick={() => setMode("d2d")}
         >
-          🏠 Ghar-se-ghar <span className="sf-beta">beta</span>
+          🏠 Door-to-door <span className="sf-beta">beta</span>
         </button>
       </div>
 
@@ -84,7 +84,7 @@ export default function SearchForm({
       >
         {mode === "d2d" && (
           <div className="field">
-            <label htmlFor="origin">Ghar ka poora address</label>
+            <label htmlFor="origin">Full pickup address</label>
             <input
               id="origin"
               name="origin"
@@ -100,7 +100,7 @@ export default function SearchForm({
         <div className="sf-route">
           <div className="field">
             <label htmlFor="from">
-              {mode === "d2d" ? "Kaunsi city se" : "Kahan se"}
+              {mode === "d2d" ? "From city" : "From"}
             </label>
             <input
               id="from"
@@ -138,7 +138,7 @@ export default function SearchForm({
           </div>
           <div className="field">
             <label htmlFor="to">
-              {mode === "d2d" ? "Kaunsi city tak" : "Kahan tak"}
+              {mode === "d2d" ? "To city" : "To"}
             </label>
             <input
               id="to"
@@ -155,7 +155,7 @@ export default function SearchForm({
 
         {mode === "d2d" && (
           <div className="field">
-            <label htmlFor="destination">Pahunchne ka poora address</label>
+            <label htmlFor="destination">Full drop-off address</label>
             <input
               id="destination"
               name="destination"
@@ -170,7 +170,7 @@ export default function SearchForm({
 
         <div className="sf-when">
           <div className="field">
-            <label htmlFor="date">Kab jaana hai (optional)</label>
+            <label htmlFor="date">Travel date (optional)</label>
             <input
               id="date"
               name="date"
@@ -181,7 +181,7 @@ export default function SearchForm({
             />
           </div>
           <button type="submit" className="go-btn">
-            Dhoondo
+            Search
           </button>
         </div>
 
@@ -194,8 +194,8 @@ export default function SearchForm({
 
       {mode === "d2d" && (
         <p className="sf-mode-hint">
-          Cab + intercity + cab — teeno legs ka total. Address se nearest
-          station/airport khud chun liya jaata hai.
+          Cab + intercity + cab — the total across all three legs. The nearest
+          station/airport is picked from your address automatically.
         </p>
       )}
 

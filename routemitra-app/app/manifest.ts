@@ -5,14 +5,14 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "RouteMitra — Bus, Train & Flight compare",
     short_name: "RouteMitra",
     description:
-      "Ek city se dusri city — bus, train aur flight ek jagah compare karo. Sabse sasta ya sabse tez chuno.",
+      "Compare bus, train and flight options between two cities in one place. Pick the cheapest or the fastest.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
     background_color: "#f2f4f7",
     theme_color: "#0a6ed1",
-    lang: "hi",
+    lang: "en",
     dir: "ltr",
     categories: ["travel", "navigation", "utilities"],
     icons: [

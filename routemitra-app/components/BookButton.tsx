@@ -49,7 +49,7 @@ export default function BookButton({
       rel="noopener"
       onClick={track}
     >
-      Book karein →
+      Book now →
     </a>
   );
 }

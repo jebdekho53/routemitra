@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Contact & Support",
   description:
-    "RouteMitra se baat karo — help, bug report, fare galat hone ki shikayat, ya feature idea.",
+    "Get in touch with RouteMitra — help, a bug report, a wrong-fare complaint, or a feature idea.",
 };
 
 export default function ContactPage() {
@@ -25,7 +25,7 @@ export default function ContactPage() {
     <>
       <Masthead
         title="Contact & Support"
-        tagline="Koi bhi problem, sawaal ya idea — yahin likho."
+        tagline="Any problem, question or idea — write to us here."
       />
       <main className="wrap" id="main">
         <div className="contact-grid">
@@ -40,8 +40,8 @@ export default function ContactPage() {
               <span className="cc-label">Support email</span>
               <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
               <p className="muted">
-                Aam taur par 2–3 working days mein reply. Abhi ek chhoti team
-                hai — patience ke liye shukriya.
+                Usually a reply within 2–3 working days. It’s a small team
+                right now — thanks for your patience.
               </p>
             </div>
 
@@ -52,17 +52,17 @@ export default function ContactPage() {
                 {GRIEVANCE_OFFICER_EMAIL}
               </a>
               <p className="muted">
-                Data / privacy se judi complaint ke liye. Process:{" "}
+                For data / privacy complaints. Process:{" "}
                 <a href="/privacy#grievance">Privacy Policy §8</a>.
               </p>
             </div>
 
             <div className="cc-item">
-              <span className="cc-label">Pehle ye dekho</span>
+              <span className="cc-label">Check first</span>
               <a href="/help">Help center &amp; FAQ</a>
               <p className="muted">
-                Booking, refund, fare accuracy, account/data — zyadatar sawaalon
-                ka jawab yahin hai.
+                Booking, refunds, fare accuracy, account / data — most questions
+                are answered here.
               </p>
             </div>
 
@@ -70,9 +70,9 @@ export default function ContactPage() {
               <span className="cc-label">Operator</span>
               <span>{entity}</span>
               <p className="muted">
-                RouteMitra sirf search &amp; compare karta hai — booking, payment
-                aur refund respective platform (RedBus / IRCTC / airline / OTA)
-                par hote hain.
+                RouteMitra only searches and compares — booking, payment and
+                refunds happen on the respective platform (RedBus / IRCTC /
+                airline / OTA).
               </p>
             </div>
           </aside>

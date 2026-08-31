@@ -16,11 +16,10 @@ export default function SiteFooter() {
           <Link href="/terms">Terms</Link>
         </nav>
         <p>
-          RouteMitra sirf search aur compare karta hai — actual booking
-          respective platform (RedBus, IRCTC, airline/OTA) par hoti hai, unhi ki
-          refund/cancellation policy lagti hai. Jahan fare estimate hai wahan{" "}
-          <b>indicative</b> badge dikhega. Hum kuch bookings par commission kama
-          sakte hain.
+          RouteMitra only searches and compares — the actual booking happens on
+          the respective platform (RedBus, IRCTC, airline / OTA), under their own
+          refund / cancellation policy. Where a fare is an estimate you’ll see
+          an <b>indicative</b> badge. We may earn a commission on some bookings.
         </p>
         <p className="footer-copy">
           {LEGAL_ENTITY_NAME.toLowerCase() === "routemitra" ? (

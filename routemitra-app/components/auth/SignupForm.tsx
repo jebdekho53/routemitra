@@ -36,17 +36,17 @@ export default function SignupForm() {
     }
     const body = await res.json().catch(() => ({}));
     if (body.errors) setErrors(body.errors);
-    else setError(body.error || "Kuch gadbad ho gayi.");
+    else setError(body.error || "Something went wrong.");
   }
 
   if (done) {
     return (
       <p className="auth-ok">
-        Account ban gaya! Tumhare email par ek verification link bheja hai — use
-        kholo, phir <Link href="/login">login</Link> karo.
+        Account created. We’ve emailed you a verification link — open it,
+        then <Link href="/login">sign in</Link>.
         <br />
         <span className="auth-hint">
-          (Email provider set nahi hai to link server console mein print hoga.)
+          (If no email provider is set, the link is printed to the server console.)
         </span>
       </p>
     );
@@ -56,7 +56,7 @@ export default function SignupForm() {
     <form className="auth-form" onSubmit={onSubmit}>
       {error && <p className="auth-error">{error}</p>}
       <div className="field">
-        <label htmlFor="name">Naam</label>
+        <label htmlFor="name">Name</label>
         <input
           id="name"
           required
@@ -94,7 +94,7 @@ export default function SignupForm() {
       </div>
       <Turnstile onToken={setCaptcha} />
       <button type="submit" className="go-btn" disabled={busy}>
-        {busy ? "..." : "Account banao"}
+        {busy ? "…" : "Create account"}
       </button>
     </form>
   );

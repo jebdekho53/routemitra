@@ -23,7 +23,7 @@ export default function ContactForm() {
     e.preventDefault();
     if (message.trim().length < 4) {
       setStatus("error");
-      setErr("Thoda detail likho.");
+      setErr("Please add a little more detail.");
       return;
     }
     setStatus("sending");
@@ -44,26 +44,26 @@ export default function ContactForm() {
         setErr(
           j.error ||
             ((j.errors && Object.values(j.errors)[0]) as string) ||
-            "Bhej nahi paaye — thodi der baad try karo.",
+            "Couldn't send that — please try again shortly.",
         );
         return;
       }
       setStatus("sent");
     } catch {
       setStatus("error");
-      setErr("Network problem — dobara try karo.");
+      setErr("Network problem — please try again.");
     }
   }
 
   if (status === "sent") {
     return (
       <div className="auth-form">
-        <h2>Mil gaya ✅</h2>
+        <h2>Sent ✅</h2>
         <p className="auth-hint">
-          Message pahunch gaya.{" "}
+          Your message has reached us.{" "}
           {email.trim()
-            ? `Zaroorat padi to ${email.trim()} par reply karenge.`
-            : "Email nahi diya, isliye reply nahi kar paayenge — chaahe to niche dobara email ke saath bhej do."}
+            ? `We'll reply to ${email.trim()} if needed.`
+            : "You didn't add an email, so we can't reply — feel free to send again with one."}
         </p>
         <button
           type="button"
@@ -73,7 +73,7 @@ export default function ContactForm() {
             setMessage("");
           }}
         >
-          Ek aur bhejo
+          Send another
         </button>
       </div>
     );
@@ -81,11 +81,11 @@ export default function ContactForm() {
 
   return (
     <form className="auth-form" onSubmit={onSubmit}>
-      <h2>Message bhejo</h2>
+      <h2>Send a message</h2>
       {status === "error" && <p className="auth-error">{err}</p>}
 
       <div className="field">
-        <label htmlFor="c-kind">Kis baare mein?</label>
+        <label htmlFor="c-kind">What’s it about?</label>
         <select
           id="c-kind"
           value={kind}
@@ -100,12 +100,12 @@ export default function ContactForm() {
       </div>
 
       <div className="field">
-        <label htmlFor="c-email">Email (reply ke liye)</label>
+        <label htmlFor="c-email">Email (for a reply)</label>
         <input
           id="c-email"
           type="email"
           autoComplete="email"
-          placeholder="tumhara@email.com"
+          placeholder="you@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -118,7 +118,7 @@ export default function ContactForm() {
           className="fb-textarea"
           rows={6}
           maxLength={4000}
-          placeholder="Jitna detail doge, utni jaldi help kar paayenge. Route, screenshot ka description, jo dikha vs jo expect kiya…"
+          placeholder="The more detail, the faster we can help. Route, a description of the screen, what you saw vs. what you expected…"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
@@ -126,7 +126,7 @@ export default function ContactForm() {
       </div>
 
       <button type="submit" className="go-btn" disabled={status === "sending"}>
-        {status === "sending" ? "Bhej rahe hain…" : "Bhejo"}
+        {status === "sending" ? "Sending…" : "Send"}
       </button>
     </form>
   );

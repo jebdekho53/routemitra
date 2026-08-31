@@ -6,7 +6,7 @@ import { SUPPORT_EMAIL, GRIEVANCE_OFFICER_EMAIL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Help Center",
   description:
-    "RouteMitra kaise kaam karta hai — search, fare accuracy, ghar-se-ghar, booking, refund, price alerts aur account/data ke sawaal.",
+    "How RouteMitra works — search, fare accuracy, door-to-door, booking, refunds, price alerts, and account / data questions.",
 };
 
 interface QA {
@@ -20,36 +20,36 @@ interface Category {
 
 const CATEGORIES: Category[] = [
   {
-    title: "Shuru kaise karein",
+    title: "Getting started",
     items: [
       {
-        q: "RouteMitra karta kya hai?",
-        a: "Ek city se dusri city ke liye bus, train aur flight — teeno options ek hi jagah, price aur time ke saath. Tum compare karke sabse sasta ya sabse tez chun sakte ho, phir booking ke liye seedhe us platform (RedBus, IRCTC, airline/OTA) par chale jaate ho.",
+        q: "What does RouteMitra do?",
+        a: "For a route between two cities it shows bus, train and flight options in one place, with price and time. You compare them, pick the cheapest or the fastest, then go straight to that platform (RedBus, IRCTC, an airline / OTA) to book.",
       },
       {
-        q: "Kya RouteMitra par hi booking hoti hai?",
-        a: "Nahi. RouteMitra sirf search aur compare karta hai. 'Book karein' dabane par tum us operator/OTA ke page par pahunch jaate ho — payment, ticket aur refund sab wahin hota hai, unhi ki policy lagti hai.",
+        q: "Does booking happen on RouteMitra?",
+        a: "No. RouteMitra only searches and compares. Tapping “Book now” takes you to the operator / OTA page — payment, ticket and refunds all happen there, under their policy.",
       },
       {
-        q: "Account banana zaroori hai?",
-        a: "Nahi. Search bina login ke chalta hai. Account sirf tab chahiye jab tum routes save karna, price alert lagana ya apni history dekhna chahte ho.",
+        q: "Do I need an account?",
+        a: "No. Search works without signing in. An account is only needed if you want to save routes, set a price alert, or see your history.",
       },
     ],
   },
   {
-    title: "Search aur results",
+    title: "Search and results",
     items: [
       {
-        q: "Results kis hisaab se sort hote hain?",
-        a: "Default 'sabse sasta' hai. Upar diye tabs se 'sabse tez' par switch kar sakte ho. Mode filter (Bus / Train / Flight) se ek hi type ke options dekh sakte ho.",
+        q: "How are results sorted?",
+        a: "The default is cheapest first. Use the tabs at the top to switch to fastest. The mode filter (Bus / Train / Flight) lets you see one type at a time.",
       },
       {
-        q: "'Cheapest', 'Fastest', 'Best value' tags ka matlab?",
-        a: "Cheapest = us list ka sabse kam fare. Fastest = sabse kam total time. Best value = price aur time ka behtareen balance (dono ka normalised score).",
+        q: "What do the “Cheapest”, “Fastest” and “Best value” tags mean?",
+        a: "Cheapest = the lowest fare in that list. Fastest = the shortest total time. Best value = the best balance of price and time (a normalised score of both).",
       },
       {
-        q: "Meri city nahi mil rahi",
-        a: "Abhi bade aur mid-size Indian sheher cover hain. Jo route chahiye wo Contact page par bata do — hum add karte rehte hain.",
+        q: "I can't find my city",
+        a: "Right now large and mid-size Indian cities are covered. Tell us the route you need on the Contact page — we keep adding them.",
       },
     ],
   },
@@ -57,29 +57,29 @@ const CATEGORIES: Category[] = [
     title: "Fare accuracy",
     items: [
       {
-        q: "'indicative' badge ka matlab kya hai?",
-        a: "Indicative = wo fare ek best-effort estimate hai, live quote nahi. Jahan real-time provider API abhi connect nahi hui wahan hum typical fare se estimate lagate hain. Final price hamesha booking page par confirm karo.",
+        q: "What does the “indicative” badge mean?",
+        a: "Indicative means the fare is a best-effort estimate, not a live quote. Where a real-time provider API isn't connected yet, we estimate from typical fares. Always confirm the final price on the booking page.",
       },
       {
-        q: "Fare booking page par alag dikh raha hai",
-        a: "Estimate aur live availability/pricing mein farq aa sakta hai — demand, date, seat class, dynamic pricing. RouteMitra ka number reference ke liye hai; asli price wahi hai jo booking platform dikhata hai.",
+        q: "The fare is different on the booking page",
+        a: "An estimate and live availability / pricing can differ — demand, date, seat class, dynamic pricing. RouteMitra's number is a reference; the real price is whatever the booking platform shows.",
       },
       {
-        q: "Galat fare report kaise karein?",
-        a: "Us result ke saath route aur dikha hua price note karke Contact page se 'Fare galat' category mein bhej do. Isse hum estimates theek karte hain.",
+        q: "How do I report a wrong fare?",
+        a: "Note the route and the price shown, then send it from the Contact page under the “Fare looks wrong” category. This is how we fix the estimates.",
       },
     ],
   },
   {
-    title: "Ghar-se-ghar (door-to-door)",
+    title: "Door-to-door",
     items: [
       {
-        q: "Ghar-se-ghar mode kya karta hai?",
-        a: "Sirf station/airport ka fare nahi — tumhare ghar se station tak ki cab, intercity leg, aur pahunchne wale sheher mein station se address tak ki cab — teeno milakar poore trip ka total time aur kharcha.",
+        q: "What does door-to-door mode do?",
+        a: "Not just the station / airport fare — it adds the cab from your home to the station, the intercity leg, and the cab from the station to your address in the destination city, for a total time and cost for the whole trip.",
       },
       {
-        q: "Cab ke daam kaise nikalte hain?",
-        a: "Address se nearest hub khud chun liya jaata hai (free OpenStreetMap geocoding), phir distance-based estimate lagta hai. Ye bhi indicative hai — actual cab fare app par alag ho sakta hai.",
+        q: "How are the cab prices worked out?",
+        a: "The nearest hub is picked from your address (free OpenStreetMap geocoding), then a distance-based estimate is applied. This is also indicative — the actual cab fare in the app may differ.",
       },
     ],
   },
@@ -87,46 +87,46 @@ const CATEGORIES: Category[] = [
     title: "Price alerts",
     items: [
       {
-        q: "Price alert kaise lagta hai?",
-        a: "Login karke kisi route ko 'watch' karo. Hum time-time par us route ka sabse kam fare check karte hain; girne par tumhare registered email par notification aata hai.",
+        q: "How do I set a price alert?",
+        a: "Sign in and “watch” a route. We check the lowest fare for that route from time to time; when it drops, you get an email at your registered address.",
       },
       {
-        q: "Alert band kaise karein?",
-        a: "Dashboard par jaake us watched route ko hata do — turant band ho jaayega.",
-      },
-    ],
-  },
-  {
-    title: "Account aur data",
-    items: [
-      {
-        q: "Apna data kaise dekhun / delete karun?",
-        a: "Login ho to Account page se profile, saved searches aur watches dekh/update kar sakte ho, ya poora account delete kar sakte ho. Account delete karne par saara juda hua data bhi delete ho jaata hai.",
-      },
-      {
-        q: "Password bhool gaya",
-        a: "Login page par 'Password bhool gaye?' link se reset link mangwao. Link 1 ghante mein expire hota hai.",
-      },
-      {
-        q: "Kya tum tracking cookies use karte ho?",
-        a: "Nahi. Sirf ek essential login cookie hai. Analytics cookieless hai. Detail Privacy Policy §5 mein.",
+        q: "How do I turn an alert off?",
+        a: "Go to your dashboard and remove the watched route — it stops immediately.",
       },
     ],
   },
   {
-    title: "Booking, payment aur refund",
+    title: "Account and data",
     items: [
       {
-        q: "Payment fail ho gaya / ticket nahi mila",
-        a: "Ye issue booking platform (RedBus / IRCTC / airline / OTA) ka hai — unke support se sampark karo, kyunki transaction aur ticket unke paas hai. RouteMitra ke paas tumhari booking ya payment ka koi record nahi hota.",
+        q: "How do I view or delete my data?",
+        a: "When signed in, the Account page lets you view and update your profile, saved searches and watches, or delete your account entirely. Deleting your account also deletes all related data.",
       },
       {
-        q: "Refund / cancellation kaise hoga?",
-        a: "Jis platform se ticket liya usi ki refund/cancellation policy lagti hai. RouteMitra beech mein nahi aata.",
+        q: "I forgot my password",
+        a: "Use the “Forgot password?” link on the sign-in page to get a reset link. The link expires in 1 hour.",
       },
       {
-        q: "Kya RouteMitra commission leta hai?",
-        a: "Kuch bookings par affiliate commission mil sakta hai — isse product free rehta hai. Isse tumhare fare par koi farq nahi padta aur results ranking par asar nahi daala jaata.",
+        q: "Do you use tracking cookies?",
+        a: "No. There is only one essential login cookie. Analytics is cookieless. Details are in Privacy Policy §5.",
+      },
+    ],
+  },
+  {
+    title: "Booking, payment and refunds",
+    items: [
+      {
+        q: "Payment failed / I didn't get a ticket",
+        a: "That is an issue with the booking platform (RedBus / IRCTC / airline / OTA) — contact their support, since the transaction and ticket are with them. RouteMitra has no record of your booking or payment.",
+      },
+      {
+        q: "How do refunds / cancellations work?",
+        a: "The refund / cancellation policy of the platform you booked with applies. RouteMitra is not in the middle of it.",
+      },
+      {
+        q: "Does RouteMitra take a commission?",
+        a: "We may earn an affiliate commission on some bookings — that keeps the product free. It doesn't change your fare and doesn't affect the ranking of results.",
       },
     ],
   },
@@ -134,8 +134,8 @@ const CATEGORIES: Category[] = [
 
 const CONTACT_QA: QA[] = [
   {
-    q: "Kisi aur cheez mein help chahiye",
-    a: `Contact page se message bhejo ya ${SUPPORT_EMAIL} par email karo. Data/privacy complaint pehle Grievance Officer ko: ${GRIEVANCE_OFFICER_EMAIL}.`,
+    q: "I need help with something else",
+    a: `Send a message from the Contact page or email ${SUPPORT_EMAIL}. For a data / privacy complaint, contact the Grievance Officer first: ${GRIEVANCE_OFFICER_EMAIL}.`,
   },
 ];
 
@@ -156,7 +156,7 @@ export default function HelpPage() {
     <>
       <Masthead
         title="Help Center"
-        tagline="Zyadatar sawaalon ka jawab yahin — nahi mila to Contact page hai."
+        tagline="Most questions are answered here — if not, there's the Contact page."
       />
       <main className="wrap" id="main">
         <script
@@ -178,11 +178,12 @@ export default function HelpPage() {
           ))}
 
           <section className="faq-cat">
-            <h2>Aur kuch?</h2>
+            <h2>Anything else?</h2>
             <p className="prose-note">
-              Yahan jawab nahi mila? <a href="/contact">Contact &amp; Support</a>{" "}
-              page se seedha message bhejo — help, bug, ya fare galat hone ki
-              shikayat. Data / privacy complaint ke liye Grievance Officer:{" "}
+              Didn’t find the answer here? Send a message from the{" "}
+              <a href="/contact">Contact &amp; Support</a> page — help, a bug, or
+              a wrong-fare complaint. For a data / privacy complaint, contact the
+              Grievance Officer:{" "}
               <a href={`mailto:${GRIEVANCE_OFFICER_EMAIL}`}>
                 {GRIEVANCE_OFFICER_EMAIL}
               </a>{" "}

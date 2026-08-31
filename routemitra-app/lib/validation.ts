@@ -6,16 +6,16 @@ export const emailSchema = z
   .string()
   .trim()
   .toLowerCase()
-  .email("Sahi email daalo")
+  .email("Enter a valid email")
   .max(200);
 
 export const passwordSchema = z
   .string()
-  .min(8, "Password kam se kam 8 characters")
+  .min(8, "Password must be at least 8 characters")
   .max(200);
 
 export const signupSchema = z.object({
-  name: z.string().trim().min(1, "Naam chahiye").max(80),
+  name: z.string().trim().min(1, "Name is required").max(80),
   email: emailSchema,
   password: passwordSchema,
   turnstileToken: z.string().optional(),
@@ -65,7 +65,7 @@ export const feedbackKinds = ["idea", "bug", "fare", "support", "other"] as cons
 
 export const feedbackSchema = z.object({
   kind: z.enum(feedbackKinds).catch("other"),
-  message: z.string().trim().min(4, "Thoda detail likho").max(4000),
+  message: z.string().trim().min(4, "Please add a little more detail").max(4000),
   // optional — blank string is fine, but a non-blank value must look like an email
   email: z
     .string()
@@ -75,7 +75,7 @@ export const feedbackSchema = z.object({
     .optional()
     .refine(
       (v) => !v || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v),
-      "Sahi email daalo (ya khali chhod do)",
+      "Enter a valid email (or leave it blank)",
     ),
   page: z.string().trim().max(300).optional(),
 });

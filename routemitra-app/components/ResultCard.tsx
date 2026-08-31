@@ -58,7 +58,7 @@ export default function ResultCard({
               {option.indicative && (
                 <span
                   className="badge"
-                  title="Live provider API abhi connect nahi — ye fare estimate hai. Final price booking page par confirm karo."
+                  title="Live provider API not connected yet — this fare is an estimate. Confirm the final price on the booking page."
                 >
                   indicative
                 </span>
@@ -98,7 +98,7 @@ export default function ResultCard({
       {d2d && (
         <div className="d2d">
           <div className="d2d-total">
-            🏠 Ghar se ghar tak: <b>{formatPrice(d2d.total_price)}</b> ·{" "}
+            🏠 Door to door: <b>{formatPrice(d2d.total_price)}</b> ·{" "}
             <b>{formatDuration(d2d.total_duration_min)}</b>
             <span className="badge">est.</span>
           </div>

@@ -30,7 +30,7 @@ export async function generateMetadata({
   if (!route) return { title: { absolute: "Route not found — RouteMitra" } };
   const { from, to } = route;
   const title = `${from} to ${to} — Bus, Train & Flight compare`;
-  const description = `${from} se ${to} jaane ke bus, train aur flight options ek jagah — price aur time compare karke sabse sasta ya sabse tez chuno.`;
+  const description = `Bus, train and flight options from ${from} to ${to} in one place — compare price and time to pick the cheapest or the fastest.`;
   return {
     title,
     description,
@@ -63,22 +63,22 @@ export default async function RoutePage({
     mainEntity: [
       {
         "@type": "Question",
-        name: `${from} se ${to} ka sabse sasta option kya hai?`,
+        name: `What is the cheapest way from ${from} to ${to}?`,
         acceptedAnswer: {
           "@type": "Answer",
           text: cheapest
-            ? `Sabse sasta ${cheapest.mode} hai — ${cheapest.operator}, ${formatPrice(cheapest.price)} ke aas-paas, ${formatDuration(cheapest.duration_min)}.`
-            : "Abhi is route ke liye data available nahi hai.",
+            ? `The cheapest is by ${cheapest.mode} — ${cheapest.operator}, around ${formatPrice(cheapest.price)}, ${formatDuration(cheapest.duration_min)}.`
+            : "No data is available for this route yet.",
         },
       },
       {
         "@type": "Question",
-        name: `${from} se ${to} sabse jaldi kaise pahunchein?`,
+        name: `What is the fastest way from ${from} to ${to}?`,
         acceptedAnswer: {
           "@type": "Answer",
           text: fastest
-            ? `Sabse tez ${fastest.mode} hai — ${fastest.operator}, ${formatDuration(fastest.duration_min)}.`
-            : "Abhi is route ke liye data available nahi hai.",
+            ? `The fastest is by ${fastest.mode} — ${fastest.operator}, ${formatDuration(fastest.duration_min)}.`
+            : "No data is available for this route yet.",
         },
       },
     ],
@@ -94,7 +94,7 @@ export default async function RoutePage({
         title={`${from} → ${to}`}
         tagline={
           <>
-            {from} se {to} — <b>bus, train aur flight</b> ek jagah compare karo.
+            {from} to {to} — compare <b>bus, train and flight</b> in one place.
           </>
         }
       />
@@ -105,12 +105,12 @@ export default async function RoutePage({
         <p className="route-intro">
           {cheapest ? (
             <>
-              Sabse sasta: <b>{formatPrice(cheapest.price)}</b> (
-              {cheapest.mode}) · Sabse tez:{" "}
+              Cheapest: <b>{formatPrice(cheapest.price)}</b> (
+              {cheapest.mode}) · Fastest:{" "}
               <b>{formatDuration(fastest.duration_min)}</b> ({fastest.mode})
             </>
           ) : (
-            "Is route ke liye abhi options available nahi hain."
+            "No options are available for this route yet."
           )}
         </p>
 
@@ -130,12 +130,12 @@ export default async function RoutePage({
         )}
 
         <p className="route-note">
-          Kuch fares indicative ho sakte hain — live price ke liye &quot;Book
-          karein&quot; se respective platform par jao.
+          Some fares may be indicative — for the live price, use &quot;Book
+          now&quot; to go to the respective platform.
         </p>
 
         <nav className="popular">
-          <h2>Aur routes</h2>
+          <h2>More routes</h2>
           <div className="popular-grid">
             {popularRouteSlugs()
               .filter((s) => s !== slug)

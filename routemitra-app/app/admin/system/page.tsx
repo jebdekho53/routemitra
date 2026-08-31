@@ -44,7 +44,7 @@ export default async function AdminSystem() {
           <tbody>
             {errors.length === 0 && (
               <tr>
-                <td className="muted">koi error nahi 🎉</td>
+                <td className="muted">no errors 🎉</td>
               </tr>
             )}
             {errors.map((e, i) => (
@@ -57,8 +57,8 @@ export default async function AdminSystem() {
           </tbody>
         </table>
         <p className="muted">
-          Client-side + full stack traces Sentry se aayenge (SENTRY_DSN set
-          karo). Abhi sirf server errors ki `errors` table hai.
+          Client-side and full stack traces will come from Sentry once SENTRY_DSN
+          is set. For now only server errors are captured in the `errors` table.
         </p>
       </section>
     </>

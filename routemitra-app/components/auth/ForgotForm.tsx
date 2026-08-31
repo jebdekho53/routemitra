@@ -22,8 +22,8 @@ export default function ForgotForm() {
   if (done) {
     return (
       <p className="auth-ok">
-        Agar ye email registered hai to reset link bhej diya gaya hai. Inbox
-        (aur spam) check karo.
+        If that email is registered, a reset link has been sent. Check your
+        inbox (and spam).
       </p>
     );
   }
@@ -42,7 +42,7 @@ export default function ForgotForm() {
         />
       </div>
       <button type="submit" className="go-btn" disabled={busy}>
-        {busy ? "..." : "Reset link bhejo"}
+        {busy ? "…" : "Send reset link"}
       </button>
     </form>
   );

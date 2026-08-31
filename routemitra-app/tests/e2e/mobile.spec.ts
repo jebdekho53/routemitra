@@ -107,11 +107,11 @@ test("bottom tab bar: shown on mobile, hidden on desktop", async ({ page }) => {
 test("mobile search flow works end to end", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("load");
-  await page.getByLabel("Kahan se").fill("Delhi");
-  await page.getByLabel("Kahan tak").fill("Chandigarh");
-  await page.getByRole("button", { name: "Dhoondo" }).click();
+  await page.getByLabel("From", { exact: true }).fill("Delhi");
+  await page.getByLabel("To", { exact: true }).fill("Chandigarh");
+  await page.getByRole("button", { name: "Search" }).click();
   await expect(page).toHaveURL(/from=Delhi&to=Chandigarh/);
   await expect(page.locator(".rc:not(.rc-skeleton)").first()).toBeVisible();
   // form carried the query across the redirect
-  await expect(page.getByLabel("Kahan se")).toHaveValue("Delhi");
+  await expect(page.getByLabel("From", { exact: true })).toHaveValue("Delhi");
 });

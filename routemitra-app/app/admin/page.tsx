@@ -24,8 +24,8 @@ export default async function AdminOverview({
           <h1>Overview</h1>
         </header>
         <AdminEmpty>
-          DATABASE_URL set nahi hai — traction, feedback aur errors console mein
-          ja rahe hain. Neon / Supabase connect karke redeploy karo.
+          DATABASE_URL is not set — traction, feedback and errors are going to
+          the console. Connect Neon / Supabase and redeploy.
         </AdminEmpty>
       </>
     );
@@ -55,7 +55,7 @@ export default async function AdminOverview({
         </Link>
         <Link href="/admin/traffic" className="admin-card">
           <span className="n">{d2dPct}%</span>
-          <span className="sub">ghar-se-ghar</span>
+          <span className="sub">door-to-door</span>
           <span className="delta">{m.searches.doorToDoor} of {m.searches.window}</span>
         </Link>
         <Link href="/admin/traffic" className="admin-card">
@@ -103,7 +103,7 @@ export default async function AdminOverview({
           <tbody>
             {m.topRoutes.length === 0 && (
               <tr>
-                <td className="muted">abhi koi search nahi</td>
+                <td className="muted">no searches yet</td>
               </tr>
             )}
             {m.topRoutes.slice(0, 6).map((r) => (

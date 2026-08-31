@@ -23,11 +23,11 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "RouteMitra — Bus, Train & Flight ek jagah",
+    default: "RouteMitra — Bus, Train & Flight in one place",
     template: "%s | RouteMitra",
   },
   description:
-    "Ek city se dusri city — bus, train aur flight teeno options ek hi jagah compare karo.",
+    "Compare bus, train and flight options between two cities in one place.",
   openGraph: { siteName: "RouteMitra", type: "website" },
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "RouteMitra" },
@@ -49,7 +49,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="hi" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* apply saved theme before paint — avoids a flash */}
         <script

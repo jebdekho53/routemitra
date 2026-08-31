@@ -19,7 +19,7 @@ export default function TermsPage() {
             and flight options between two places in India, plus an optional
             door-to-door fare estimate. RouteMitra does not sell tickets,
             does not process payments, and is not a travel agent — clicking
-            &quot;Book karein&quot; hands you off to the operator or platform
+            &quot;Book now&quot; hands you off to the operator or platform
             (RedBus, IRCTC / a rail partner, an airline, or an OTA) to
             complete the booking there.
           </p>

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const rl = await rateLimit("feedback", clientIp(request), 5, "10 m");
   if (!rl.ok) {
     return NextResponse.json(
-      { error: "Bahut zyada messages. Thodi der baad try karo." },
+      { error: "Too many messages. Please try again later." },
       { status: 429, headers: { "retry-after": "120" } },
     );
   }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error("[feedback] save failed:", err);
     return NextResponse.json(
-      { error: "Save nahi ho paya, thodi der baad try karo." },
+      { error: "Couldn’t save that — please try again shortly." },
       { status: 500 },
     );
   }

@@ -20,7 +20,7 @@ export default async function AdminTraffic({
           <h1>Traffic</h1>
         </header>
         <AdminEmpty>
-          DATABASE_URL set nahi hai — search / click volume record nahi ho raha.
+          DATABASE_URL is not set — search / click volume is not being recorded.
         </AdminEmpty>
       </>
     );
@@ -45,7 +45,7 @@ export default async function AdminTraffic({
         </div>
         <div className="admin-card">
           <span className="n">{d2dPct}%</span>
-          <span className="sub">ghar-se-ghar</span>
+          <span className="sub">door-to-door</span>
           <span className="delta">{t.doorToDoor} of {t.searchWindow}</span>
         </div>
         <div className="admin-card">
@@ -76,7 +76,7 @@ export default async function AdminTraffic({
             <tbody>
               {t.topRoutes.length === 0 && (
                 <tr>
-                  <td className="muted">abhi koi search nahi</td>
+                  <td className="muted">no searches yet</td>
                 </tr>
               )}
               {t.topRoutes.map((r) => (
@@ -97,7 +97,7 @@ export default async function AdminTraffic({
             <tbody>
               {t.byMode.length === 0 && (
                 <tr>
-                  <td className="muted">abhi koi click nahi</td>
+                  <td className="muted">no clicks yet</td>
                 </tr>
               )}
               {t.byMode.map((r) => (
@@ -117,7 +117,7 @@ export default async function AdminTraffic({
           <tbody>
             {t.recentClicks.length === 0 && (
               <tr>
-                <td className="muted">abhi koi click nahi</td>
+                <td className="muted">no clicks yet</td>
               </tr>
             )}
             {t.recentClicks.map((c, i) => (

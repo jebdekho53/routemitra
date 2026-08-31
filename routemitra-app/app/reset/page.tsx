@@ -4,12 +4,12 @@ import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
 import ResetForm from "@/components/auth/ResetForm";
 
-export const metadata: Metadata = { title: "Naya password" };
+export const metadata: Metadata = { title: "New password" };
 
 export default function ResetPage() {
   return (
     <>
-      <Masthead title="Naya password" />
+      <Masthead title="New password" />
       <main className="wrap">
         <div className="auth-card">
           <Suspense fallback={null}>

@@ -26,16 +26,16 @@ export default function ResetForm() {
       return;
     }
     const body = await res.json().catch(() => ({}));
-    setError(body.error || body.errors?.password || "Reset fail ho gaya.");
+    setError(body.error || body.errors?.password || "Reset failed.");
   }
 
   if (!token) {
-    return <p className="auth-error">Reset link adhoora hai.</p>;
+    return <p className="auth-error">This reset link is incomplete.</p>;
   }
   if (done) {
     return (
       <p className="auth-ok">
-        Password badal gaya. Ab <Link href="/login">login</Link> karo.
+        Password changed. Now <Link href="/login">sign in</Link>.
       </p>
     );
   }
@@ -44,7 +44,7 @@ export default function ResetForm() {
     <form className="auth-form" onSubmit={onSubmit}>
       {error && <p className="auth-error">{error}</p>}
       <div className="field">
-        <label htmlFor="password">Naya password (min 8)</label>
+        <label htmlFor="password">New password (min 8)</label>
         <input
           id="password"
           type="password"
@@ -56,7 +56,7 @@ export default function ResetForm() {
         />
       </div>
       <button type="submit" className="go-btn" disabled={busy}>
-        {busy ? "..." : "Password set karo"}
+        {busy ? "…" : "Set password"}
       </button>
     </form>
   );

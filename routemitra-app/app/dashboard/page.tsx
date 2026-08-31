@@ -25,8 +25,8 @@ export default async function DashboardPage() {
         <Masthead title="Dashboard" />
         <main className="wrap">
           <p className="muted">
-            Database configure nahi hai — saved searches, watches aur favourites
-            store nahi ho rahe.
+            The database isn’t configured — saved searches, watches and
+            favourites aren’t being stored.
           </p>
         </main>
         <SiteFooter />
@@ -46,14 +46,14 @@ export default async function DashboardPage() {
       <main className="wrap">
         {!session.user.verified && (
           <p className="auth-hint">
-            Email abhi verify nahi hui — verification link inbox mein dekho.
+            Your email isn’t verified yet — check your inbox for the link.
           </p>
         )}
 
         <section className="dash-block">
           <h2>Recent searches</h2>
           {searches.length === 0 ? (
-            <p className="muted">Abhi tak koi search nahi.</p>
+            <p className="muted">No searches yet.</p>
           ) : (
             <ul className="dash-list">
               {searches.map((s) => (

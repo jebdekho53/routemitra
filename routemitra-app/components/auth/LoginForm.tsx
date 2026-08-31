@@ -26,7 +26,7 @@ export default function LoginForm() {
     });
     setBusy(false);
     if (res?.error) {
-      setError("Email ya password galat hai.");
+      setError("Incorrect email or password.");
       return;
     }
     router.push(callbackUrl);
@@ -36,10 +36,10 @@ export default function LoginForm() {
   return (
     <form className="auth-form" onSubmit={onSubmit}>
       {verify === "ok" && (
-        <p className="auth-ok">Email verify ho gaya — ab login karo.</p>
+        <p className="auth-ok">Email verified — you can sign in now.</p>
       )}
       {verify === "invalid" && (
-        <p className="auth-error">Verification link invalid ya expire ho gaya.</p>
+        <p className="auth-error">That verification link is invalid or has expired.</p>
       )}
       {error && <p className="auth-error">{error}</p>}
 
@@ -66,7 +66,7 @@ export default function LoginForm() {
         />
       </div>
       <button type="submit" className="go-btn" disabled={busy}>
-        {busy ? "..." : "Login"}
+        {busy ? "…" : "Sign in"}
       </button>
     </form>
   );

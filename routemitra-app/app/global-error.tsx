@@ -9,7 +9,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html lang="hi">
+    <html lang="en">
       <body
         style={{
           fontFamily: "system-ui, sans-serif",
@@ -23,8 +23,8 @@ export default function GlobalError({
         }}
       >
         <div style={{ textAlign: "center", padding: 24 }}>
-          <h1 style={{ fontSize: 22 }}>Kuch gadbad ho gayi</h1>
-          <p>Page load nahi ho paaya. Dobara try karo.</p>
+          <h1 style={{ fontSize: 22 }}>Something went wrong</h1>
+          <p>This page failed to load. Please try again.</p>
           <button
             type="button"
             onClick={() => reset()}
@@ -39,7 +39,7 @@ export default function GlobalError({
               cursor: "pointer",
             }}
           >
-            Dobara try karo
+            Try again
           </button>
           {error.digest && (
             <p style={{ fontSize: 12, opacity: 0.6, marginTop: 12 }}>

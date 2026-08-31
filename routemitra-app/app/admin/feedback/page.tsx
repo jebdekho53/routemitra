@@ -25,8 +25,8 @@ export default async function AdminFeedback({
           <h1>Feedback</h1>
         </header>
         <AdminEmpty>
-          DATABASE_URL set nahi hai — feedback console mein print ho raha hai,
-          yahan store nahi hota.
+          DATABASE_URL is not set — feedback is printed to the console and not
+          stored here.
         </AdminEmpty>
       </>
     );
@@ -63,7 +63,7 @@ export default async function AdminFeedback({
       <section className="admin-block">
         <FeedbackList rows={rows} />
         {rows.length === 100 && (
-          <p className="muted">Sirf latest 100 dikhaye jaa rahe hain.</p>
+          <p className="muted">Showing the latest 100 only.</p>
         )}
       </section>
     </>

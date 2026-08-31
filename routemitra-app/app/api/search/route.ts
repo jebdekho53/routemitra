@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   const rl = await rateLimit("search", clientIp(request), 60, "1 m");
   if (!rl.ok) {
     return NextResponse.json(
-      { error: "Thodi der ruk kar dobara search karo." },
+      { error: "Please wait a moment before searching again." },
       { status: 429, headers: { "retry-after": "20" } },
     );
   }

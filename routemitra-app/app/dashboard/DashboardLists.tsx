@@ -16,7 +16,7 @@ export function WatchList({ initial }: { initial: RouteWatch[] }) {
     }
   }
   if (watches.length === 0)
-    return <p className="muted">Abhi koi route watch nahi kiya.</p>;
+    return <p className="muted">No routes watched yet.</p>;
   return (
     <ul className="dash-list">
       {watches.map((w) => (
@@ -28,7 +28,7 @@ export function WatchList({ initial }: { initial: RouteWatch[] }) {
             <span className="muted"> · last ₹{w.last_price}</span>
           )}
           <button type="button" className="link-x" onClick={() => remove(w.id)}>
-            hatao
+            Remove
           </button>
         </li>
       ))}
@@ -48,7 +48,7 @@ export function FavouriteList({ initial }: { initial: Favourite[] }) {
     }
   }
   if (favs.length === 0)
-    return <p className="muted">Abhi koi favourite route nahi.</p>;
+    return <p className="muted">No favourite routes yet.</p>;
   return (
     <ul className="dash-list">
       {favs.map((f) => (
@@ -57,7 +57,7 @@ export function FavouriteList({ initial }: { initial: Favourite[] }) {
             {f.from_city} → {f.to_city}
           </Link>
           <button type="button" className="link-x" onClick={() => remove(f.id)}>
-            hatao
+            Remove
           </button>
         </li>
       ))}

@@ -10,7 +10,7 @@ import { rateLimit, clientIp } from "@/lib/ratelimit";
 export async function POST(request: Request) {
   if (!dbEnabled) {
     return NextResponse.json(
-      { error: "Signup abhi available nahi (database configure nahi hai)." },
+      { error: "Sign-up isn’t available yet (no database configured)." },
       { status: 503 },
     );
   }
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const rl = await rateLimit("signup", ip, 5, "10 m");
   if (!rl.ok) {
     return NextResponse.json(
-      { error: "Bahut zyada attempts. Thodi der baad try karo." },
+      { error: "Too many attempts. Please try again later." },
       { status: 429 },
     );
   }
@@ -30,14 +30,14 @@ export async function POST(request: Request) {
   const captchaOk = await verifyTurnstile(data.turnstileToken, ip);
   if (!captchaOk) {
     return NextResponse.json(
-      { error: "CAPTCHA verify nahi hua. Dobara try karo." },
+      { error: "CAPTCHA check failed. Please try again." },
       { status: 400 },
     );
   }
 
   if (await getUserByEmail(data.email)) {
     return NextResponse.json(
-      { error: "Ye email pehle se registered hai. Login karo." },
+      { error: "That email is already registered. Please sign in." },
       { status: 409 },
     );
   }

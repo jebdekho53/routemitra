@@ -14,7 +14,7 @@ export default function ForgotPage() {
         <div className="auth-card">
           <ForgotForm />
           <p className="auth-links">
-            <Link href="/login">Login par wapas</Link>
+            <Link href="/login">Back to sign in</Link>
           </p>
         </div>
       </main>

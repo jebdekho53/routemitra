@@ -143,8 +143,7 @@ export default function SearchResults() {
               ))}
             </div>
             <p className="loading-note">
-              <span className="spinner" /> Bus, train aur flight options la rahe
-              hain…
+              <span className="spinner" /> Fetching bus, train and flight options…
             </p>
           </section>
         )}
@@ -152,7 +151,7 @@ export default function SearchResults() {
         {status === "error" && (
           <section className="empty-state">
             <p>
-              <b>Kuch gadbad ho gayi.</b> Thodi der baad dobara try karo.
+              <b>Something went wrong.</b> Please try again in a moment.
             </p>
           </section>
         )}
@@ -178,7 +177,7 @@ export default function SearchResults() {
                 </b>
                 {meta.cheapest && (
                   <>
-                    {" · "}sabse sasta {formatPrice(meta.cheapest.price)} (
+                    {" · "}cheapest {formatPrice(meta.cheapest.price)} (
                     {meta.cheapest.mode})
                   </>
                 )}
@@ -188,7 +187,7 @@ export default function SearchResults() {
             <div className="mode-filter" role="tablist" aria-label="Mode filter">
               {(
                 [
-                  ["all", "Sab"],
+                  ["all", "All"],
                   ["bus", "Bus"],
                   ["train", "Train"],
                   ["flight", "Flight"],
@@ -232,9 +231,9 @@ export default function SearchResults() {
 
             {sortedOptions.some((o) => o.indicative) && (
               <p className="route-note">
-                <b>indicative</b> wale fare approximate hain (live provider API
-                abhi connect nahi). Actual price aur availability booking page
-                par confirm hoti hai — usually thodi zyada ho sakti hai.
+                <b>Indicative</b> fares are approximate (live provider API not
+                connected yet). Actual price and availability are confirmed on
+                the booking page — usually a little higher.
               </p>
             )}
           </section>
@@ -245,10 +244,10 @@ export default function SearchResults() {
             <p>
               <b>
                 {from && to
-                  ? "Is route ke liye abhi koi option nahi mila."
-                  : "Upar se ek route search karo."}
+                  ? "No options found for this route yet."
+                  : "Search a route above."}
               </b>{" "}
-              Ye sample routes try karo:
+              Try one of these sample routes:
             </p>
             <div className="examples">
               {SAMPLE_ROUTES.map(({ from: f, to: t }) => (

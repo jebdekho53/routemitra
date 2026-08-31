@@ -19,7 +19,7 @@ export async function updateProfileAction(
   formData: FormData,
 ): Promise<State> {
   const session = await auth();
-  if (!session?.user?.id) return { error: "Login karo." };
+  if (!session?.user?.id) return { error: "Please sign in." };
 
   const { data, errors } = parse(updateProfileSchema, {
     name: formData.get("name") || undefined,
@@ -30,7 +30,7 @@ export async function updateProfileAction(
   if (data.email) {
     const clash = await getUserByEmail(data.email);
     if (clash && String(clash.id) !== session.user.id) {
-      return { error: "Ye email kisi aur account se juda hai." };
+      return { error: "That email is linked to another account." };
     }
   }
 
@@ -38,8 +38,8 @@ export async function updateProfileAction(
   revalidatePath("/account");
   return {
     ok: data.email
-      ? "Profile update ho gaya. Naya email verify karna hoga."
-      : "Profile update ho gaya.",
+      ? "Profile updated. You’ll need to verify the new email."
+      : "Profile updated.",
   };
 }
 
@@ -48,7 +48,7 @@ export async function changePasswordAction(
   formData: FormData,
 ): Promise<State> {
   const session = await auth();
-  if (!session?.user?.id) return { error: "Login karo." };
+  if (!session?.user?.id) return { error: "Please sign in." };
 
   const { data, errors } = parse(changePasswordSchema, {
     currentPassword: formData.get("currentPassword"),
@@ -57,15 +57,15 @@ export async function changePasswordAction(
   if (errors) return { error: Object.values(errors)[0] };
 
   const user = await getUserById(session.user.id);
-  if (!user) return { error: "User nahi mila." };
+  if (!user) return { error: "User not found." };
   if (!user.password_hash) {
-    return { error: "Ye account Google se bana hai — password set nahi hai." };
+    return { error: "This account uses Google sign-in — no password is set." };
   }
   if (!(await verifyPassword(data.currentPassword, user.password_hash))) {
-    return { error: "Current password galat hai." };
+    return { error: "Current password is incorrect." };
   }
   await setPasswordHash(session.user.id, await hashPassword(data.newPassword));
-  return { ok: "Password badal gaya." };
+  return { ok: "Password changed." };
 }
 
 export async function deleteAccountAction(): Promise<void> {

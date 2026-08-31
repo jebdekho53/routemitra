@@ -3,16 +3,16 @@ import { test, expect } from "@playwright/test";
 test("feedback widget opens, validates, and submits", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("button", { name: /Feedback/ }).click();
+  await page.getByRole("button", { name: /feedback/i }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
 
   // pick a type + type a message
-  await dialog.getByRole("button", { name: /Kuch toota/ }).click();
-  await dialog.getByLabel(/Kya kehna hai/).fill("E2E test: results load slow on 3G");
-  await dialog.getByRole("button", { name: "Bhejo" }).click();
+  await dialog.getByRole("button", { name: /Something broke/ }).click();
+  await dialog.getByLabel(/What would you like to tell us/).fill("E2E test: results load slow on 3G");
+  await dialog.getByRole("button", { name: "Send", exact: true }).click();
 
-  await expect(dialog.getByText(/Mil gaya/)).toBeVisible();
+  await expect(dialog.getByText(/Got it/)).toBeVisible();
 });
 
 test("help center renders FAQ accordion with JSON-LD", async ({ page }) => {
@@ -37,9 +37,9 @@ test("contact page renders form and support channels", async ({ page }) => {
   await expect(page.getByLabel("Message")).toBeVisible();
   await expect(page.getByText(/Grievance Officer/)).toBeVisible();
 
-  await page.getByLabel("Message").fill("E2E: kya Kolkata routes aayenge?");
-  await page.getByRole("button", { name: "Bhejo", exact: true }).click();
-  await expect(page.getByText(/Mil gaya/)).toBeVisible();
+  await page.getByLabel("Message").fill("E2E: will Kolkata routes be added?");
+  await page.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(page.getByText(/reached us/)).toBeVisible();
 });
 
 test("admin dashboard + sub-pages are gated by basic auth", async ({

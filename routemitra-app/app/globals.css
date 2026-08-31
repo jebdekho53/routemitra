@@ -1845,7 +1845,7 @@ main.wrap {
 .d2d-legs li {
   margin: 2px 0;
 }
-/* search-type toggle (City to city / Ghar-se-ghar) */
+/* search-type toggle (City to city / Door-to-door) */
 .sf-mode {
   display: flex;
   gap: 4px;

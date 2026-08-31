@@ -33,10 +33,10 @@ export default function Error({
     <main className="wrap">
       <section className="state-card">
         <p className="state-code">500</p>
-        <p>Kuch gadbad ho gayi. Thodi der baad dobara try karo.</p>
+        <p>Something went wrong. Please try again in a moment.</p>
         <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 8 }}>
           <button type="button" className="go-btn" onClick={() => reset()}>
-            Dobara try karo
+            Try again
           </button>
           <Link href="/" className="book-btn">
             Home

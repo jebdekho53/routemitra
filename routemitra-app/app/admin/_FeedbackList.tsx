@@ -12,7 +12,7 @@ const KIND_EMOJI: Record<string, string> = {
 
 export default function FeedbackList({ rows }: { rows: FeedbackRow[] }) {
   if (rows.length === 0) {
-    return <p className="muted">Kuch nahi 🎉</p>;
+    return <p className="muted">Nothing here 🎉</p>;
   }
   return (
     <ul className="admin-inbox">

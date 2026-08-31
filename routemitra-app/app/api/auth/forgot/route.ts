@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
   const rl = await rateLimit("forgot", clientIp(request), 5, "15 m");
   if (!rl.ok) {
-    return NextResponse.json({ error: "Thodi der baad try karo." }, { status: 429 });
+    return NextResponse.json({ error: "Please try again in a moment." }, { status: 429 });
   }
 
   const { data, errors } = parse(forgotSchema, await request.json().catch(() => ({})));

@@ -14,7 +14,7 @@ export default async function AdminUsers() {
         <header className="admin-page-head">
           <h1>Users</h1>
         </header>
-        <AdminEmpty>DATABASE_URL set nahi hai — accounts disabled.</AdminEmpty>
+        <AdminEmpty>DATABASE_URL is not set — accounts are disabled.</AdminEmpty>
       </>
     );
   }
@@ -59,7 +59,7 @@ export default async function AdminUsers() {
           <tbody>
             {u.recentUsers.length === 0 && (
               <tr>
-                <td className="muted">abhi koi user nahi</td>
+                <td className="muted">no users yet</td>
               </tr>
             )}
             {u.recentUsers.map((row) => (
@@ -79,7 +79,7 @@ export default async function AdminUsers() {
           </tbody>
         </table>
         {u.recentUsers.length === 40 && (
-          <p className="muted">Latest 40 dikhaye jaa rahe hain.</p>
+          <p className="muted">Showing the latest 40.</p>
         )}
       </section>
     </>
