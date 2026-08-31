@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { listSampleRoutes, sampleRouteSummary } from "@/lib/sample-data";
 import { toSlug } from "@/lib/routes";
+import { guideSlugs, guideFromSlug } from "@/lib/guides";
 import { formatPrice, formatDuration } from "@/lib/format";
 
 export const revalidate = 3600;
@@ -89,6 +90,25 @@ export default function Home() {
                 </span>
               </Link>
             ))}
+          </div>
+        </section>
+
+        <section className="home-routes">
+          <div className="home-routes-head">
+            <h2>Door-to-door guides</h2>
+            <span className="muted">Full trip cost — cab, intercity, cab</span>
+          </div>
+          <div className="popular-grid">
+            {guideSlugs()
+              .slice(0, 10)
+              .map((s) => {
+                const r = guideFromSlug(s)!;
+                return (
+                  <Link key={s} href={`/travel/${s}`}>
+                    {r.from} → {r.to}
+                  </Link>
+                );
+              })}
           </div>
         </section>
 

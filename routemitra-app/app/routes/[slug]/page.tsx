@@ -114,6 +114,14 @@ export default async function RoutePage({
           )}
         </p>
 
+        <p className="route-note">
+          Planning the whole trip?{" "}
+          <Link href={`/travel/${slug}`}>
+            See the {from} → {to} door-to-door guide
+          </Link>{" "}
+          — cost and time including the cab at each end.
+        </p>
+
         {options.length > 0 && (
           <section className="results">
             <div className="cards">
