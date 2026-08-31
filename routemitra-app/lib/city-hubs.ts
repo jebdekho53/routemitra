@@ -93,6 +93,81 @@ export const CITY_HUBS: Record<string, CityHubs> = {
     train: { code: "CBE", name: "Coimbatore Junction", lat: 10.9977, lon: 76.9668 },
     bus: { code: "CBE-GH", name: "Gandhipuram Bus Stand", lat: 11.0183, lon: 76.9668 },
   },
+  kochi: {
+    flight: { code: "COK", name: "Cochin International Airport", lat: 10.152, lon: 76.4019 },
+    train: { code: "ERS", name: "Ernakulam Junction (South)", lat: 9.9697, lon: 76.287 },
+    bus: { code: "EKM-KSRTC", name: "Ernakulam KSRTC Bus Stand", lat: 9.976, lon: 76.285 },
+  },
+  nagpur: {
+    flight: { code: "NAG", name: "Dr. Ambedkar Airport, Nagpur", lat: 21.0922, lon: 79.0472 },
+    train: { code: "NGP", name: "Nagpur Junction", lat: 21.1527, lon: 79.0882 },
+    bus: { code: "NGP-GP", name: "Ganeshpeth Bus Stand, Nagpur", lat: 21.144, lon: 79.0935 },
+  },
+  indore: {
+    flight: { code: "IDR", name: "Devi Ahilyabai Holkar Airport, Indore", lat: 22.7218, lon: 75.8011 },
+    train: { code: "INDB", name: "Indore Junction", lat: 22.7167, lon: 75.8589 },
+    bus: { code: "IDR-SW", name: "Sarwate Bus Stand, Indore", lat: 22.7139, lon: 75.8617 },
+  },
+  bhopal: {
+    flight: { code: "BHO", name: "Raja Bhoj Airport, Bhopal", lat: 23.2875, lon: 77.3374 },
+    train: { code: "BPL", name: "Bhopal Junction", lat: 23.2681, lon: 77.403 },
+    bus: { code: "BPL-NDR", name: "ISBT Bhopal (Nadra)", lat: 23.2534, lon: 77.437 },
+  },
+  patna: {
+    flight: { code: "PAT", name: "Jayaprakash Narayan Airport, Patna", lat: 25.5913, lon: 85.088 },
+    train: { code: "PNBE", name: "Patna Junction", lat: 25.6015, lon: 85.1373 },
+    bus: { code: "PAT-ISBT", name: "Patna ISBT (Bairiya)", lat: 25.551, lon: 85.183 },
+  },
+  guwahati: {
+    flight: { code: "GAU", name: "LGB International Airport, Guwahati", lat: 26.1061, lon: 91.5859 },
+    train: { code: "GHY", name: "Guwahati Junction", lat: 26.1833, lon: 91.7462 },
+    bus: { code: "GHY-ISBT", name: "ISBT Guwahati (Betkuchi)", lat: 26.119, lon: 91.705 },
+  },
+  amritsar: {
+    flight: { code: "ATQ", name: "Sri Guru Ram Dass Jee Airport, Amritsar", lat: 31.7096, lon: 74.7973 },
+    train: { code: "ASR", name: "Amritsar Junction", lat: 31.637, lon: 74.876 },
+    bus: { code: "ASR-ISBT", name: "Amritsar ISBT", lat: 31.63, lon: 74.883 },
+  },
+  surat: {
+    flight: { code: "STV", name: "Surat Airport (Magdalla)", lat: 21.1141, lon: 72.7418 },
+    train: { code: "ST", name: "Surat Railway Station", lat: 21.2063, lon: 72.841 },
+    bus: { code: "ST-CBS", name: "Surat Central Bus Stand", lat: 21.202, lon: 72.838 },
+  },
+  vadodara: {
+    flight: { code: "BDQ", name: "Vadodara Airport (Harni)", lat: 22.3362, lon: 73.2263 },
+    train: { code: "BRC", name: "Vadodara Junction", lat: 22.31, lon: 73.1812 },
+    bus: { code: "BRC-CBS", name: "Vadodara Central Bus Stand", lat: 22.3072, lon: 73.183 },
+  },
+  visakhapatnam: {
+    flight: { code: "VTZ", name: "Visakhapatnam Airport", lat: 17.7211, lon: 83.2245 },
+    train: { code: "VSKP", name: "Visakhapatnam Junction", lat: 17.7231, lon: 83.301 },
+    bus: { code: "VSKP-RTC", name: "Dwaraka Bus Station (RTC Complex)", lat: 17.735, lon: 83.3082 },
+  },
+  thiruvananthapuram: {
+    flight: { code: "TRV", name: "Trivandrum International Airport", lat: 8.4821, lon: 76.92 },
+    train: { code: "TVC", name: "Thiruvananthapuram Central", lat: 8.4884, lon: 76.952 },
+    bus: { code: "TVC-KSRTC", name: "Thampanoor Central Bus Stand", lat: 8.488, lon: 76.953 },
+  },
+  nashik: {
+    flight: { code: "ISK", name: "Nashik (Ozar) Airport", lat: 20.1191, lon: 73.9128 },
+    train: { code: "NK", name: "Nashik Road Railway Station", lat: 19.949, lon: 73.8393 },
+    bus: { code: "NK-CBS", name: "Nashik Central Bus Stand (CBS)", lat: 19.9968, lon: 73.7899 },
+  },
+  agra: {
+    flight: { code: "AGR", name: "Agra Airport (Kheria)", lat: 27.1558, lon: 77.9609 },
+    train: { code: "AGC", name: "Agra Cantt Railway Station", lat: 27.1568, lon: 78.0006 },
+    bus: { code: "AGR-ISBT", name: "Agra ISBT (Transport Nagar)", lat: 27.205, lon: 77.98 },
+  },
+  mysuru: {
+    flight: { code: "MYQ", name: "Mysore Airport", lat: 12.23, lon: 76.6557 },
+    train: { code: "MYS", name: "Mysuru Junction", lat: 12.311, lon: 76.639 },
+    bus: { code: "MYS-CBS", name: "Mysuru City Bus Stand (KSRTC)", lat: 12.308, lon: 76.651 },
+  },
+  jodhpur: {
+    flight: { code: "JDH", name: "Jodhpur Airport", lat: 26.2511, lon: 73.0489 },
+    train: { code: "JU", name: "Jodhpur Junction", lat: 26.293, lon: 73.023 },
+    bus: { code: "JU-RB", name: "Jodhpur (Raika Bagh) Bus Stand", lat: 26.283, lon: 73.04 },
+  },
 };
 
 export function hubForCity(city: string, mode: Mode): Hub | null {

@@ -180,6 +180,259 @@ export const ROUTES: Record<string, SampleRoute> = {
       { mode: "flight", operator: "IndiGo 6E-6789", price: 3550, duration_min: 75, departure: "14:20", arrival: "15:35", link: "https://www.cleartrip.com/" },
     ],
   },
+  "delhi|agra": {
+    from: "Delhi",
+    to: "Agra",
+    options: [
+      { mode: "train", operator: "Gatimaan Express (12050)", price: 780, duration_min: 100, departure: "08:10", arrival: "09:50", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Bhopal Shatabdi (12002)", price: 720, duration_min: 110, departure: "06:00", arrival: "07:50", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "UPSRTC AC (Yamuna Expy)", price: 450, duration_min: 240, departure: "07:30", arrival: "11:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "delhi|amritsar": {
+    from: "Delhi",
+    to: "Amritsar",
+    options: [
+      { mode: "train", operator: "Amritsar Shatabdi (12013)", price: 900, duration_min: 375, departure: "07:20", arrival: "13:35", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Swarna Shatabdi (12029)", price: 880, duration_min: 360, departure: "07:20", arrival: "13:20", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "Volvo AC (PRTC)", price: 750, duration_min: 540, departure: "22:00", arrival: "07:00", link: "https://www.redbus.in/" },
+      { mode: "flight", operator: "IndiGo 6E-2033", price: 3600, duration_min: 70, departure: "18:40", arrival: "19:50", link: "https://www.cleartrip.com/" },
+    ],
+  },
+  "delhi|nagpur": {
+    from: "Delhi",
+    to: "Nagpur",
+    options: [
+      { mode: "train", operator: "Nagpur Duronto (12290)", price: 1420, duration_min: 885, departure: "20:15", arrival: "11:00", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-6115", price: 4250, duration_min: 105, departure: "12:20", arrival: "14:05", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private Sleeper (via Betul)", price: 1650, duration_min: 1080, departure: "16:00", arrival: "10:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "delhi|indore": {
+    from: "Delhi",
+    to: "Indore",
+    options: [
+      { mode: "train", operator: "Indore Intercity (12416)", price: 820, duration_min: 840, departure: "23:45", arrival: "13:45", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-419", price: 3850, duration_min: 95, departure: "07:10", arrival: "08:45", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Volvo Sleeper (Verma)", price: 1250, duration_min: 900, departure: "18:00", arrival: "09:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "delhi|patna": {
+    from: "Delhi",
+    to: "Patna",
+    options: [
+      { mode: "train", operator: "Sampoorna Kranti (12394)", price: 1050, duration_min: 750, departure: "17:35", arrival: "06:05", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Rajdhani Express (12310)", price: 2150, duration_min: 620, departure: "17:15", arrival: "03:35", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-2172", price: 4400, duration_min: 110, departure: "09:30", arrival: "11:20", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private AC Sleeper", price: 1400, duration_min: 1140, departure: "15:00", arrival: "10:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "mumbai|nagpur": {
+    from: "Mumbai",
+    to: "Nagpur",
+    options: [
+      { mode: "train", operator: "Nagpur Duronto (12290)", price: 1180, duration_min: 720, departure: "20:40", arrival: "08:40", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-813", price: 3550, duration_min: 85, departure: "13:15", arrival: "14:40", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private Sleeper (Hirkani)", price: 1500, duration_min: 840, departure: "17:30", arrival: "07:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "mumbai|surat": {
+    from: "Mumbai",
+    to: "Surat",
+    options: [
+      { mode: "train", operator: "Flying Ranee (12921)", price: 260, duration_min: 225, departure: "17:55", arrival: "21:40", link: "https://www.confirmtkt.com/" },
+      { mode: "train", operator: "Gujarat Mail (12901)", price: 240, duration_min: 255, departure: "21:50", arrival: "02:05", link: "https://www.irctc.co.in/" },
+      { mode: "bus", operator: "Volvo AC (Gujarat Travels)", price: 450, duration_min: 300, departure: "23:30", arrival: "04:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "mumbai|nashik": {
+    from: "Mumbai",
+    to: "Nashik",
+    options: [
+      { mode: "train", operator: "Panchavati Express (12109)", price: 180, duration_min: 210, departure: "06:10", arrival: "09:40", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "MSRTC Shivshahi AC", price: 350, duration_min: 240, departure: "08:00", arrival: "12:00", link: "https://www.redbus.in/" },
+      { mode: "bus", operator: "Private Non-AC", price: 280, duration_min: 270, departure: "14:00", arrival: "18:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "mumbai|indore": {
+    from: "Mumbai",
+    to: "Indore",
+    options: [
+      { mode: "train", operator: "Avantika Express (12961)", price: 520, duration_min: 795, departure: "19:05", arrival: "08:20", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-596", price: 3950, duration_min: 80, departure: "10:05", arrival: "11:25", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Volvo Sleeper (Chartered)", price: 950, duration_min: 840, departure: "18:30", arrival: "08:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "pune|nashik": {
+    from: "Pune",
+    to: "Nashik",
+    options: [
+      { mode: "bus", operator: "MSRTC Shivshahi AC", price: 380, duration_min: 300, departure: "07:30", arrival: "12:30", link: "https://www.redbus.in/" },
+      { mode: "bus", operator: "Private Non-AC Seater", price: 300, duration_min: 330, departure: "15:00", arrival: "20:30", link: "https://www.redbus.in/" },
+      { mode: "train", operator: "Panchavati / passenger link", price: 160, duration_min: 360, departure: "05:20", arrival: "11:20", link: "https://www.confirmtkt.com/" },
+    ],
+  },
+  "pune|hyderabad": {
+    from: "Pune",
+    to: "Hyderabad",
+    options: [
+      { mode: "bus", operator: "Orange Tours (AC Sleeper)", price: 900, duration_min: 600, departure: "21:00", arrival: "07:00", link: "https://www.redbus.in/" },
+      { mode: "train", operator: "Shatabdi Express (12026)", price: 460, duration_min: 780, departure: "14:55", arrival: "03:55", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-772", price: 3200, duration_min: 70, departure: "12:10", arrival: "13:20", link: "https://www.cleartrip.com/" },
+    ],
+  },
+  "bengaluru|kochi": {
+    from: "Bengaluru",
+    to: "Kochi",
+    options: [
+      { mode: "train", operator: "Island Express (16525)", price: 450, duration_min: 780, departure: "19:15", arrival: "08:15", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-455", price: 2650, duration_min: 75, departure: "09:40", arrival: "10:55", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "KSRTC Airavat (Volvo)", price: 950, duration_min: 630, departure: "22:00", arrival: "08:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "bengaluru|mysuru": {
+    from: "Bengaluru",
+    to: "Mysuru",
+    options: [
+      { mode: "train", operator: "Shatabdi Express (12007)", price: 380, duration_min: 120, departure: "11:00", arrival: "13:00", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Chamundi Express (16215)", price: 120, duration_min: 180, departure: "18:15", arrival: "21:15", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "KSRTC Airavat (Volvo)", price: 280, duration_min: 210, departure: "08:00", arrival: "11:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "chennai|kochi": {
+    from: "Chennai",
+    to: "Kochi",
+    options: [
+      { mode: "train", operator: "Alleppey Express (22639)", price: 420, duration_min: 690, departure: "20:45", arrival: "08:15", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-374", price: 2800, duration_min: 80, departure: "13:20", arrival: "14:40", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "KPN Travels (AC Sleeper)", price: 900, duration_min: 660, departure: "21:00", arrival: "08:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "chennai|thiruvananthapuram": {
+    from: "Chennai",
+    to: "Thiruvananthapuram",
+    options: [
+      { mode: "train", operator: "Trivandrum Mail (12623)", price: 560, duration_min: 930, departure: "19:00", arrival: "10:30", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-6547", price: 3400, duration_min: 85, departure: "11:50", arrival: "13:15", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "KSRTC / private Sleeper", price: 1100, duration_min: 900, departure: "18:30", arrival: "09:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "chennai|visakhapatnam": {
+    from: "Chennai",
+    to: "Visakhapatnam",
+    options: [
+      { mode: "train", operator: "Coromandel Express (12841)", price: 560, duration_min: 780, departure: "08:45", arrival: "21:45", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-717", price: 3600, duration_min: 90, departure: "16:10", arrival: "17:40", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private AC Sleeper", price: 1300, duration_min: 900, departure: "17:00", arrival: "08:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "hyderabad|visakhapatnam": {
+    from: "Hyderabad",
+    to: "Visakhapatnam",
+    options: [
+      { mode: "train", operator: "Godavari Express (12728)", price: 460, duration_min: 720, departure: "17:15", arrival: "05:15", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-333", price: 3000, duration_min: 75, departure: "10:20", arrival: "11:35", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "APSRTC Garuda Plus", price: 1000, duration_min: 720, departure: "21:30", arrival: "09:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "hyderabad|nagpur": {
+    from: "Hyderabad",
+    to: "Nagpur",
+    options: [
+      { mode: "train", operator: "Rajdhani Express (12722)", price: 900, duration_min: 390, departure: "23:15", arrival: "05:45", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Sampark Kranti (12707)", price: 380, duration_min: 450, departure: "13:25", arrival: "20:55", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-641", price: 3400, duration_min: 70, departure: "18:45", arrival: "19:55", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private AC Sleeper", price: 850, duration_min: 540, departure: "22:00", arrival: "07:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "kolkata|patna": {
+    from: "Kolkata",
+    to: "Patna",
+    options: [
+      { mode: "train", operator: "Vande Bharat (22349)", price: 1100, duration_min: 420, departure: "15:20", arrival: "22:20", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Vikramshila Express (12367)", price: 380, duration_min: 540, departure: "21:00", arrival: "06:00", link: "https://www.confirmtkt.com/" },
+      { mode: "flight", operator: "IndiGo 6E-767", price: 3200, duration_min: 70, departure: "12:35", arrival: "13:45", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private AC Sleeper", price: 750, duration_min: 600, departure: "20:00", arrival: "06:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "kolkata|guwahati": {
+    from: "Kolkata",
+    to: "Guwahati",
+    options: [
+      { mode: "train", operator: "Saraighat Express (12345)", price: 560, duration_min: 1050, departure: "15:50", arrival: "09:20", link: "https://www.irctc.co.in/" },
+      { mode: "flight", operator: "IndiGo 6E-873", price: 3800, duration_min: 75, departure: "08:15", arrival: "09:30", link: "https://www.cleartrip.com/" },
+      { mode: "bus", operator: "Private AC Sleeper", price: 1200, duration_min: 900, departure: "16:00", arrival: "07:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "ahmedabad|surat": {
+    from: "Ahmedabad",
+    to: "Surat",
+    options: [
+      { mode: "train", operator: "Shatabdi Express (12010)", price: 380, duration_min: 165, departure: "14:35", arrival: "17:20", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Intercity Express (22954)", price: 150, duration_min: 210, departure: "06:00", arrival: "09:30", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "Volvo AC (Gujarat Travels)", price: 320, duration_min: 240, departure: "08:30", arrival: "12:30", link: "https://www.redbus.in/" },
+    ],
+  },
+  "ahmedabad|vadodara": {
+    from: "Ahmedabad",
+    to: "Vadodara",
+    options: [
+      { mode: "train", operator: "Shatabdi Express (12010)", price: 250, duration_min: 95, departure: "14:35", arrival: "16:10", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Local Intercity", price: 90, duration_min: 120, departure: "07:15", arrival: "09:15", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "GSRTC AC", price: 150, duration_min: 120, departure: "09:00", arrival: "11:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "ahmedabad|udaipur": {
+    from: "Ahmedabad",
+    to: "Udaipur",
+    options: [
+      { mode: "bus", operator: "Volvo AC Sleeper", price: 550, duration_min: 300, departure: "23:00", arrival: "04:00", link: "https://www.redbus.in/" },
+      { mode: "train", operator: "Ahmedabad-Udaipur Express (19943)", price: 240, duration_min: 300, departure: "22:35", arrival: "03:35", link: "https://www.confirmtkt.com/" },
+    ],
+  },
+  "jaipur|jodhpur": {
+    from: "Jaipur",
+    to: "Jodhpur",
+    options: [
+      { mode: "train", operator: "Ranthambore Express (12465)", price: 260, duration_min: 300, departure: "17:20", arrival: "22:20", link: "https://www.irctc.co.in/" },
+      { mode: "bus", operator: "RSRTC Volvo AC", price: 480, duration_min: 300, departure: "07:00", arrival: "12:00", link: "https://www.redbus.in/" },
+      { mode: "flight", operator: "IndiGo 6E-7112", price: 3300, duration_min: 55, departure: "13:00", arrival: "13:55", link: "https://www.cleartrip.com/" },
+    ],
+  },
+  "jaipur|agra": {
+    from: "Jaipur",
+    to: "Agra",
+    options: [
+      { mode: "bus", operator: "RSRTC Volvo AC", price: 420, duration_min: 270, departure: "08:00", arrival: "12:30", link: "https://www.redbus.in/" },
+      { mode: "train", operator: "Jaipur-Agra Fort Express (12308)", price: 210, duration_min: 285, departure: "13:30", arrival: "18:15", link: "https://www.confirmtkt.com/" },
+    ],
+  },
+  "lucknow|varanasi": {
+    from: "Lucknow",
+    to: "Varanasi",
+    options: [
+      { mode: "train", operator: "Varuna Express (14227)", price: 260, duration_min: 300, departure: "05:45", arrival: "10:45", link: "https://www.irctc.co.in/" },
+      { mode: "bus", operator: "UPSRTC AC", price: 400, duration_min: 360, departure: "08:30", arrival: "14:30", link: "https://www.redbus.in/" },
+      { mode: "flight", operator: "IndiGo 6E-7301", price: 3000, duration_min: 50, departure: "16:20", arrival: "17:10", link: "https://www.cleartrip.com/" },
+    ],
+  },
+  "surat|vadodara": {
+    from: "Surat",
+    to: "Vadodara",
+    options: [
+      { mode: "train", operator: "Shatabdi Express (12010)", price: 210, duration_min: 75, departure: "17:22", arrival: "18:35", link: "https://www.irctc.co.in/" },
+      { mode: "bus", operator: "GSRTC / private AC", price: 150, duration_min: 120, departure: "09:00", arrival: "11:00", link: "https://www.redbus.in/" },
+    ],
+  },
+  "kochi|thiruvananthapuram": {
+    from: "Kochi",
+    to: "Thiruvananthapuram",
+    options: [
+      { mode: "train", operator: "Vande Bharat (20633)", price: 460, duration_min: 195, departure: "07:20", arrival: "10:35", link: "https://www.irctc.co.in/" },
+      { mode: "train", operator: "Venad Express (16302)", price: 120, duration_min: 255, departure: "05:20", arrival: "09:35", link: "https://www.confirmtkt.com/" },
+      { mode: "bus", operator: "KSRTC Super Fast", price: 220, duration_min: 270, departure: "08:00", arrival: "12:30", link: "https://www.redbus.in/" },
+    ],
+  },
 };
 
 function slugCity(s: string): string {

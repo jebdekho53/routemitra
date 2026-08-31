@@ -5,6 +5,7 @@ const IATA: Record<string, string> = {
   "andaman": "IXZ",
   "port blair": "IXZ",
   agartala: "IXA",
+  agra: "AGR",
   ahmedabad: "AMD",
   amritsar: "ATQ",
   aurangabad: "IXU",
