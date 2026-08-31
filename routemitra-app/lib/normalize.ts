@@ -32,9 +32,14 @@ export function mergeResults(
     if (result.status !== "fulfilled") continue;
     for (const opt of result.value) {
       if (!isValidOption(opt)) continue;
+      // Keep a link the adapter already made trackable — either our own UTM
+      // params, or an affiliate `marker` (e.g. Travelpayouts/Aviasales deep
+      // links, which is how that booking earns commission). Otherwise build a
+      // route-searching deep link for the mode.
+      const alreadyTracked = /[?&](utm_source|marker)=/.test(opt.link);
       merged.push({
         ...opt,
-        link: /[?&]utm_source=/.test(opt.link)
+        link: alreadyTracked
           ? opt.link
           : bookingLink(opt.mode, from, to, opt.link, date),
       });
