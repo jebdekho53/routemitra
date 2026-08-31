@@ -14,11 +14,15 @@ export function integrationStatus(): IntegrationStatus[] {
   return [
     {
       key: "flight",
-      label: "Flights (Duffel)",
-      live: has(process.env.DUFFEL_API_KEY),
+      label: "Flights",
+      live:
+        has(process.env.DUFFEL_API_KEY) ||
+        has(process.env.TRAVELPAYOUTS_TOKEN),
       detail: has(process.env.DUFFEL_API_KEY)
-        ? "Duffel API"
-        : "sample data fallback",
+        ? "Duffel (live search)"
+        : has(process.env.TRAVELPAYOUTS_TOKEN)
+          ? "Travelpayouts (cached fares)"
+          : "sample data fallback",
     },
     {
       key: "bus",
