@@ -31,6 +31,26 @@ export default function BookButton({
     } catch {
       // ignore — tracking must never block the booking click
     }
+    // Remember this as a "pending booking" so the resume bar can bring the
+    // user back to it if they bounce off the operator's site. Local only.
+    try {
+      localStorage.setItem(
+        "routemitra_pending_booking_v1",
+        JSON.stringify({
+          from,
+          to,
+          mode: option.mode,
+          operator: option.operator,
+          price: option.price,
+          link: option.link,
+          ts: Date.now(),
+        }),
+      );
+      // same-tab write doesn't fire `storage` — nudge the resume bar directly
+      window.dispatchEvent(new Event("routemitra:pending-booking"));
+    } catch {
+      // private mode / storage disabled — the resume bar just won't show
+    }
     // Plausible (loaded only if NEXT_PUBLIC_PLAUSIBLE_DOMAIN is set)
     (
       window as unknown as {

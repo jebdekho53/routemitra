@@ -6,6 +6,7 @@ import Providers from "./providers";
 import CookieConsent from "@/components/CookieConsent";
 import BottomNav from "@/components/BottomNav";
 import FeedbackButton from "@/components/FeedbackButton";
+import ResumeBooking from "@/components/ResumeBooking";
 import "./globals.css";
 
 const inter = Inter({
@@ -64,6 +65,7 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
+        <ResumeBooking />
         <Providers>
           {children}
           <BottomNav />
