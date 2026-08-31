@@ -35,10 +35,15 @@ export function integrationStatus(): IntegrationStatus[] {
     },
     {
       key: "train",
-      label: "Train provider",
-      live: has(process.env.TRAIN_PROVIDER_API_URL) && has(process.env.TRAIN_PROVIDER_API_KEY),
-      detail:
-        has(process.env.TRAIN_PROVIDER_API_URL) && has(process.env.TRAIN_PROVIDER_API_KEY)
+      label: "Trains",
+      live:
+        has(process.env.RAPIDAPI_IRCTC_KEY) ||
+        (has(process.env.TRAIN_PROVIDER_API_URL) &&
+          has(process.env.TRAIN_PROVIDER_API_KEY)),
+      detail: has(process.env.RAPIDAPI_IRCTC_KEY)
+        ? "RapidAPI irctc1 (times live, fares estimated)"
+        : has(process.env.TRAIN_PROVIDER_API_URL) &&
+            has(process.env.TRAIN_PROVIDER_API_KEY)
           ? "HTTP provider (indicative)"
           : "sample data fallback",
     },
