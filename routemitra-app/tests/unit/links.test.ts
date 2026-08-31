@@ -58,4 +58,25 @@ describe("bookingLink — route-aware deep links", () => {
     expect(bookingLink("train", "Pune", "Goa", "x")).not.toContain("date=");
     expect(bookingLink("flight", "Mumbai", "Goa", "x")).toMatch(/\/bom\/goi\/\?/);
   });
+
+  it("wraps bus/train (not flight) in Cuelinks when CUELINKS_CID is set", () => {
+    const prev = process.env.CUELINKS_CID;
+    process.env.CUELINKS_CID = "TESTCID";
+    try {
+      const bus = bookingLink("bus", "Pune", "Goa", "x");
+      expect(bus).toMatch(/^https:\/\/linksredirect\.com\/\?cid=TESTCID&source=linkkit&url=/);
+      expect(decodeURIComponent(bus)).toContain("redbus.in/bus-tickets/pune-to-goa");
+
+      const train = bookingLink("train", "Pune", "Goa", "x");
+      expect(train).toContain("linksredirect.com/?cid=TESTCID");
+
+      // flights keep their own (Travelpayouts / Skyscanner) link
+      expect(bookingLink("flight", "Mumbai", "Goa", "x")).not.toContain(
+        "linksredirect.com",
+      );
+    } finally {
+      if (prev === undefined) delete process.env.CUELINKS_CID;
+      else process.env.CUELINKS_CID = prev;
+    }
+  });
 });

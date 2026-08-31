@@ -75,6 +75,14 @@ export function integrationStatus(): IntegrationStatus[] {
           : "plain links (no commission)",
     },
     {
+      key: "cuelinks",
+      label: "Bus / train links (Cuelinks)",
+      live: has(process.env.CUELINKS_CID),
+      detail: has(process.env.CUELINKS_CID)
+        ? "wrapped via linksredirect.com (commission)"
+        : "plain deep links (no commission)",
+    },
+    {
       key: "geocode",
       label: "Geocoding",
       live: true,
