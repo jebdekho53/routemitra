@@ -79,4 +79,49 @@ describe("bookingLink — route-aware deep links", () => {
       else process.env.CUELINKS_CID = prev;
     }
   });
+
+  it("falls back to INRDeals for bus/train when only INRDEALS_ID is set", () => {
+    const prevCid = process.env.CUELINKS_CID;
+    const prevInr = process.env.INRDEALS_ID;
+    delete process.env.CUELINKS_CID;
+    process.env.INRDEALS_ID = "urbTEST";
+    try {
+      const bus = bookingLink("bus", "Pune", "Goa", "x");
+      expect(bus).toMatch(
+        /^https:\/\/inr\.deals\/track\?id=urbTEST&src=routemitra&url=/,
+      );
+      expect(decodeURIComponent(bus)).toContain("redbus.in/bus-tickets/pune-to-goa");
+
+      expect(bookingLink("train", "Pune", "Goa", "x")).toContain(
+        "inr.deals/track?id=urbTEST",
+      );
+
+      // flights untouched
+      expect(bookingLink("flight", "Mumbai", "Goa", "x")).not.toContain(
+        "inr.deals",
+      );
+    } finally {
+      if (prevCid === undefined) delete process.env.CUELINKS_CID;
+      else process.env.CUELINKS_CID = prevCid;
+      if (prevInr === undefined) delete process.env.INRDEALS_ID;
+      else process.env.INRDEALS_ID = prevInr;
+    }
+  });
+
+  it("prefers Cuelinks over INRDeals when both are configured", () => {
+    const prevCid = process.env.CUELINKS_CID;
+    const prevInr = process.env.INRDEALS_ID;
+    process.env.CUELINKS_CID = "TESTCID";
+    process.env.INRDEALS_ID = "urbTEST";
+    try {
+      const bus = bookingLink("bus", "Pune", "Goa", "x");
+      expect(bus).toContain("linksredirect.com/?cid=TESTCID");
+      expect(bus).not.toContain("inr.deals");
+    } finally {
+      if (prevCid === undefined) delete process.env.CUELINKS_CID;
+      else process.env.CUELINKS_CID = prevCid;
+      if (prevInr === undefined) delete process.env.INRDEALS_ID;
+      else process.env.INRDEALS_ID = prevInr;
+    }
+  });
 });

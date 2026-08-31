@@ -63,22 +63,31 @@ function withTracking(
   url.searchParams.set("utm_campaign", `${mode}_book`);
   url.searchParams.set("ref", `routemitra:${slug(from)}-${slug(to)}`);
   for (const [k, v] of Object.entries(extra)) url.searchParams.set(k, v);
-  return cuelinksWrap(url.toString(), mode);
+  return affiliateWrap(url.toString(), mode);
 }
 
-// Cuelinks affiliate redirect for bus + train (covers RedBus, AbhiBus,
-// ConfirmTkt, RailYatri, Ixigo …). No-op without CUELINKS_CID. Flights are
-// already attributed via the Travelpayouts marker, so they're left alone.
-function cuelinksWrap(url: string, mode: Mode): string {
-  const cid = process.env.CUELINKS_CID;
-  if (
-    !cid ||
-    (mode !== "bus" && mode !== "train") ||
-    url.includes("linksredirect.com")
-  ) {
+// Affiliate redirect for bus + train deep links (covers RedBus, AbhiBus,
+// ConfirmTkt, RailYatri, Ixigo …). Flights are already attributed via the
+// Travelpayouts marker, and hotels via the Hotellook marker, so they're
+// left alone. Cuelinks takes precedence when both networks are configured;
+// INRDeals is the fallback. No-op when neither env var is set.
+function affiliateWrap(url: string, mode: Mode): string {
+  if (mode !== "bus" && mode !== "train") return url;
+  if (url.includes("linksredirect.com") || url.includes("inr.deals/track")) {
     return url;
   }
-  return `https://linksredirect.com/?cid=${encodeURIComponent(cid)}&source=linkkit&url=${encodeURIComponent(url)}`;
+
+  const cid = process.env.CUELINKS_CID;
+  if (cid) {
+    return `https://linksredirect.com/?cid=${encodeURIComponent(cid)}&source=linkkit&url=${encodeURIComponent(url)}`;
+  }
+
+  const inrId = process.env.INRDEALS_ID;
+  if (inrId) {
+    return `https://inr.deals/track?id=${encodeURIComponent(inrId)}&src=routemitra&url=${encodeURIComponent(url)}`;
+  }
+
+  return url;
 }
 
 export function bookingLink(
