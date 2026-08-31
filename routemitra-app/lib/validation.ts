@@ -61,6 +61,25 @@ export const watchSchema = z.object({
   to: citySchema,
 });
 
+export const feedbackKinds = ["idea", "bug", "fare", "support", "other"] as const;
+
+export const feedbackSchema = z.object({
+  kind: z.enum(feedbackKinds).catch("other"),
+  message: z.string().trim().min(4, "Thoda detail likho").max(4000),
+  // optional — blank string is fine, but a non-blank value must look like an email
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(200)
+    .optional()
+    .refine(
+      (v) => !v || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v),
+      "Sahi email daalo (ya khali chhod do)",
+    ),
+  page: z.string().trim().max(300).optional(),
+});
+
 // Small helper: parse and return either data or a flat field->message map.
 export function parse<T>(
   schema: z.ZodType<T>,

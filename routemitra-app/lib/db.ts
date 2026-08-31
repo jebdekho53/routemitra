@@ -137,6 +137,37 @@ export function ensureSchema(): Promise<void> {
           UNIQUE (user_id, from_city, to_city)
         )
       `;
+
+      // --- Phase 21: feedback / support inbox ---
+      await sql`
+        CREATE TABLE IF NOT EXISTS feedback (
+          id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          created_at  timestamptz NOT NULL DEFAULT now(),
+          kind        text NOT NULL,          -- 'idea' | 'bug' | 'fare' | 'support' | 'other'
+          message     text NOT NULL,
+          email       text,
+          page        text,
+          user_id     bigint REFERENCES users(id) ON DELETE SET NULL,
+          user_agent  text,
+          status      text NOT NULL DEFAULT 'new',   -- 'new' | 'resolved'
+          resolved_at timestamptz
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS feedback_created_at_idx ON feedback (created_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS feedback_status_idx ON feedback (status)`;
+
+      // --- Phase 21: search volume (aggregate only — no IP, no user id) ---
+      await sql`
+        CREATE TABLE IF NOT EXISTS searches (
+          id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          created_at    timestamptz NOT NULL DEFAULT now(),
+          from_city     text NOT NULL,
+          to_city       text NOT NULL,
+          door_to_door  boolean NOT NULL DEFAULT false
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS searches_created_at_idx ON searches (created_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS searches_route_idx ON searches (from_city, to_city)`;
     })().catch((err) => {
       console.error("[db] ensureSchema failed:", err);
       schemaReady = null; // allow a retry on the next request

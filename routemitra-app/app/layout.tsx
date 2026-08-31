@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/site";
 import Providers from "./providers";
 import CookieConsent from "@/components/CookieConsent";
 import BottomNav from "@/components/BottomNav";
+import FeedbackButton from "@/components/FeedbackButton";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -72,6 +73,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <BottomNav />
+          <FeedbackButton />
         </Providers>
         <CookieConsent />
         {plausibleDomain && (

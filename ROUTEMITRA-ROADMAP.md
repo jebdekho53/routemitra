@@ -412,6 +412,35 @@ identity ka premium polish.
 
 ---
 
+## Phase 21 — Feedback, support & real admin ✅
+
+**Feedback loop (site-wide):**
+- [x] `feedback` table (kind / message / email / page / user / status).
+- [x] `POST /api/feedback` — zod-validated, IP rate-limited (5 / 10 min),
+      DB-backed with console fallback, best-effort email to `SUPPORT_EMAIL`.
+- [x] `components/FeedbackButton.tsx` — floating 💬 widget on every page
+      (hidden on `/admin`), kind chips + message + optional email, portal dialog.
+
+**Contact & help:**
+- [x] `/contact` — real contact form (posts to `/api/feedback`) + direct channels
+      (support email, Grievance Officer, help link, operating entity).
+- [x] `/help` rebuilt as a **help center** — 7 categories, `<details>` accordion,
+      `FAQPage` JSON-LD for SEO. Footer + nav ab `/contact` link karte hain.
+
+**Admin v2 (`/admin`, Basic-Auth gated):**
+- [x] `searches` table + fire-and-forget `logSearch()` in `/api/search`
+      (aggregate only — no IP, no user id).
+- [x] `lib/metrics.ts` `adminMetrics(windowDays)` — users / searches / ghar-se-ghar
+      share / booking clicks / active watches / feedback counts, 1d·7d·30d window.
+- [x] Overview stat cards + last-N-days CSS bar chart (searches vs clicks).
+- [x] **Feedback inbox** — new/all filter, Resolve / Reopen server actions.
+- [x] Top routes (by searches), clicks-by-mode, provider status, recent errors.
+- **Acceptance:** ✅ lint + tsc clean; unit 25 pass; **e2e 84 pass** across
+      chromium + android + iPhone 14 + iPhone SE; feedback submit + admin inbox
+      + resolve verified against real Postgres.
+
+---
+
 ## Claude Code ke saath kaise use karein
 
 - Har phase ek self-contained prompt hai — is file ko project mein rakh kar bol sakte ho:

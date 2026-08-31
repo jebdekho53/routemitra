@@ -13,7 +13,8 @@ const NAV_LINKS = [
 ];
 const SECONDARY = [
   { href: "/about", label: "About" },
-  { href: "/help", label: "Help & contact" },
+  { href: "/help", label: "Help center" },
+  { href: "/contact", label: "Contact & support" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ];

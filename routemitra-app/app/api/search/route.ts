@@ -11,6 +11,7 @@ import { rateLimit, clientIp } from "@/lib/ratelimit";
 import { auth } from "@/auth";
 import { dbEnabled } from "@/lib/db";
 import { recordSavedSearch } from "@/lib/user-data";
+import { logSearch } from "@/lib/metrics";
 import type { SearchParams } from "@/types/route";
 
 export async function GET(request: Request) {
@@ -42,6 +43,13 @@ export async function GET(request: Request) {
     destination: data.destination ?? null,
   };
   const { result, cache } = await runSearch(params);
+
+  // Phase 21 — aggregate search volume for the admin dashboard (fire & forget).
+  logSearch(
+    params.from,
+    params.to,
+    Boolean(params.origin && params.destination),
+  ).catch(() => {});
 
   // Phase 13 — remember the search for logged-in users (fire and forget).
   if (dbEnabled) {
