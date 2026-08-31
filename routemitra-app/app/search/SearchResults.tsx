@@ -13,6 +13,7 @@ import SearchForm from "@/components/SearchForm";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RouteActions from "@/components/RouteActions";
+import HotelCta from "@/components/HotelCta";
 
 type Status = "loading" | "results" | "empty" | "error";
 
@@ -236,6 +237,8 @@ export default function SearchResults() {
                 the booking page — usually a little higher.
               </p>
             )}
+
+            <HotelCta city={data.to} checkIn={date} />
           </section>
         )}
 

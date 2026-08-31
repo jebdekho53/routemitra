@@ -20,6 +20,10 @@ test("door-to-door guide page renders with content + JSON-LD", async ({
   await expect(
     page.getByRole("link", { name: /Mumbai .* Goa: live prices/ }),
   ).toBeVisible();
+  // hotel affiliate CTA for the destination city
+  const hotelLink = page.getByRole("link", { name: /See hotels in Goa/ });
+  await expect(hotelLink).toBeVisible();
+  expect(await hotelLink.getAttribute("href")).toContain("search.hotellook.com");
 });
 
 test("guide links from the routes page and homepage", async ({ page }) => {

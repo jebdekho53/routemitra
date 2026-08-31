@@ -63,6 +63,18 @@ export function integrationStatus(): IntegrationStatus[] {
       detail: has(process.env.DATABASE_URL) ? "connected" : "console.log only",
     },
     {
+      key: "hotels",
+      label: "Hotels (Hotellook)",
+      live:
+        has(process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER) ||
+        has(process.env.TRAVELPAYOUTS_MARKER),
+      detail:
+        has(process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER) ||
+        has(process.env.TRAVELPAYOUTS_MARKER)
+          ? "affiliate links (marker attached)"
+          : "plain links (no commission)",
+    },
+    {
       key: "geocode",
       label: "Geocoding",
       live: true,

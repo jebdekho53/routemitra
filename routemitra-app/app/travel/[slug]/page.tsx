@@ -7,6 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
+import HotelCta from "@/components/HotelCta";
 import { formatDuration, formatPrice } from "@/lib/format";
 import { bookingLink } from "@/lib/links";
 import {
@@ -220,6 +221,8 @@ export default async function TravelGuidePage({
           each end, plus boarding / check-in time. Fares are estimates — confirm
           the live price on the booking site.
         </p>
+
+        <HotelCta city={to} />
 
         <h2 className="guide-h2">Door-to-door, mode by mode</h2>
         {(["train", "bus", "flight"] as const)

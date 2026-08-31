@@ -12,6 +12,7 @@ import SearchForm from "@/components/SearchForm";
 import ResultCard from "@/components/ResultCard";
 import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
+import HotelCta from "@/components/HotelCta";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -141,6 +142,8 @@ export default async function RoutePage({
           Some fares may be indicative — for the live price, use &quot;Book
           now&quot; to go to the respective platform.
         </p>
+
+        <HotelCta city={to} />
 
         <nav className="popular">
           <h2>More routes</h2>
