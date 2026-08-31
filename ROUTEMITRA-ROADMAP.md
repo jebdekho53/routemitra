@@ -427,17 +427,27 @@ identity ka premium polish.
 - [x] `/help` rebuilt as a **help center** — 7 categories, `<details>` accordion,
       `FAQPage` JSON-LD for SEO. Footer + nav ab `/contact` link karte hain.
 
-**Admin v2 (`/admin`, Basic-Auth gated):**
+**Admin v2 — sidebar + multi-page (`/admin/*`, Basic-Auth gated):**
+- [x] `app/admin/layout.tsx` — sticky sidebar shell + `AdminNav` (active state);
+      mobile = scrollable top bar. Sub-routes:
+  - **Overview** (`/admin`) — stat cards (link to sections) + daily bar chart +
+    newest-feedback preview + top-routes preview
+  - **Feedback** (`/admin/feedback`) — full inbox, New/Resolved/All tabs w/ counts,
+    Resolve/Reopen server actions (`revalidatePath("/admin","layout")`)
+  - **Traffic** (`/admin/traffic`) — searches/clicks cards, search→click %,
+    daily chart, top routes (40), clicks-by-mode, recent booking clicks
+  - **Users** (`/admin/users`) — total/verified/oauth/alerts/saved-search cards +
+    recent signups table
+  - **System** (`/admin/system`) — integration status + recent errors
 - [x] `searches` table + fire-and-forget `logSearch()` in `/api/search`
       (aggregate only — no IP, no user id).
-- [x] `lib/metrics.ts` `adminMetrics(windowDays)` — users / searches / ghar-se-ghar
-      share / booking clicks / active watches / feedback counts, 1d·7d·30d window.
-- [x] Overview stat cards + last-N-days CSS bar chart (searches vs clicks).
-- [x] **Feedback inbox** — new/all filter, Resolve / Reopen server actions.
-- [x] Top routes (by searches), clicks-by-mode, provider status, recent errors.
+- [x] `lib/metrics.ts` — `adminMetrics` / `trafficStats` / `userStats` /
+      `recentErrors`, all `make_interval(days => $1)` windowed (1d·7d·30d).
 - **Acceptance:** ✅ lint + tsc clean; unit 25 pass; **e2e 84 pass** across
-      chromium + android + iPhone 14 + iPhone SE; feedback submit + admin inbox
-      + resolve verified against real Postgres.
+      chromium + android + iPhone 14 + iPhone SE. All 5 admin routes 200 w/ auth,
+      401 without; feedback submit + inbox + resolve/reopen verified against real
+      Postgres; QA user + 10 searches + 3 feedback + 5 clicks + 2 watches all
+      reflected in the dashboard.
 
 ---
 

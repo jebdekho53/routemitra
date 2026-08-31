@@ -42,7 +42,17 @@ test("contact page renders form and support channels", async ({ page }) => {
   await expect(page.getByText(/Mil gaya/)).toBeVisible();
 });
 
-test("admin dashboard is gated by basic auth", async ({ request }) => {
-  const res = await request.get("/admin");
-  expect([401, 503]).toContain(res.status());
+test("admin dashboard + sub-pages are gated by basic auth", async ({
+  request,
+}) => {
+  for (const path of [
+    "/admin",
+    "/admin/feedback",
+    "/admin/traffic",
+    "/admin/users",
+    "/admin/system",
+  ]) {
+    const res = await request.get(path);
+    expect([401, 503], `${path} should be gated`).toContain(res.status());
+  }
 });
