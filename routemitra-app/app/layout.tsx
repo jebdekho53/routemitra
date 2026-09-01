@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   openGraph: { siteName: "RouteMitra", type: "website" },
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "RouteMitra" },
+  other: {
+    // Cuelinks channel ownership verification (affiliate network).
+    "cuelinks-verification": "VERIFY-CL-1HCTWR4R",
+  },
 };
 
 export const viewport: Viewport = {
