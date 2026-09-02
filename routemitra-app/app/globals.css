@@ -2869,50 +2869,113 @@ a.admin-card:hover {
 
 /* trip extras — ancillary revenue block */
 .trip-extras {
-  margin: var(--s-5) 0;
-  padding: 16px;
+  margin: var(--s-6) 0;
+  padding: var(--s-5);
   border: 1px solid var(--line);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.trip-extras-head {
+  margin-bottom: var(--s-4);
+}
+.trip-extras-kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 .trip-extras-h {
-  font-size: 15px;
-  margin: 0 0 10px;
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 2px 0 0;
   color: var(--ink);
 }
-.trip-extras-list {
+.trip-extras-grid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
-.trip-extras-list a {
+.te-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  height: 100%;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  text-decoration: none;
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease,
+    transform 0.14s ease;
+}
+.te-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.te-card:active {
+  transform: translateY(0);
+}
+.te-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  background: var(--accent-tint);
+  font-size: 19px;
+  line-height: 1;
+}
+.te-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  background: var(--bg);
-  text-decoration: none;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
 }
-.trip-extras-list a:hover {
-  border-color: var(--accent);
-  background: var(--accent-tint);
-}
-.trip-extras-list .te-label {
+.te-label {
   font-size: 14px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--ink);
 }
-.trip-extras-list .te-blurb {
+.te-blurb {
   font-size: 12px;
+  line-height: 1.45;
   color: var(--ink-soft);
+}
+.te-arrow {
+  flex-shrink: 0;
+  align-self: center;
+  font-size: 15px;
+  color: var(--ink-faint);
+  transition:
+    transform 0.14s ease,
+    color 0.14s ease;
+}
+.te-card:hover .te-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
 }
 .trip-extras-fine {
   font-size: 11px;
-  color: var(--ink-soft);
-  margin: 10px 0 0;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  margin: var(--s-4) 0 0;
+}
+@media (max-width: 520px) {
+  .trip-extras {
+    padding: var(--s-4);
+  }
+  .trip-extras-grid {
+    grid-template-columns: 1fr;
+  }
 }

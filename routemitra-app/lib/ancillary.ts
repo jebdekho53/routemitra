@@ -14,6 +14,8 @@
 
 export type Extra = {
   key: string;
+  /** single emoji shown in the card */
+  icon: string;
   label: string;
   blurb: string;
   href: string;
@@ -46,6 +48,7 @@ export function carRental(city: string): Extra | null {
   if (!t) return null;
   return {
     key: "cars",
+    icon: "🚗",
     label: `Rent a car in ${city}`,
     blurb: "Self-drive and chauffeur options, free cancellation on most.",
     href: fill(t, { city }),
@@ -59,6 +62,7 @@ export function esim(): Extra | null {
   if (!t) return null;
   return {
     key: "esim",
+    icon: "📶",
     label: "Get a travel eSIM",
     blurb: "Data the moment you land — no roaming bill, no SIM swap.",
     href: t,
@@ -73,6 +77,7 @@ export function insurance(from: string, to: string, date?: string | null): Extra
   if (!t) return null;
   return {
     key: "insurance",
+    icon: "🛡️",
     label: "Insure this trip",
     blurb: "Delay, cancellation and medical cover from a few rupees a day.",
     href: fill(t, { from, to, date: date ?? "" }),
@@ -87,6 +92,7 @@ export function activities(city: string): Extra | null {
   if (!t) return null;
   return {
     key: "activities",
+    icon: "🎟️",
     label: `Things to do in ${city}`,
     blurb: "Tours, tickets and experiences — skip-the-line where it counts.",
     href: fill(t, { city }),
@@ -101,6 +107,7 @@ export function transfer(from: string, to: string, date?: string | null): Extra 
   if (!t) return null;
   return {
     key: "transfer",
+    icon: "🚕",
     label: "Book an airport transfer",
     blurb: "Fixed-price pickup, so the first and last mile is sorted.",
     href: fill(t, { from, to, date: date ?? "" }),
@@ -114,6 +121,7 @@ export function lounge(): Extra | null {
   if (!t) return null;
   return {
     key: "lounge",
+    icon: "🛋️",
     label: "Airport lounge access",
     blurb: "Skip the crowded gate — buy a single-visit pass.",
     href: t,
@@ -127,6 +135,7 @@ export function forex(): Extra | null {
   if (!t) return null;
   return {
     key: "forex",
+    icon: "💳",
     label: "Travel money card",
     blurb: "Zero-markup spending abroad — order before you fly.",
     href: t,
@@ -144,6 +153,7 @@ export function amazon(query: string, label: string): Extra | null {
   u.searchParams.set("tag", tag);
   return {
     key: `amazon-${query.replace(/\s+/g, "-")}`,
+    icon: "🎒",
     label,
     blurb: "",
     href: u.toString(),
@@ -162,6 +172,7 @@ export function uberTo(place: string): Extra {
   u.searchParams.set("dropoff[formatted_address]", place);
   return {
     key: "uber",
+    icon: "🚕",
     label: `Cab to ${place}`,
     blurb: "Opens Uber with the drop-off filled in.",
     href: u.toString(),
@@ -178,9 +189,9 @@ export function extrasForDestination(
   date?: string | null,
 ): Extra[] {
   return [
-    from ? insurance(from, city, date) : null,
-    transfer(from ?? city, city, date),
     activities(city),
+    transfer(from ?? city, city, date),
+    from ? insurance(from, city, date) : null,
     carRental(city),
     esim(),
     lounge(),
