@@ -9,6 +9,7 @@ import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
 import HotelCta from "@/components/HotelCta";
 import TripExtras from "@/components/TripExtras";
+import TravelGear from "@/components/TravelGear";
 import { formatDuration, formatPrice } from "@/lib/format";
 import { bookingLink } from "@/lib/links";
 import {
@@ -281,6 +282,8 @@ export default async function TravelGuidePage({
             ))}
           </section>
         </div>
+
+        <TravelGear />
 
         <nav className="popular">
           <h2 className="guide-h2">Other guides</h2>

@@ -2979,3 +2979,44 @@ a.admin-card:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* packing list — Amazon Associates chip strip (guide pages) */
+.travel-gear {
+  margin: var(--s-6) 0;
+}
+.travel-gear-h {
+  font-size: 15px;
+  margin: 0 0 var(--s-3);
+  color: var(--ink);
+}
+.travel-gear-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.gear-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease,
+    background 0.14s ease;
+}
+.gear-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-tint);
+}
+.travel-gear-fine {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  margin: var(--s-3) 0 0;
+}

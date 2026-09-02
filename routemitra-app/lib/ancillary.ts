@@ -143,14 +143,15 @@ export function forex(): Extra | null {
   };
 }
 
-/** Amazon Associates search link for trip gear. Set NEXT_PUBLIC_AMAZON_ASSOC_TAG
- *  (e.g. "routemitra-21"). ~ 1–4% on India store. */
+/** Amazon Associates search link. Set NEXT_PUBLIC_AMAZON_ASSOC_TAG
+ *  (e.g. "routemitra-21"). ~ 1–4% on the India store. */
 export function amazon(query: string, label: string): Extra | null {
   const tag = env("NEXT_PUBLIC_AMAZON_ASSOC_TAG");
   if (!tag) return null;
   const u = new URL("https://www.amazon.in/s");
   u.searchParams.set("k", query);
   u.searchParams.set("tag", tag);
+  u.searchParams.set("linkCode", "ur2");
   return {
     key: `amazon-${query.replace(/\s+/g, "-")}`,
     icon: "🎒",
@@ -159,6 +160,24 @@ export function amazon(query: string, label: string): Extra | null {
     href: u.toString(),
     paid: true,
   };
+}
+
+// A short, useful packing list — Amazon India searches, tag attached.
+const GEAR: { q: string; label: string }[] = [
+  { q: "travel backpack cabin", label: "Cabin backpack" },
+  { q: "power bank 20000mah", label: "Power bank" },
+  { q: "packing cubes set", label: "Packing cubes" },
+  { q: "travel neck pillow", label: "Neck pillow" },
+  { q: "universal travel adapter", label: "Travel adapter" },
+  { q: "tsa luggage lock", label: "Luggage lock" },
+];
+
+/** The packing-list strip for content (guide) pages. Empty until the
+ *  Amazon Associates tag is set. */
+export function travelGear(): Extra[] {
+  return GEAR.map((g) => amazon(g.q, g.label)).filter(
+    (x): x is Extra => x !== null,
+  );
 }
 
 // --- free (non-affiliate) deep links — still improve the door-to-door UX ---
