@@ -103,10 +103,12 @@ export function integrationStatus(): IntegrationStatus[] {
     {
       key: "errors",
       label: "Error monitoring (Sentry)",
-      live: has(process.env.SENTRY_DSN),
-      detail: has(process.env.SENTRY_DSN)
-        ? "Sentry"
-        : "local errors table only (Phase 15)",
+      live:
+        has(process.env.NEXT_PUBLIC_SENTRY_DSN) || has(process.env.SENTRY_DSN),
+      detail:
+        has(process.env.NEXT_PUBLIC_SENTRY_DSN) || has(process.env.SENTRY_DSN)
+          ? "Sentry (client + server + edge)"
+          : "local errors table only (Phase 15)",
     },
   ];
 }

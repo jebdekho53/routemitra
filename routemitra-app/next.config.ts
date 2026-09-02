@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -22,6 +23,7 @@ const csp = [
     "https://nominatim.openstreetmap.org",
     "https://api.duffel.com",
     "https://challenges.cloudflare.com",
+    "https://*.ingest.us.sentry.io",
   ].join(" "),
   // NOTE: no `upgrade-insecure-requests`. On a proper HTTPS deploy every
   // asset is already https (same-origin or the listed CDNs), so it buys
@@ -69,4 +71,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry wraps the config to inject the client/server SDK and (when
+// SENTRY_AUTH_TOKEN is set) upload source maps. Everything Sentry does is
+// inert at runtime without NEXT_PUBLIC_SENTRY_DSN.
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG || "urbanmove-services-private-lim",
+  project: process.env.SENTRY_PROJECT || "routemitra",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  // We proxy nothing through Cloudflare, so keep Sentry's own ingest host
+  // (allow-listed in the CSP) rather than a same-origin tunnel route.
+  tunnelRoute: false,
+});
