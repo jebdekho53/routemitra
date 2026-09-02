@@ -23,8 +23,8 @@ export default function TravelGear() {
         ))}
       </div>
       <p className="travel-gear-fine">
-        Amazon links — RouteMitra earns a small commission on qualifying
-        purchases, at no cost to you.
+        As an Amazon Associate, RouteMitra earns from qualifying purchases —
+        at no extra cost to you.
       </p>
     </aside>
   );
