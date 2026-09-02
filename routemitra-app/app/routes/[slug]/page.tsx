@@ -13,6 +13,7 @@ import ResultCard from "@/components/ResultCard";
 import Masthead from "@/components/Masthead";
 import SiteFooter from "@/components/SiteFooter";
 import HotelCta from "@/components/HotelCta";
+import TripExtras from "@/components/TripExtras";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -144,6 +145,7 @@ export default async function RoutePage({
         </p>
 
         <HotelCta city={to} />
+        <TripExtras city={to} from={from} />
 
         <nav className="popular">
           <h2>More routes</h2>

@@ -49,6 +49,7 @@ export const viewport: Viewport = {
 };
 
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 export default function RootLayout({
   children,
@@ -81,6 +82,14 @@ export default function RootLayout({
             defer
             data-domain={plausibleDomain}
             src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        )}
+        {adsenseClient && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+            crossOrigin="anonymous"
             strategy="afterInteractive"
           />
         )}

@@ -3,6 +3,23 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 
 const isProd = process.env.NODE_ENV === "production";
 
+// AdSense pulls in a wide set of Google ad hosts. Only widen the CSP for it
+// when ads are actually switched on (NEXT_PUBLIC_ADSENSE_CLIENT set), so the
+// policy stays tight otherwise.
+const adsOn = Boolean(process.env.NEXT_PUBLIC_ADSENSE_CLIENT);
+const adScript = adsOn
+  ? " https://pagead2.googlesyndication.com https://*.googlesyndication.com https://adservice.google.com https://tpc.googlesyndication.com"
+  : "";
+const adFrame = adsOn
+  ? " https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com"
+  : "";
+const adImg = adsOn
+  ? " https://*.googlesyndication.com https://*.g.doubleclick.net https://*.google.com"
+  : "";
+const adConnect = adsOn
+  ? " https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://*.google.com"
+  : "";
+
 // Phase 15 — security headers. CSP is pragmatic: Next injects inline
 // styles/scripts, and we load Google Fonts + (optionally) Plausible and
 // Cloudflare Turnstile. Tighten with nonces later if needed.
@@ -12,11 +29,11 @@ const csp = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
-  "img-src 'self' data: blob: https://pics.avs.io",
+  `img-src 'self' data: blob: https://pics.avs.io${adImg}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io https://challenges.cloudflare.com${adScript}`,
+  `frame-src https://challenges.cloudflare.com${adFrame}`,
   [
     "connect-src 'self'",
     "https://plausible.io",
@@ -24,7 +41,7 @@ const csp = [
     "https://api.duffel.com",
     "https://challenges.cloudflare.com",
     "https://*.ingest.us.sentry.io",
-  ].join(" "),
+  ].join(" ") + adConnect,
   // NOTE: no `upgrade-insecure-requests`. On a proper HTTPS deploy every
   // asset is already https (same-origin or the listed CDNs), so it buys
   // nothing — and over http (dev, or a phone on http://LAN-IP) WebKit/Safari

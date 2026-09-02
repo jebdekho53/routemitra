@@ -14,6 +14,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RouteActions from "@/components/RouteActions";
 import HotelCta from "@/components/HotelCta";
+import TripExtras from "@/components/TripExtras";
 
 type Status = "loading" | "results" | "empty" | "error";
 
@@ -239,6 +240,7 @@ export default function SearchResults() {
             )}
 
             <HotelCta city={data.to} checkIn={date} />
+            <TripExtras city={data.to} from={data.from} date={date} />
           </section>
         )}
 

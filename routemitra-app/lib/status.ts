@@ -2,6 +2,8 @@
 // sample-data / no-op fallback. Pure env inspection — safe to call anywhere
 // server-side. Never expose keys, only booleans.
 
+import { ancillaryStatus } from "@/lib/ancillary";
+
 export interface IntegrationStatus {
   key: string;
   label: string;
@@ -110,5 +112,12 @@ export function integrationStatus(): IntegrationStatus[] {
           ? "Sentry (client + server + edge)"
           : "local errors table only (Phase 15)",
     },
+    // --- ancillary revenue streams (trip extras) ---
+    ...ancillaryStatus().map((s) => ({
+      key: `aff-${s.key}`,
+      label: `Revenue · ${s.label}`,
+      live: s.live,
+      detail: s.live ? "affiliate link configured" : "not configured (CTA hidden)",
+    })),
   ];
 }
