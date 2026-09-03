@@ -144,7 +144,10 @@ export default async function RoutePage({
 
         <p className="route-note">
           Some fares may be indicative — for the live price, use &quot;Book
-          now&quot; to go to the respective platform.
+          now&quot; to go to the respective platform. RouteMitra compares
+          options and doesn&apos;t sell tickets; payment, refunds and support
+          are handled by the operator or booking platform under{" "}
+          <Link href="/terms">their policy</Link>.
         </p>
 
         <HotelCta city={to} />

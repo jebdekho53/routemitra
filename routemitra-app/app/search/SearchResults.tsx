@@ -328,6 +328,14 @@ export default function SearchResults() {
               </p>
             )}
 
+            <p className="route-note">
+              RouteMitra compares options — it doesn&apos;t sell tickets.
+              &quot;Book&quot; opens the operator or booking platform (RedBus,
+              IRCTC / a rail partner, an airline, or an OTA), where you pay and
+              where refunds, changes and support are handled under{" "}
+              <a href="/terms">their policy</a>.
+            </p>
+
             <HotelCta city={data.to} checkIn={date} />
             <TripExtras city={data.to} from={data.from} date={date} />
           </section>

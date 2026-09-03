@@ -130,12 +130,50 @@ export default function PrivacyPage() {
 
           <h2 id="grievance">8. Grievance Officer</h2>
           <p>
-            <b>{GRIEVANCE_OFFICER_NAME}</b><br />
-            {GRIEVANCE_OFFICER_EMAIL !== SUPPORT_EMAIL ? (
-              <>Email: <a href={`mailto:${GRIEVANCE_OFFICER_EMAIL}`}>{GRIEVANCE_OFFICER_EMAIL}</a></>
-            ) : (
-              <>Email: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></>
-            )}
+            In line with the DPDP Act, 2023 and the Information Technology
+            (Intermediary Guidelines and Digital Media Ethics Code) Rules,
+            2021, you can reach our Grievance Officer for any complaint about
+            your data, this policy, or content on RouteMitra:
+          </p>
+          <p>
+            <b>{GRIEVANCE_OFFICER_NAME}</b>
+            {LEGAL_ENTITY_STATUS === "registered" ? (
+              <>
+                <br />
+                {LEGAL_ENTITY_NAME}
+              </>
+            ) : null}
+            <br />
+            Email:{" "}
+            <a
+              href={`mailto:${
+                GRIEVANCE_OFFICER_EMAIL !== SUPPORT_EMAIL
+                  ? GRIEVANCE_OFFICER_EMAIL
+                  : SUPPORT_EMAIL
+              }`}
+            >
+              {GRIEVANCE_OFFICER_EMAIL !== SUPPORT_EMAIL
+                ? GRIEVANCE_OFFICER_EMAIL
+                : SUPPORT_EMAIL}
+            </a>
+            {LEGAL_ADDRESS ? (
+              <>
+                <br />
+                {LEGAL_ADDRESS}
+              </>
+            ) : null}
+            {LEGAL_CIN ? (
+              <>
+                <br />
+                CIN: {LEGAL_CIN}
+              </>
+            ) : null}
+          </p>
+          <p>
+            We acknowledge every complaint within <b>24 hours</b> and aim to
+            resolve it within <b>15 days</b>. If you&apos;re not satisfied with
+            the outcome, you can escalate to the Data Protection Board of India
+            (for data matters).
           </p>
 
           <h2>9. Children</h2>

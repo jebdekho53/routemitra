@@ -46,13 +46,15 @@ export default function ContactPage() {
             </div>
 
             <div className="cc-item">
-              <span className="cc-label">Grievance Officer (DPDP)</span>
+              <span className="cc-label">Grievance Officer</span>
               <span>{GRIEVANCE_OFFICER_NAME}</span>
               <a href={`mailto:${GRIEVANCE_OFFICER_EMAIL}`}>
                 {GRIEVANCE_OFFICER_EMAIL}
               </a>
               <p className="muted">
-                For data / privacy complaints. Process:{" "}
+                For data / privacy complaints (DPDP Act, 2023) and content /
+                intermediary grievances (IT Rules, 2021). Acknowledged within
+                24 hours, resolved within 15 days — full process in{" "}
                 <a href="/privacy#grievance">Privacy Policy §8</a>.
               </p>
             </div>
