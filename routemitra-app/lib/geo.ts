@@ -84,6 +84,69 @@ async function geocodeNominatim(q: string): Promise<GeoPoint | null> {
   };
 }
 
+// lat/lon -> nearest street address (for the "use my location" button).
+export async function reverseGeocode(
+  lat: number,
+  lon: number,
+): Promise<GeoPoint | null> {
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const key = `georev:${lat.toFixed(4)},${lon.toFixed(4)}`;
+
+  const cached = await cacheGet(key);
+  if (cached) return cached;
+
+  try {
+    const point = process.env.GOOGLE_MAPS_API_KEY
+      ? await reverseGoogle(lat, lon)
+      : await reverseNominatim(lat, lon);
+    if (point) await cacheSet(key, point);
+    return point;
+  } catch (err) {
+    console.error("[geo] reverse geocode failed:", err);
+    return null;
+  }
+}
+
+async function reverseNominatim(
+  lat: number,
+  lon: number,
+): Promise<GeoPoint | null> {
+  const url = new URL("https://nominatim.openstreetmap.org/reverse");
+  url.searchParams.set("lat", String(lat));
+  url.searchParams.set("lon", String(lon));
+  url.searchParams.set("format", "json");
+  url.searchParams.set("zoom", "18");
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "RouteMitra/1.0 (https://routemitra.vercel.app)",
+      Accept: "application/json",
+    },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) return null;
+  const row = (await res.json()) as { display_name?: string };
+  if (!row.display_name) return null;
+  return { lat, lon, label: row.display_name };
+}
+
+async function reverseGoogle(
+  lat: number,
+  lon: number,
+): Promise<GeoPoint | null> {
+  const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
+  url.searchParams.set("latlng", `${lat},${lon}`);
+  url.searchParams.set("region", "in");
+  url.searchParams.set("key", process.env.GOOGLE_MAPS_API_KEY!);
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (!res.ok) return null;
+  const json = (await res.json()) as {
+    results: { formatted_address: string }[];
+  };
+  const r = json.results?.[0];
+  if (!r) return null;
+  return { lat, lon, label: r.formatted_address };
+}
+
 async function geocodeGoogle(q: string): Promise<GeoPoint | null> {
   const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
   url.searchParams.set("address", q);

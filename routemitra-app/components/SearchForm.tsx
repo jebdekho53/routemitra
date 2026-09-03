@@ -53,6 +53,45 @@ export default function SearchForm({
     new Set<Mode>(["bus", "train", "flight"]),
   );
 
+  const [locating, setLocating] = useState(false);
+  const [locateError, setLocateError] = useState("");
+
+  function useMyLocation() {
+    setLocateError("");
+    if (!("geolocation" in navigator)) {
+      setLocateError("Location isn't available in this browser.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(
+            `/api/reverse-geocode?lat=${latitude}&lon=${longitude}`,
+          );
+          if (!res.ok) throw new Error(String(res.status));
+          const json = (await res.json()) as { label?: string };
+          if (json.label) setOriginAddr(json.label);
+          else setLocateError("Couldn't turn that into an address.");
+        } catch {
+          setLocateError("Couldn't look up your address. Type it in instead.");
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setLocating(false);
+        setLocateError(
+          err.code === err.PERMISSION_DENIED
+            ? "Location permission denied — type the address instead."
+            : "Couldn't get your location. Type the address instead.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 60_000 },
+    );
+  }
+
   function toggleMode(m: Mode) {
     setModes((s) => {
       const next = new Set(s);
@@ -118,7 +157,18 @@ export default function SearchForm({
       >
         {mode === "d2d" && (
           <div className="field">
-            <label htmlFor="origin">Full pickup address</label>
+            <div className="sf-label-row">
+              <label htmlFor="origin">Full pickup address</label>
+              <button
+                type="button"
+                className="sf-locate"
+                onClick={useMyLocation}
+                disabled={locating}
+                aria-live="polite"
+              >
+                {locating ? "Locating…" : "📍 Use my location"}
+              </button>
+            </div>
             <input
               id="origin"
               name="origin"
@@ -128,6 +178,7 @@ export default function SearchForm({
               value={originAddr}
               onChange={(e) => setOriginAddr(e.target.value)}
             />
+            {locateError && <p className="sf-locate-err">{locateError}</p>}
           </div>
         )}
 
