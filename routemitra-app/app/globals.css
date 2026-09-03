@@ -898,7 +898,7 @@ main.wrap {
   font-variant-numeric: tabular-nums;
   cursor: pointer;
 }
-.tf-chip:hover:not(:disabled) {
+.tf-chip:not(.active):hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent);
 }
