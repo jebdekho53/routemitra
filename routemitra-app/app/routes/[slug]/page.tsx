@@ -1,5 +1,5 @@
 // Static, SEO-friendly page per popular route: /routes/pune-to-bengaluru
-// Pre-rendered at build time, revalidated hourly. Results come straight from
+// Pre-rendered at build time, revalidated every 10 min. Results come straight from
 // the shared search pipeline (no client fetch) so crawlers see real content.
 // At build time every adapter returns sample data (NEXT_PHASE guard); on the
 // hourly revalidate the pipeline runs for real — live flights (Travelpayouts)
@@ -18,7 +18,7 @@ import SiteFooter from "@/components/SiteFooter";
 import HotelCta from "@/components/HotelCta";
 import TripExtras from "@/components/TripExtras";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
