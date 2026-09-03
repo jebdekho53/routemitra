@@ -935,6 +935,30 @@ main.wrap {
   font-weight: 600;
   cursor: pointer;
 }
+/* narrow screens: stack the label above, wrap the 4 chips to a 2×2 grid
+   (no horizontal scroll needed for just four) */
+@media (max-width: 520px) {
+  .tf-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+  .tf-label {
+    width: auto;
+  }
+  .tf-chips {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+  .tf-chip {
+    flex: 1 1 calc(50% - 3px);
+    justify-content: center;
+    min-height: 34px;
+  }
+  .tf-clear {
+    margin-left: 0;
+  }
+}
 
 .cards {
   display: flex;
