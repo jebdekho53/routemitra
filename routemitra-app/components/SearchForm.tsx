@@ -3,11 +3,22 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { listSampleRoutes } from "@/lib/sample-data";
+import { STATION_CITIES } from "@/lib/stations";
+import type { Mode } from "@/types/route";
 
 const SAMPLE_ROUTES = listSampleRoutes();
 const CITIES = Array.from(
-  new Set(SAMPLE_ROUTES.flatMap(({ from, to }) => [from, to])),
-);
+  new Set([
+    ...SAMPLE_ROUTES.flatMap(({ from, to }) => [from, to]),
+    ...STATION_CITIES,
+  ]),
+).sort();
+
+const ALL_MODES: { key: Mode; label: string }[] = [
+  { key: "bus", label: "Bus" },
+  { key: "train", label: "Train" },
+  { key: "flight", label: "Flight" },
+];
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -37,6 +48,20 @@ export default function SearchForm({
   const [mode, setMode] = useState<SearchMode>(
     initialOrigin || initialDestination ? "d2d" : "city",
   );
+  // which modes to actually fetch — all on by default
+  const [modes, setModes] = useState<Set<Mode>>(
+    new Set<Mode>(["bus", "train", "flight"]),
+  );
+
+  function toggleMode(m: Mode) {
+    setModes((s) => {
+      const next = new Set(s);
+      if (next.has(m)) next.delete(m);
+      else next.add(m);
+      // never let the user deselect everything
+      return next.size === 0 ? s : next;
+    });
+  }
 
   function go(nextFrom: string, nextTo: string) {
     const f = nextFrom.trim();
@@ -47,6 +72,15 @@ export default function SearchForm({
     if (mode === "d2d" && originAddr.trim() && destAddr.trim()) {
       qs.set("origin", originAddr.trim());
       qs.set("destination", destAddr.trim());
+    }
+    // only pass ?modes= when it's a real subset (all three == default)
+    if (modes.size > 0 && modes.size < 3) {
+      qs.set(
+        "modes",
+        ALL_MODES.filter((m) => modes.has(m.key))
+          .map((m) => m.key)
+          .join(","),
+      );
     }
     router.push(`/search?${qs.toString()}`);
   }
@@ -167,6 +201,20 @@ export default function SearchForm({
             />
           </div>
         )}
+
+        <fieldset className="sf-modes">
+          <legend>Show me</legend>
+          {ALL_MODES.map((m) => (
+            <label key={m.key} className="sf-mode-check">
+              <input
+                type="checkbox"
+                checked={modes.has(m.key)}
+                onChange={() => toggleMode(m.key)}
+              />
+              {m.label}
+            </label>
+          ))}
+        </fieldset>
 
         <div className="sf-when">
           <div className="field">

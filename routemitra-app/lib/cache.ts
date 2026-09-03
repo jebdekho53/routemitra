@@ -57,8 +57,13 @@ export function searchCacheKey(
   date: string | null,
   origin?: string | null,
   destination?: string | null,
+  modes?: string[] | null,
 ) {
-  const base = `search:${norm(from)}:${norm(to)}:${date ?? "any"}`;
+  let base = `search:${norm(from)}:${norm(to)}:${date ?? "any"}`;
+  // only distinguishes when a subset was asked for; all-three == unfiltered
+  if (modes && modes.length > 0 && modes.length < 3) {
+    base += `:m:${[...modes].sort().join(",")}`;
+  }
   if (!origin && !destination) return base;
   return `${base}:d2d:${norm(origin ?? "")}>${norm(destination ?? "")}`;
 }

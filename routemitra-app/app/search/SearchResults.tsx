@@ -33,9 +33,10 @@ export default function SearchResults() {
   const date = params.get("date");
   const origin = params.get("origin")?.trim() ?? "";
   const destination = params.get("destination")?.trim() ?? "";
+  const modes = params.get("modes")?.trim() ?? "";
 
   const queryKey = from && to
-    ? `${from}|${to}|${date ?? ""}|${origin}|${destination}`
+    ? `${from}|${to}|${date ?? ""}|${origin}|${destination}|${modes}`
     : null;
 
   const [fetched, setFetched] = useState<Fetched | null>(null);
@@ -72,6 +73,7 @@ export default function SearchResults() {
       qs.set("origin", origin);
       qs.set("destination", destination);
     }
+    if (modes) qs.set("modes", modes);
 
     let cancelled = false;
     fetch(`/api/search?${qs.toString()}`)
@@ -89,7 +91,7 @@ export default function SearchResults() {
     return () => {
       cancelled = true;
     };
-  }, [queryKey, from, to, date, origin, destination]);
+  }, [queryKey, from, to, date, origin, destination, modes]);
 
   const current = fetched && fetched.key === queryKey ? fetched : null;
   const data = current && "data" in current ? current.data : null;

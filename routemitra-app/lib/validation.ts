@@ -54,6 +54,12 @@ export const searchQuerySchema = z.object({
     .nullish(),
   origin: z.string().trim().max(200).nullish(),
   destination: z.string().trim().max(200).nullish(),
+  // comma-separated subset of bus,train,flight — omitted means all three
+  modes: z
+    .string()
+    .trim()
+    .regex(/^(bus|train|flight)(,(bus|train|flight))*$/)
+    .nullish(),
 });
 
 export const watchSchema = z.object({

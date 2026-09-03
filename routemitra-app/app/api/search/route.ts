@@ -12,7 +12,7 @@ import { auth } from "@/auth";
 import { dbEnabled } from "@/lib/db";
 import { recordSavedSearch } from "@/lib/user-data";
 import { logSearch } from "@/lib/metrics";
-import type { SearchParams } from "@/types/route";
+import type { SearchParams, Mode } from "@/types/route";
 
 export async function GET(request: Request) {
   const rl = await rateLimit("search", clientIp(request), 60, "1 m");
@@ -30,10 +30,15 @@ export async function GET(request: Request) {
     date: searchParams.get("date"),
     origin: searchParams.get("origin"),
     destination: searchParams.get("destination"),
+    modes: searchParams.get("modes"),
   });
   if (errors) {
     return NextResponse.json({ errors }, { status: 400 });
   }
+
+  const modes = data.modes
+    ? (Array.from(new Set(data.modes.split(","))) as Mode[])
+    : undefined;
 
   const params: SearchParams = {
     from: data.from,
@@ -41,6 +46,7 @@ export async function GET(request: Request) {
     date: data.date ?? null,
     origin: data.origin ?? null,
     destination: data.destination ?? null,
+    modes,
   };
   const { result, cache } = await runSearch(params);
 

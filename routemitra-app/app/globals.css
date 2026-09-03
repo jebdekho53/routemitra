@@ -565,6 +565,37 @@ main.wrap {
   justify-self: center;
   transform: rotate(90deg);
 }
+.sf-modes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  border: 0;
+}
+.sf-modes legend {
+  float: left;
+  padding: 0;
+  margin-right: var(--s-3);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.sf-mode-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+}
+.sf-mode-check input {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
 @media (min-width: 34em) {
   .sf-route {
     grid-template-columns: 1fr auto 1fr;

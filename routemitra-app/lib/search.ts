@@ -44,8 +44,8 @@ export function sampleSearch(from: string, to: string): RouteResult {
 }
 
 export async function runSearch(params: SearchParams): Promise<SearchOutcome> {
-  const { from, to, date, origin, destination } = params;
-  const key = searchCacheKey(from, to, date, origin, destination);
+  const { from, to, date, origin, destination, modes } = params;
+  const key = searchCacheKey(from, to, date, origin, destination, modes);
 
   const cached = await getCachedSearch(key);
   if (cached) {
@@ -54,10 +54,14 @@ export async function runSearch(params: SearchParams): Promise<SearchOutcome> {
   }
   console.log(`[search] cache MISS ${key}`);
 
+  // Only hit the adapters the user actually asked for — saves provider quota.
+  const want = modes && modes.length > 0 ? new Set(modes) : null;
+  const skip = (m: Mode) => (want && !want.has(m) ? Promise.resolve([]) : null);
+
   const settled = await Promise.allSettled([
-    searchBus(params),
-    searchTrain(params),
-    searchFlight(params),
+    skip("bus") ?? searchBus(params),
+    skip("train") ?? searchTrain(params),
+    skip("flight") ?? searchFlight(params),
   ]);
 
   let options = mergeResults(settled, params);

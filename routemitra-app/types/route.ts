@@ -60,6 +60,8 @@ export interface SearchParams {
   /** Phase 11 — optional home / final addresses for door-to-door totals */
   origin?: string | null;
   destination?: string | null;
+  /** which transport modes to fetch; undefined or empty = all three */
+  modes?: Mode[];
 }
 
 export type SortKey = "price" | "duration_min";

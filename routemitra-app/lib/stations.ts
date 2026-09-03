@@ -68,3 +68,13 @@ const STATIONS: Record<string, string> = {
 export function toStationCode(city: string): string | null {
   return STATIONS[city.trim().toLowerCase()] ?? null;
 }
+
+// Title-cased city names we can resolve to a station — used to populate the
+// search autocomplete (native <datalist>, so no API call per keystroke).
+export const STATION_CITIES: string[] = Array.from(
+  new Set(
+    Object.keys(STATIONS).map((k) =>
+      k.replace(/\b\w/g, (c) => c.toUpperCase()),
+    ),
+  ),
+).sort();
