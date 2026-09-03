@@ -9,6 +9,23 @@ import type { RouteOption } from "@/types/route";
 
 const GET_TRAINS = "https://erail.in/rail/getTrains.aspx";
 
+// Last erail outcome, for the /status page and log context. Per serverless
+// instance (resets on cold start) — enough to spot a sustained outage.
+export interface ErailHealth {
+  at: string | null; // ISO of the last attempt
+  ok: boolean | null; // did the last attempt yield >=1 row
+  rows: number;
+  note: string;
+}
+let health: ErailHealth = { at: null, ok: null, rows: 0, note: "no calls yet" };
+
+export function erailHealth(): ErailHealth {
+  return { ...health };
+}
+function record(ok: boolean, rows: number, note: string) {
+  health = { at: new Date().toISOString(), ok, rows, note };
+}
+
 /** "05.00" | "5.0" -> minutes since midnight, or -1 */
 function hhDotMm(s: string): number {
   const m = /^(\d{1,2})[.:](\d{1,2})$/.exec((s || "").trim());
@@ -61,16 +78,24 @@ export async function erailTrains(
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
-      console.error(`[train] erail ${res.status}`);
+      console.error(`[train] erail HTTP ${res.status} for ${fromCode}-${toCode}`);
+      record(false, 0, `HTTP ${res.status}`);
       return [];
     }
     body = await res.text();
   } catch (err) {
-    console.error("[train] erail fetch failed:", err);
+    const note = err instanceof Error ? err.name : "fetch error";
+    console.error(`[train] erail fetch failed for ${fromCode}-${toCode}:`, err);
+    record(false, 0, note);
     return [];
   }
 
-  if (!body || !body.includes("^")) return []; // no trains / error page
+  if (!body || !body.includes("^")) {
+    // reachable but no usable payload — often an error page or a station typo
+    console.warn(`[train] erail: empty/unparseable body for ${fromCode}-${toCode}`);
+    record(false, 0, "empty body");
+    return []; // no trains / error page
+  }
 
   // weekday index in erail's Mon..Sun order
   let wantDay = -1;
@@ -116,5 +141,11 @@ export async function erailTrains(
     if (out.length >= 15) break;
   }
 
+  if (out.length === 0) {
+    console.warn(`[train] erail: 0 rows parsed for ${fromCode}-${toCode}`);
+    record(false, 0, "0 rows parsed");
+  } else {
+    record(true, out.length, "ok");
+  }
   return out;
 }

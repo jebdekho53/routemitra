@@ -3,12 +3,21 @@
 // server-side. Never expose keys, only booleans.
 
 import { ancillaryStatus } from "@/lib/ancillary";
+import { erailHealth } from "@/lib/adapters/erail";
 
 export interface IntegrationStatus {
   key: string;
   label: string;
   live: boolean;
   detail: string;
+}
+
+// erail.in row detail, coloured by the last runtime outcome on this instance.
+function trainErailDetail(): string {
+  const h = erailHealth();
+  if (h.ok === null) return "erail.in timetable (times live, fares estimated) — no calls yet";
+  if (h.ok) return `erail.in timetable — last call OK (${h.rows} rows, ${h.at})`;
+  return `erail.in timetable — DEGRADED: last call ${h.note} (${h.at}); using sample`;
 }
 
 export function integrationStatus(): IntegrationStatus[] {
@@ -40,14 +49,17 @@ export function integrationStatus(): IntegrationStatus[] {
       label: "Trains",
       live:
         has(process.env.RAPIDAPI_IRCTC_KEY) ||
+        has(process.env.TRAIN_ERAIL) ||
         (has(process.env.TRAIN_PROVIDER_API_URL) &&
           has(process.env.TRAIN_PROVIDER_API_KEY)),
       detail: has(process.env.RAPIDAPI_IRCTC_KEY)
         ? "RapidAPI irctc1 (times live, fares estimated)"
-        : has(process.env.TRAIN_PROVIDER_API_URL) &&
-            has(process.env.TRAIN_PROVIDER_API_KEY)
-          ? "HTTP provider (indicative)"
-          : "sample data fallback",
+        : has(process.env.TRAIN_ERAIL)
+          ? trainErailDetail()
+          : has(process.env.TRAIN_PROVIDER_API_URL) &&
+              has(process.env.TRAIN_PROVIDER_API_KEY)
+            ? "HTTP provider (indicative)"
+            : "sample data fallback",
     },
     {
       key: "cache",

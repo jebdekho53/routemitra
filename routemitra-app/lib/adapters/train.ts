@@ -174,7 +174,18 @@ export async function searchTrain({
     if (out.length === 0 && hasErail) {
       const fc = toStationCode(from);
       const tc = toStationCode(to);
-      if (fc && tc) out = await erailTrains(fc, tc, date);
+      if (fc && tc) {
+        out = await erailTrains(fc, tc, date);
+        if (out.length === 0) {
+          console.warn(
+            `[train] erail yielded nothing for ${from}->${to} (${fc}-${tc}); falling back to sample`,
+          );
+        }
+      } else {
+        console.warn(
+          `[train] erail skipped for ${from}->${to}: no station code (${fc ?? "?"}-${tc ?? "?"})`,
+        );
+      }
     }
     if (out.length === 0 && hasGeneric) {
       out = await genericProviderTrains(from, to);

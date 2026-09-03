@@ -328,6 +328,28 @@ export default function SearchResults() {
               </p>
             )}
 
+            {sortedOptions.some(
+              (o) => o.mode === "train" && o.source === "erail",
+            ) && (
+              <p className="route-note">
+                Train times are from the public Indian Railways timetable
+                (erail.in). Seat availability and the exact fare are shown on
+                the booking page.
+              </p>
+            )}
+            {sortedOptions.some(
+              (o) => o.mode === "train" && o.source === "sample",
+            ) &&
+              !sortedOptions.some(
+                (o) => o.mode === "train" && o.source === "erail",
+              ) && (
+                <p className="route-note">
+                  Train options here are representative samples — the live
+                  timetable feed didn&apos;t return trains for this route right
+                  now. Check the booking page for the actual trains and times.
+                </p>
+              )}
+
             <p className="route-note">
               RouteMitra compares options — it doesn&apos;t sell tickets.
               &quot;Book&quot; opens the operator or booking platform (RedBus,
