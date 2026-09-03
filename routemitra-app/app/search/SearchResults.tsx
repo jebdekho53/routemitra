@@ -9,6 +9,8 @@ import { formatDuration, formatPrice } from "@/lib/format";
 import { computeMeta, tagsFor } from "@/lib/result-meta";
 import ResultCard from "@/components/ResultCard";
 import SortTabs from "@/components/SortTabs";
+import TimeFilter from "@/components/TimeFilter";
+import { bucketOf } from "@/lib/time-buckets";
 import SearchForm from "@/components/SearchForm";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -39,6 +41,27 @@ export default function SearchResults() {
   const [fetched, setFetched] = useState<Fetched | null>(null);
   const [sort, setSort] = useState<SortKey>("price");
   const [modeFilter, setModeFilter] = useState<Mode | "all">("all");
+  const [depBuckets, setDepBuckets] = useState<Set<number>>(new Set());
+  const [arrBuckets, setArrBuckets] = useState<Set<number>>(new Set());
+
+  // reset every filter when the route/date changes
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setModeFilter("all");
+    setDepBuckets(new Set());
+    setArrBuckets(new Set());
+  }, [queryKey]);
+
+  const toggleBucket = (
+    setFn: (fn: (s: Set<number>) => Set<number>) => void,
+    id: number,
+  ) =>
+    setFn((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   useEffect(() => {
     if (!queryKey) return;
@@ -89,13 +112,43 @@ export default function SearchResults() {
     return c;
   }, [allOptions]);
 
-  const sortedOptions: RouteOption[] = useMemo(() => {
-    const base =
+  // after the mode filter, before the time filter — used for the time-chip counts
+  const modeFiltered = useMemo(
+    () =>
       modeFilter === "all"
         ? allOptions
-        : allOptions.filter((o) => o.mode === modeFilter);
+        : allOptions.filter((o) => o.mode === modeFilter),
+    [allOptions, modeFilter],
+  );
+
+  const depCounts = useMemo(() => {
+    const c: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0 };
+    for (const o of modeFiltered) {
+      const b = bucketOf(o.departure);
+      if (b >= 0) c[b] += 1;
+    }
+    return c;
+  }, [modeFiltered]);
+
+  const arrCounts = useMemo(() => {
+    const c: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0 };
+    for (const o of modeFiltered) {
+      const b = bucketOf(o.arrival);
+      if (b >= 0) c[b] += 1;
+    }
+    return c;
+  }, [modeFiltered]);
+
+  const sortedOptions: RouteOption[] = useMemo(() => {
+    const base = modeFiltered.filter((o) => {
+      if (depBuckets.size && !depBuckets.has(bucketOf(o.departure))) return false;
+      if (arrBuckets.size && !arrBuckets.has(bucketOf(o.arrival))) return false;
+      return true;
+    });
     return [...base].sort((a, b) => a[sort] - b[sort]);
-  }, [allOptions, sort, modeFilter]);
+  }, [modeFiltered, sort, depBuckets, arrBuckets]);
+
+  const timeFiltered = depBuckets.size > 0 || arrBuckets.size > 0;
 
   // tags (cheapest / fastest / best value) computed over the *visible* set
   const meta = useMemo(() => computeMeta(sortedOptions), [sortedOptions]);
@@ -169,7 +222,11 @@ export default function SearchResults() {
 
             {meta.count > 0 && (
               <p className="results-summary">
-                <b>{modeCounts.all}</b> options ·{" "}
+                <b>{sortedOptions.length}</b>
+                {timeFiltered || modeFilter !== "all"
+                  ? ` of ${modeCounts.all}`
+                  : ""}{" "}
+                options ·{" "}
                 <b>
                   {formatPrice(meta.minPrice)}–{formatPrice(meta.maxPrice)}
                 </b>{" "}
@@ -213,23 +270,53 @@ export default function SearchResults() {
               })}
             </div>
 
+            <TimeFilter
+              dep={depBuckets}
+              arr={arrBuckets}
+              depCounts={depCounts}
+              arrCounts={arrCounts}
+              onToggleDep={(id) => toggleBucket(setDepBuckets, id)}
+              onToggleArr={(id) => toggleBucket(setArrBuckets, id)}
+              onClear={() => {
+                setDepBuckets(new Set());
+                setArrBuckets(new Set());
+              }}
+            />
+
             <RouteActions
               from={data.from}
               to={data.to}
               cheapestPrice={meta.cheapest?.price}
             />
 
-            <div className="cards">
-              {sortedOptions.map((opt, i) => (
-                <ResultCard
-                  key={`${opt.mode}-${opt.operator}-${i}`}
-                  option={opt}
-                  from={data.from}
-                  to={data.to}
-                  tags={tagsFor(opt, meta)}
-                />
-              ))}
-            </div>
+            {sortedOptions.length > 0 ? (
+              <div className="cards">
+                {sortedOptions.map((opt, i) => (
+                  <ResultCard
+                    key={`${opt.mode}-${opt.operator}-${i}`}
+                    option={opt}
+                    from={data.from}
+                    to={data.to}
+                    tags={tagsFor(opt, meta)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="route-note">
+                No options match these filters.{" "}
+                <button
+                  type="button"
+                  className="linklike"
+                  onClick={() => {
+                    setModeFilter("all");
+                    setDepBuckets(new Set());
+                    setArrBuckets(new Set());
+                  }}
+                >
+                  Clear filters
+                </button>
+              </p>
+            )}
 
             {sortedOptions.some((o) => o.indicative) && (
               <p className="route-note">

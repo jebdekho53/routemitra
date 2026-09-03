@@ -853,6 +853,89 @@ main.wrap {
   opacity: 0.75;
 }
 
+/* departure / arrival time-of-day filter */
+.time-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-4);
+}
+.tf-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.tf-label {
+  flex-shrink: 0;
+  width: 52px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+.tf-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 1px;
+}
+.tf-chips::-webkit-scrollbar {
+  display: none;
+}
+.tf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.tf-chip:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.tf-chip:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.tf-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.tf-n {
+  font-weight: 500;
+  opacity: 0.7;
+}
+.tf-clear {
+  align-self: flex-start;
+  margin-left: 58px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.linklike {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .cards {
   display: flex;
   flex-direction: column;
