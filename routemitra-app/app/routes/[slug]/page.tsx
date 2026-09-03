@@ -1,12 +1,15 @@
 // Static, SEO-friendly page per popular route: /routes/pune-to-bengaluru
 // Pre-rendered at build time, revalidated hourly. Results come straight from
 // the shared search pipeline (no client fetch) so crawlers see real content.
+// At build time every adapter returns sample data (NEXT_PHASE guard); on the
+// hourly revalidate the pipeline runs for real — live flights (Travelpayouts)
+// and trains (erail, if TRAIN_ERAIL is set), sample bus until a bus API lands.
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fromSlug, popularRouteSlugs } from "@/lib/routes";
-import { sampleSearch } from "@/lib/search";
+import { runSearch } from "@/lib/search";
 import { formatDuration, formatPrice } from "@/lib/format";
 import SearchForm from "@/components/SearchForm";
 import ResultCard from "@/components/ResultCard";
@@ -51,7 +54,7 @@ export default async function RoutePage({
   if (!route) notFound();
 
   const { from, to } = route;
-  const result = sampleSearch(from, to);
+  const { result } = await runSearch({ from, to, date: null });
   const options = [...result.options].sort((a, b) => a.price - b.price);
 
   const cheapest = options[0];

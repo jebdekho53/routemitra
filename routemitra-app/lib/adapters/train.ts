@@ -2,12 +2,15 @@
 //   1. RAPIDAPI_IRCTC_KEY -> RapidAPI "irctc1" trainBetweenStations (India).
 //      Free tier is tiny (~20 calls/mo) so results are cached hard upstream
 //      and fares are estimated (this endpoint has no fare). Marked indicative.
-//   2. TRAIN_PROVIDER_API_URL + _KEY -> generic HTTP provider (later: a PSP).
-//   3. sample data.
+//   2. TRAIN_ERAIL -> erail.in unofficial "trains between stations" scrape.
+//      Free, no quota, real timetable; fares estimated. Grey-area — see erail.ts.
+//   3. TRAIN_PROVIDER_API_URL + _KEY -> generic HTTP provider (later: a PSP).
+//   4. sample data.
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
 import { toStationCode } from "@/lib/stations";
+import { erailTrains } from "@/lib/adapters/erail";
 
 function sampleTrains(from: string, to: string): RouteOption[] {
   return getSampleOptions(from, to)
@@ -151,11 +154,12 @@ export async function searchTrain({
 }: SearchParams): Promise<RouteOption[]> {
   const isBuild = process.env.NEXT_PHASE === "phase-production-build";
   const hasIrctc = Boolean(process.env.RAPIDAPI_IRCTC_KEY);
+  const hasErail = Boolean(process.env.TRAIN_ERAIL);
   const hasGeneric = Boolean(
     process.env.TRAIN_PROVIDER_API_URL && process.env.TRAIN_PROVIDER_API_KEY,
   );
 
-  if (isBuild || (!hasIrctc && !hasGeneric)) {
+  if (isBuild || (!hasIrctc && !hasErail && !hasGeneric)) {
     if (!isBuild) await new Promise((r) => setTimeout(r, 250));
     return sampleTrains(from, to);
   }
@@ -166,6 +170,11 @@ export async function searchTrain({
       const fc = toStationCode(from);
       const tc = toStationCode(to);
       if (fc && tc) out = await irctcTrains(fc, tc, date);
+    }
+    if (out.length === 0 && hasErail) {
+      const fc = toStationCode(from);
+      const tc = toStationCode(to);
+      if (fc && tc) out = await erailTrains(fc, tc, date);
     }
     if (out.length === 0 && hasGeneric) {
       out = await genericProviderTrains(from, to);
