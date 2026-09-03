@@ -56,7 +56,8 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+    // geolocation=(self) so the door-to-door "use my location" button works
+    value: "camera=(), microphone=(), geolocation=(self), browsing-topics=()",
   },
   // HSTS only makes sense on HTTPS; sending it over http dev is pointless
   // and can wedge a browser if it ever saw the dev host on https.
