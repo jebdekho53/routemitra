@@ -3,6 +3,7 @@
 // until real APIs are wired up (Phase 4+).
 
 import type { RouteOption } from "@/types/route";
+import { densify } from "@/lib/densify";
 
 interface SampleRoute {
   from: string;
@@ -444,11 +445,13 @@ export function routeKey(from: string, to: string): string {
 }
 
 // Returns the sample options for a route (either direction), or [] if unknown.
+// Padded with a realistic spread of extra departures (see lib/densify.ts) so
+// the time-of-day filters have something to bite on — deterministic per route.
 export function getSampleOptions(from: string, to: string): RouteOption[] {
   const direct = ROUTES[routeKey(from, to)];
-  if (direct) return direct.options;
+  if (direct) return densify(direct.options, direct.from, direct.to);
   const reversed = ROUTES[routeKey(to, from)];
-  if (reversed) return reversed.options;
+  if (reversed) return densify(reversed.options, reversed.from, reversed.to);
   return [];
 }
 
