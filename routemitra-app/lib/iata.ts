@@ -71,7 +71,104 @@ const IATA: Record<string, string> = {
 };
 
 export function toIata(city: string): string | null {
+  return resolveAirport(city)?.code ?? null;
+}
+
+// IATA code -> city/municipality name, from list-of-airports-in-india.csv
+// (+ the 4 post-2020 airports patched into district-hubs.ts). Used only to
+// phrase the "nearest airport" caveat in resolveAirport() below.
+const AIRPORT_CITY: Record<string, string> = {
+  AIP: "Adampur",
+  AJL: "Aizawl",
+  AMD: "Ahmedabad",
+  ATQ: "Amritsar",
+  BBI: "Bhubaneswar",
+  BDQ: "Vadodara",
+  BHJ: "Bhuj",
+  BHO: "Bhopal",
+  BHU: "Bhavnagar",
+  BLR: "Bangalore",
+  BOM: "Mumbai",
+  CCJ: "Calicut",
+  CCU: "Kolkata",
+  CDP: "Kadapa",
+  CJB: "Coimbatore",
+  CNN: "Kannur",
+  COK: "Kochi",
+  DED: "Dehradun",
+  DEL: "New Delhi",
+  DIB: "Dibrugarh",
+  DIU: "Diu",
+  DMU: "Dimapur",
+  GAU: "Guwahati",
+  GBI: "Kalaburagi",
+  GOI: "Vasco da Gama",
+  GOP: "Gorakhpur",
+  GWL: "Gwalior",
+  HBX: "Hubli",
+  HGI: "Itanagar",
+  HJR: "Khajuraho",
+  HYD: "Hyderabad",
+  IDR: "Indore",
+  IMF: "Imphal",
+  ISK: "Nasik",
+  IXA: "Agartala",
+  IXB: "Siliguri",
+  IXC: "Chandigarh",
+  IXE: "Mangalore",
+  IXG: "Belgaum",
+  IXI: "Lilabari",
+  IXJ: "Jammu",
+  IXL: "Leh",
+  IXM: "Madurai",
+  IXP: "Pathankot",
+  IXR: "Ranchi",
+  IXS: "Silchar",
+  IXU: "Aurangabad",
+  IXY: "Kandla",
+  IXZ: "Port Blair",
+  JAI: "Jaipur",
+  JDH: "Jodhpur",
+  JGA: "Jamnagar",
+  JRH: "Jorhat",
+  KBK: "Kushinagar",
+  KQH: "Kishangarh (Ajmer)",
+  LKO: "Lucknow",
+  LTU: "Latur",
+  MAA: "Chennai",
+  NAG: "Nagpur",
+  NDC: "Nanded",
+  PAT: "Patna",
+  PBD: "Porbandar",
+  PNQ: "Pune",
+  RAJ: "Rajkot",
+  RDP: "Durgapur",
+  RJA: "Rajahmundry",
+  RPR: "Raipur",
+  SAG: "Shirdi",
+  SDW: "Sindhudurg",
+  SHL: "Shillong",
+  SXR: "Srinagar",
+  TCR: "Thoothukudi",
+  TIR: "Tirupati",
+  TRV: "Thiruvananthapuram",
+  TRZ: "Tiruchirappally",
+  UDR: "Udaipur",
+  VNS: "Varanasi",
+  VTZ: "Visakhapatnam",
+};
+
+export interface ResolvedAirport {
+  code: string;
+  /** set when `code` is a "nearest airport" proxy, not the searched place's own */
+  viaCity?: string;
+}
+
+export function resolveAirport(city: string): ResolvedAirport | null {
   const key = city.trim().toLowerCase();
-  // direct city -> airport, else the nearest airport to that district's centre
-  return IATA[key] ?? DISTRICT_HUBS[key]?.iata ?? null;
+  if (IATA[key]) return { code: IATA[key] };
+  const iata = DISTRICT_HUBS[key]?.iata;
+  if (!iata) return null;
+  const viaCity = AIRPORT_CITY[iata];
+  return viaCity ? { code: iata, viaCity } : { code: iata };
 }

@@ -7,7 +7,7 @@
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
-import { toIata } from "@/lib/iata";
+import { resolveAirport } from "@/lib/iata";
 import { airlineName, airlineLogo } from "@/lib/airlines";
 
 const DUFFEL_URL =
@@ -186,8 +186,10 @@ export async function searchFlight({
   to,
   date,
 }: SearchParams): Promise<RouteOption[]> {
-  const origin = toIata(from);
-  const destination = toIata(to);
+  const resOrigin = resolveAirport(from);
+  const resDest = resolveAirport(to);
+  const origin = resOrigin?.code ?? null;
+  const destination = resDest?.code ?? null;
   const isBuild = process.env.NEXT_PHASE === "phase-production-build";
   const hasDuffel = Boolean(process.env.DUFFEL_API_KEY);
   const hasTp = Boolean(process.env.TRAVELPAYOUTS_TOKEN);
@@ -197,12 +199,24 @@ export async function searchFlight({
     return sampleFlights(from, to);
   }
 
+  // when either side is a "nearest airport" proxy (no airport of its own —
+  // common for smaller districts), say so plainly rather than implying the
+  // flight departs/arrives in the searched place itself
+  const bits: string[] = [];
+  if (resOrigin?.viaCity) bits.push(`${from} via ${resOrigin.viaCity}`);
+  if (resDest?.viaCity) bits.push(`${to} via ${resDest.viaCity}`);
+  const airportNote =
+    bits.length > 0
+      ? `Nearest airport used for ${bits.join(" and ")}.`
+      : undefined;
+
   try {
     let out: RouteOption[] = [];
     if (hasDuffel) out = await duffelFlights(origin, destination, date);
     if (out.length === 0 && hasTp) {
       out = await travelpayoutsFlights(origin, destination, date);
     }
+    if (airportNote) out = out.map((o) => ({ ...o, note: airportNote }));
     return out.length > 0 ? out : sampleFlights(from, to);
   } catch (err) {
     console.error("[flight] provider call failed:", err);

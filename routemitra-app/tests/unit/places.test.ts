@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { toStationCode, resolveStation } from "@/lib/stations";
-import { toIata } from "@/lib/iata";
+import { toIata, resolveAirport } from "@/lib/iata";
 import { DISTRICT_HUBS } from "@/lib/district-hubs";
 
 describe("place resolution", () => {
@@ -41,5 +41,12 @@ describe("place resolution", () => {
     expect(bokaro?.viaCity).toBe("Ranchi");
     // a direct city (in STATIONS) never carries a viaCity
     expect(resolveStation("Ajmer")).toEqual({ code: "AII" });
+  });
+
+  it("flags every district-hub airport as a proxy (no districts have their own airport tier)", () => {
+    expect(resolveAirport("Mumbai")).toEqual({ code: "BOM" }); // direct city
+    const sitapur = resolveAirport("Sitapur");
+    expect(sitapur?.code).toBe("LKO");
+    expect(sitapur?.viaCity).toBe("Lucknow");
   });
 });
