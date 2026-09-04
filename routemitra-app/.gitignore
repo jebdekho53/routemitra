@@ -52,3 +52,7 @@ next-env.d.ts
 
 # local data sources (district list etc.) — not for the repo
 *.xlsx
+
+# local data sources for lib/districts.ts + lib/district-hubs.ts (regenerated offline)
+list_of_stations.json
+list-of-airports-in-india.csv

@@ -1,6 +1,8 @@
 // City name -> IATA airport code, for the flight adapter (Duffel needs codes)
 // and Skyscanner deep links. Extend as more routes are added.
 
+import { DISTRICT_HUBS } from "@/lib/district-hubs";
+
 const IATA: Record<string, string> = {
   "andaman": "IXZ",
   "port blair": "IXZ",
@@ -69,5 +71,7 @@ const IATA: Record<string, string> = {
 };
 
 export function toIata(city: string): string | null {
-  return IATA[city.trim().toLowerCase()] ?? null;
+  const key = city.trim().toLowerCase();
+  // direct city -> airport, else the nearest airport to that district's centre
+  return IATA[key] ?? DISTRICT_HUBS[key]?.iata ?? null;
 }

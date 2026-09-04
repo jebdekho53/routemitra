@@ -1,6 +1,8 @@
 // City name -> primary IRCTC station code, for the train adapter.
 // Extend as routes grow.
 
+import { DISTRICT_HUBS } from "@/lib/district-hubs";
+
 const STATIONS: Record<string, string> = {
   agra: "AGC",
   ahmedabad: "ADI",
@@ -66,7 +68,9 @@ const STATIONS: Record<string, string> = {
 };
 
 export function toStationCode(city: string): string | null {
-  return STATIONS[city.trim().toLowerCase()] ?? null;
+  const key = city.trim().toLowerCase();
+  // direct city -> station, else the nearest station to that district's centre
+  return STATIONS[key] ?? DISTRICT_HUBS[key]?.station ?? null;
 }
 
 // Title-cased city names we can resolve to a station — used to populate the
