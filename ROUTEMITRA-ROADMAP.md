@@ -18,26 +18,35 @@ Related docs:
 
 Is roadmap ka kaam hai us demo ko ek real, production-ready app mein badalna.
 
-**Update (is roadmap ka v2):** Phases 0–11 (search + door-to-door) code-complete hain — lekin
-"real website jaisa" feel karne ke liye sirf search kaafi nahi hai. Skyscanner/Ola jaisi site
-mein login/signup/logout, legal pages, security, aur polish bhi hota hai — wo sab Phase 12–18
-mein hai. Neeche ek quick map hai ki kya ban chuka hai aur kya abhi missing hai.
+**Update (is roadmap ka v3, 2026-09-04):** Phases 0–21 code-complete. Site **production pe live**
+hai (`routemitra-gamma.vercel.app`) — UrbanMove Services Private Limited operate karti hai.
+Phases 22–26 (revenue system, real train data via erail.in, search UX, geolocation, compliance
+copy) bhi ho chuke — detail neeche.
 
 | Category | Status |
 |---|---|
 | Search + compare (bus/train/flight) | ✅ Phase 0–2 |
-| Cache, real flight/bus/train adapters | ✅ Phase 3–6 (code ready, keys baaki) |
-| Click-tracking, SEO, deploy, growth | ✅ Phase 7–10 |
+| Cache, real flight/bus/train adapters | ✅ Phase 3–6 |
+| Click-tracking, SEO, deploy, growth | ✅ Phase 7–10 (prod live) |
 | Door-to-door (ghar se ghar) | ✅ Phase 11 |
-| **Accounts — signup/login/logout** | ✅ Phase 12 (code ready; DB + AUTH_SECRET baaki) |
-| **Saved searches, price alerts** | ✅ Phase 13 (code ready; DB baaki) |
-| **Legal — privacy, terms, cookie consent** | ✅ Phase 14 (legal entity/grievance-officer env vars baaki) |
-| **Security — CAPTCHA, rate-limit, monitoring** | ✅ Phase 15 (Sentry + uptime monitor baaki) |
-| **Polish — remove demo feel, PWA, error pages** | ✅ Phase 16 |
-| **Testing/CI** | ✅ Phase 17 |
-| **Admin dashboard** | ✅ Phase 18 |
-| **Mobile-first + premium visual refresh** | ✅ Phase 19 |
-| **Real flight data (Duffel sandbox)** | ✅ Phase 4 (live) |
+| Accounts — signup/login/logout | ✅ Phase 12 |
+| Saved searches, price alerts | ✅ Phase 13 |
+| Legal — privacy, terms, cookie consent | ✅ Phase 14 (entity + grievance-officer env vars **set on prod**) |
+| Security — CAPTCHA, rate-limit, monitoring | ✅ Phase 15 (**Sentry + source maps live**, Turnstile live) |
+| Polish — remove demo feel, PWA, error pages | ✅ Phase 16 |
+| Testing/CI | ✅ Phase 17 |
+| Admin dashboard | ✅ Phase 18 (`ADMIN_PASSWORD` set on prod) |
+| Mobile-first + premium visual refresh | ✅ Phase 19 |
+| Real flight data (Duffel + Travelpayouts) | ✅ Phase 4 / 20 (Travelpayouts live on prod) |
+| **Affiliate wiring — Cuelinks + INRDeals** | ✅ Phase 22 (`CUELINKS_CID` live; RedBus/ConfirmTkt campaigns paused upstream) |
+| **Ancillary revenue — trip extras + packing list** | ✅ Phase 23 (5 Travelpayouts programs + Amazon Associates live) |
+| **Observability — Sentry / Plausible / AdSense CSP** | ✅ Phase 24 |
+| **Time-of-day filters + result densify** | ✅ Phase 25 |
+| **Real train data — erail.in + ISR route pages** | ✅ Phase 26 (`TRAIN_ERAIL=1` on prod) |
+| **Search UX — mode checkboxes, autocomplete, geolocation** | ✅ Phase 27 |
+| **Compliance copy — aggregator disclaimer + IT-Rules grievance officer** | ✅ Phase 28 |
+| B2B travel-API onboarding (TBO / TripJack) | ⏳ in progress (agent accounts filed) |
+| Custom domain + Resend email + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
 `Masthead` + `SiteFooter` components se aata hai — kahin "Demo build · sample data" ya
@@ -106,8 +115,9 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
 - [x] `npx create-next-app@latest routemitra-app --typescript --tailwind --app`
 - [x] Git init, pehla commit
 - [x] `.env.local` banao (`.env.example` bhi add kiya; `.gitignore` mein `.env*` already hai)
-- [ ] Vercel account bana kar project link karo, khaali app hi deploy kar do  ← manual step, tum karoge
-- **Acceptance:** `npm run dev` local par chalta hai ✅. Vercel deploy abhi baaki (account chahiye).
+- [x] Vercel account + project link — **live at `routemitra-gamma.vercel.app`**
+      (Build Command override: `next build --webpack`, Phase 24 dekho)
+- **Acceptance:** ✅ `npm run dev` local + prod deploy dono live.
 
 ### Phase 1 — Demo UI ko Next.js mein port karo (Day 2–3)
 - [x] `routemitra-demo/style.css` ke color tokens + fonts port kiye (`app/globals.css` + `next/font`)
@@ -171,8 +181,8 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
       Plausible custom event ("Book click"). `DATABASE_URL` ho to Postgres `clicks` table mein insert
       (`lib/db.ts`, auto-schema), warna `console.log`. `GET /api/track` → clicks-by-mode + top-routes
       (partner pitch ke liye traction number)
-- [ ] Neon/Supabase Postgres + Plausible account bana ke `DATABASE_URL` / `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
-      daalo  ← tum
+- [x] Plausible live — `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` set on prod (cookieless analytics)
+- [ ] Neon/Supabase Postgres — `DATABASE_URL` daalo  ← tum
 - **Acceptance:** ✅ click par `/api/track` beacon jaata hai; bina DB ke `console.log` dikhta hai,
       DB daalte hi row insert hota hai.
 
@@ -189,9 +199,10 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
 - [x] Deploy checklist + smoke-test steps: `routemitra-app/docs/DEPLOY.md` (Vercel root dir =
       `routemitra-app`, env vars list, custom domain, Lighthouse check)
 - [x] `README.md` updated (arch diagram, env fallback table, routes)
-- [ ] Vercel production deploy + custom domain  ← tum (account chahiye)
-- [ ] Analytics live, 10–20 logon ko bhej kar feedback  ← tum
-- **Acceptance:** ⏳ deploy ke baad app publicly live.
+- [x] Vercel production deploy — **live** (`routemitra-gamma.vercel.app`)
+- [x] Analytics live (Plausible)
+- [ ] Custom domain (`getroutemitra.com` ya jo final ho) + 10–20 logon ko feedback ke liye bhejo  ← tum
+- **Acceptance:** ✅ app publicly live on the Vercel subdomain; custom domain baaki.
 
 ### Phase 10 — Growth loop (ongoing, launch ke baad)
 - [x] Data collection code ready: `GET /api/track` (clicks by mode, top routes) + Plausible events.
@@ -280,12 +291,13 @@ jaisi cheezein possible hoti hain.
 - [x] `lib/site.ts` — legal identity (`LEGAL_ENTITY_NAME`, `LEGAL_ADDRESS`,
   `GRIEVANCE_OFFICER_NAME/EMAIL`, `SUPPORT_EMAIL`) is env-driven with an honest
   pre-incorporation fallback — nothing fabricated ships in the repo
-- [ ] Set the real values: `.env.local` → `NEXT_PUBLIC_SUPPORT_EMAIL`,
-  `NEXT_PUBLIC_GRIEVANCE_OFFICER_NAME` (your real name — DPDP requires a *named* officer),
-  optionally `NEXT_PUBLIC_LEGAL_ENTITY_NAME`/`_ADDRESS` once incorporated  ← tum
-- **Acceptance:** ✅ `npx tsc --noEmit` + `npm run lint` clean. Har legal page live, footer se
-  1 click mein accessible; cookie banner pehli visit par dikhta hai, dismiss ke baad wapas
-  nahi aata. ⏳ Grievance-officer real naam/email set karna baaki (tum).
+- [x] Real values **set on Vercel prod**: `NEXT_PUBLIC_LEGAL_ENTITY_NAME` = "UrbanMove Services
+  Private Limited", `NEXT_PUBLIC_LEGAL_ADDRESS` = "Mariahu, Jaunpur, Uttar Pradesh 222161"
+  (abbreviated, not the residential C/o line), `NEXT_PUBLIC_LEGAL_CIN` = "U49224UP2025PTC229800",
+  `NEXT_PUBLIC_GRIEVANCE_OFFICER_NAME` = "Rahul Seth",
+  `NEXT_PUBLIC_GRIEVANCE_OFFICER_EMAIL` = "urbanmove.services.pvt.ltd@gmail.com"
+- **Acceptance:** ✅ `tsc` + `lint` clean. Legal pages live on prod, footer se accessible;
+  cookie banner once. Grievance Officer copy broadened in Phase 28 (IT Rules 2021 + DPDP).
 
 ### Phase 15 — Security & reliability (Day 37–39)
 
@@ -299,10 +311,14 @@ jaisi cheezein possible hoti hain.
       (5/10min), forgot/reset. Redis na ho to no-op
 - [x] `/api/health` — uptime monitor ping target
 - [x] Error capture stopgap — `errors` table + `/api/client-error` (Phase 18 se), admin par dikhta
-- [ ] **Sentry** proper integration — `@sentry/nextjs` install + `SENTRY_DSN`. Uptime monitor
-      (UptimeRobot → `/api/health`). Neon/Supabase auto-backup confirm  ← tum
-- **Acceptance:** ✅ security headers live; rate-limit 429 deta hai jab Redis configured; zod
-      invalid input par 400. ⏳ Sentry + external uptime monitor tumhare accounts se.
+- [x] **Sentry** integrated (Phase 24) — `@sentry/nextjs` 10.x, client+server+edge configs,
+      `instrumentation.ts`, `NEXT_PUBLIC_SENTRY_DSN` + `SENTRY_AUTH_TOKEN` (org token, `org:ci`)
+      on prod. Source maps upload via Build Command `next build --webpack`.
+- [x] Turnstile live — Cloudflare keys set on prod.
+- [ ] External uptime monitor (UptimeRobot → `/api/health`, alert on `train_feed.last_ok === false`).
+      Neon/Supabase auto-backup confirm  ← tum
+- **Acceptance:** ✅ security headers + Sentry + source maps live on prod; rate-limit 429 when Redis
+      configured; zod 400 on bad input.
 
 ### Phase 16 — Polish: real-website feel (Day 40–42)  ✅
 
@@ -341,9 +357,8 @@ jaisi cheezein possible hoti hain.
       (real API) hai ya "fallback" par, `lib/status.ts` se
 - [x] `errors` table + `POST /api/client-error` beacon (`app/error.tsx` se) — Sentry (Phase 15)
       tak ke liye stopgap
-- [ ] `.env.local` mein `ADMIN_USER` + `ADMIN_PASSWORD` set karo  ← tum
-- **Acceptance:** ✅ creds ke saath `/admin` 200 (dashboard), bina creds 401, env unset 503.
-      Verified: `curl -u admin:… /admin`.
+- [x] `ADMIN_USER` + `ADMIN_PASSWORD` set on prod (`/admin/*` returns 401 without auth — verified).
+- **Acceptance:** ✅ creds ke saath `/admin` 200, bina creds 401, env unset 503.
 
 ### Phase 19 — Mobile-first + premium visual refresh (autonomous session)  ✅
 
@@ -396,8 +411,8 @@ identity ka premium polish.
       fare nahi — `estimateFare(duration, train_type)` se estimate, `indicative`.
 - [x] **Buses**: koi free structured API nahi. Sample rahega jab tak RedBus/AbhiBus
       **affiliate** (Cuelinks/INRDeals) sign na ho — tab "Book" links commission denge.
-- [ ] Keys: `TRAVELPAYOUTS_TOKEN`/`_MARKER` (travelpayouts.com), `RAPIDAPI_IRCTC_KEY`
-      (rapidapi.com/IRCTCAPI/api/irctc1)  ← tum
+- [x] `TRAVELPAYOUTS_TOKEN` + `_MARKER` (772299) set on prod — flights + hotels + trip-extras live.
+- [ ] `RAPIDAPI_IRCTC_KEY` — free tier exhausted; Pro ($9.99/mo) baad mein. Bridge = erail.in (Phase 26).
 - **Amadeus Self-Service band ho gaya (Jul 2026)** — skip.
 
 **UI v2 — richer product feel:**
@@ -448,6 +463,169 @@ identity ka premium polish.
       401 without; feedback submit + inbox + resolve/reopen verified against real
       Postgres; QA user + 10 searches + 3 feedback + 5 clicks + 2 watches all
       reflected in the dashboard.
+
+---
+
+## Phase 22 — Affiliate link wiring (Cuelinks + INRDeals) ✅
+
+Bus/train "Book" links ab commission-capable — ek hi wrapper se.
+
+- [x] `lib/links.ts` — `affiliateWrap(url, mode)` `withTracking()` ke end mein. Bus/train only.
+      Precedence: `CUELINKS_CID` → `linksredirect.com/?cid=…&source=linkkit&url=…`,
+      warna `INRDEALS_ID` → `inr.deals/track?id=…&src=routemitra&url=…`, warna plain.
+      Already-wrapped URL (`linksredirect.com` / `inr.deals/track`) dobara wrap nahi hota.
+- [x] `CUELINKS_CID` = 316487 **set on prod** (channel meta-tag verified: `VERIFY-CL-1HCTWR4R`
+      in `app/layout.tsx` `metadata.other`). INRDeals ID `urb679085621` as fallback.
+- [x] `lib/status.ts` — "Bus / train links (Cuelinks / INRDeals)" row.
+- [x] Tests: `tests/unit/links.test.ts` — Cuelinks-over-INRDeals precedence, INRDeals-only
+      fallback (11 tests).
+- **Note:** Cuelinks par **RedBus + ConfirmTkt campaigns PAUSED** hain (upstream). Plumbing
+  ready — resume hote hi commission chalu, koi code change nahi.
+- **Acceptance:** ✅ prod `/api/search` — har bus/train option ka `link` =
+  `linksredirect.com/?cid=316487…` → deep link. Flights = Travelpayouts `tp.media/r?…`.
+
+## Phase 23 — Ancillary revenue: trip extras + packing list ✅
+
+Har destination/route page pe "before you go" upsell cards + Amazon packing strip.
+
+- [x] `lib/ancillary.ts` — `Extra` type + env-gated builders: `carRental` (`NEXT_PUBLIC_AFF_CARS`),
+      `esim` (`_ESIM`), `insurance` (`_INSURANCE`), `activities` (`_ACTIVITIES`),
+      `transfer` (`_TRANSFERS`), `lounge` (`_LOUNGE`), `forex` (`_FOREX`),
+      `amazon(query,label)` (`NEXT_PUBLIC_AMAZON_ASSOC_TAG`, adds `linkCode=ur2`),
+      `uberTo(place)` (free, no env). `fill()` templatiser, `extrasForDestination()`,
+      `travelGear()` (6-item `GEAR` list), `ancillaryStatus()`.
+- [x] `components/TripExtras.tsx` — server component, card grid (`repeat(auto-fill,minmax(240px,1fr))`,
+      1-col ≤520px), `rel="noopener nofollow sponsored"` on paid links, disclosure line.
+- [x] `components/TravelGear.tsx` — "Packing list" chips, "As an Amazon Associate…" disclosure.
+- [x] Wired into `/search` results, `/routes/[slug]`, `/travel/[slug]` (~90 guide pages).
+- [x] Live on prod: **5 Travelpayouts programs** (EKTA insurance, Airalo eSIM, Localrent cars,
+      Kiwitaxi transfers, Klook activities — Project 569491, marker 772299) +
+      **Amazon Associates** tag `routemitra-21`. GetYourGuide + Viator declined (site too new).
+- [x] `lib/status.ts` — `Revenue · …` rows per stream.
+- **Acceptance:** ✅ prod trip-extras block renders real `tp.media/r?…` + `amazon.in/s?...&tag=routemitra-21`
+      links; hidden when no env configured; mobile 1-col verified.
+
+## Phase 24 — Observability: Sentry, Plausible, AdSense CSP ✅
+
+- [x] **Sentry** `@sentry/nextjs` 10.73 — `instrumentation.ts` (`register` + `onRequestError`),
+      `instrumentation-client.ts` (`onRouterTransitionStart`), `sentry.server/edge.config.ts`,
+      `global-error.tsx` capture. `withSentryConfig` from `@sentry/nextjs/config`.
+      `tracesSampleRate` 0.1 prod. Auto-disables on falsy DSN.
+- [x] **Source maps** — Next 16 default build is Turbopack but doesn't set `TURBOPACK` env, so
+      Sentry misdetects webpack and skips upload. Fix = Vercel **Build Command → `next build --webpack`**.
+      Org token (`org:ci` scope) as `SENTRY_AUTH_TOKEN`. Verified: 12/13 chunks with debug IDs,
+      Source Maps page shows archives.
+- [x] `next.config.ts` — `connect-src` includes `https://*.ingest.us.sentry.io`;
+      `adsOn` (`NEXT_PUBLIC_ADSENSE_CLIENT`) conditionally widens `script/img/frame/connect-src`
+      for AdSense; `app/layout.tsx` loads `adsbygoogle.js` only when the client id is set.
+- [x] Plausible + Turnstile keys set on prod.
+- [ ] AdSense — account needs a custom domain + traffic before approval  ← tum
+- **Acceptance:** ✅ Sentry receiving events + source maps on prod; CSP allows Sentry ingest;
+      AdSense script gated behind an unset env (no-op for now).
+
+## Phase 25 — Time-of-day filters + result densify ✅
+
+Skyscanner-style "leaves / arrives" windows, and enough options for them to matter.
+
+- [x] `lib/time-buckets.ts` — 4 windows (Night 00–06, Morning 06–12, Afternoon 12–18,
+      Evening 18–24), `bucketOf(hhmm)`.
+- [x] `components/TimeFilter.tsx` — two rows of 4 chips (dep + arr) with counts, `aria-pressed`,
+      disabled when count 0, "Clear times". Mobile: wrap to 2×2.
+- [x] `app/search/SearchResults.tsx` — `depBuckets`/`arrBuckets` `Set<number>` state, reset on
+      route change, `modeFiltered` → `depCounts`/`arrCounts` → `sortedOptions` filter+sort,
+      "N of M options" summary, empty-state "Clear filters".
+- [x] `lib/densify.ts` — seeded PRNG (mulberry32 + FNV-1a from route key) pads each mode a route
+      already serves with realistic departures across all 4 buckets (~19 options), deterministic
+      (SSR == client), marked `indicative` + `source: "sample"`. `lib/sample-data.ts`
+      `getSampleOptions()` routes curated sample through `densify()`.
+- **Acceptance:** ✅ verified on prod + mobile — chips filter, counts update, no horizontal scroll.
+
+## Phase 26 — Real train data: erail.in + ISR route pages ✅
+
+Bridge until a rail API (TripJack / RapidAPI Pro) is live.
+
+- [x] `lib/adapters/erail.ts` — `erailTrains(fromCode,toCode,date)` fetches
+      `erail.in/rail/getTrains.aspx` (`~`/`^` delimited, NOT JSON), needs `User-Agent` + `Referer`.
+      Parses train no/name, boarding/alighting, dep/arr (HH.MM), duration, 7-char running-days
+      bitmask (Mon..Sun) → drops trains not running the requested weekday. Fares **estimated**
+      (`estimateFare` from duration + class regex) and flagged `indicative`, `source: "erail"`.
+      10s timeout, empty on any failure. Caps at 15.
+- [x] `lib/adapters/train.ts` — source priority now
+      **RapidAPI irctc1 → erail (`TRAIN_ERAIL`) → generic provider → sample**.
+      `NEXT_PHASE` guard keeps erail out of `next build`. Warn logs on empty/fallback.
+- [x] `app/routes/[slug]/page.tsx` — `sampleSearch()` → `runSearch()` (still SSG). Build renders
+      sample (phase guard); the ISR revalidate fetches live flights (Travelpayouts) + trains (erail).
+- [x] `revalidate` 3600 → **600** so live data propagates ~10 min after a deploy.
+      (Every push redeploys and resets that window — expect ~11 min of sample on `/routes/*`
+      right after a deploy. `/search` is unaffected, always live.)
+- [x] `TRAIN_ERAIL=1` **set on prod**. Verified: Mumbai→Goa shows real Konkan Railway trains
+      (Konkan Kanya, Mandovi, Mangaluru Exp, Goa Sampark Kranti, MAO Vande Bharat/Tejas);
+      `/routes/mumbai-to-goa` flipped to real data after the 600s window + FAQ JSON-LD updated.
+- [x] **Health signal** — `erail.ts` records last outcome per serverless instance;
+      `erailHealth()`. `/admin/system` "Trains" row shows `OK (N rows)` / `DEGRADED: <reason>`.
+      `/api/health` adds `train_feed { enabled, last_ok, last_at, last_rows, note }` for uptime
+      monitors. User-facing notes on the results page: "times from the public IR timetable" when
+      erail-sourced, a distinct "representative samples" note when fallen back.
+- **Risk (documented):** unofficial scrape, ToS-grey for a registered company, can rate-limit or
+      IP-block Vercel egress with no notice, no live fares. Every failure falls through to the next
+      source. Retire once TripJack rail is live.
+- **Acceptance:** ✅ prod `/api/search` + `/routes/*` show real trains; `/api/health` `train_feed`
+      goes `last_ok: true` after a search; degraded path falls back cleanly.
+
+## Phase 27 — Search UX: mode checkboxes, autocomplete, geolocation ✅
+
+- [x] **Mode checkboxes** — `SearchForm` "Show me" ☑ Bus ☑ Train ☑ Flight (all on by default).
+      A real subset adds `?modes=bus,train` to the URL; `runSearch` calls only those adapters
+      (`Promise.resolve([])` for the rest) — **saves provider quota**. Cache key includes the subset.
+      `lib/validation.ts` + `/api/search` accept `modes`; `types/route.ts` `SearchParams.modes`.
+- [x] **Autocomplete** — `<datalist>` on from/to now covers every city in `lib/stations.ts`
+      (`STATION_CITIES`, ~60), not just the ~20 sample routes. Native, no API call per keystroke.
+- [x] **Geolocation** — door-to-door "📍 Use my location" button next to "Full pickup address":
+      `navigator.geolocation` → `/api/reverse-geocode?lat=&lon=` → fills the field (still editable).
+      `lib/geo.ts` `reverseGeocode()` via Nominatim `/reverse` (Google fallback if
+      `GOOGLE_MAPS_API_KEY`), cached. Permission-denied / failure → "type it in" message.
+- [x] `next.config.ts` — `Permissions-Policy` `geolocation=()` → `geolocation=(self)` (the `()`
+      form blocked the API outright).
+- **Acceptance:** ✅ verified on prod (375px + desktop): checkboxes fit one row, datalist resolves
+      "chen" → Chennai, `/api/reverse-geocode` returns an address, `Permissions-Policy` allows self.
+
+## Phase 28 — Compliance copy: aggregator disclaimer + IT-Rules grievance officer ✅
+
+- [x] **Aggregator disclaimer at point of use** — a plain-language line on the search results
+      page (next to the Book buttons) and `/routes/[slug]`: RouteMitra compares options and
+      **doesn't sell tickets**; payment, refunds and support are the operator's / OTA's, under
+      their policy. (Footer + `/terms` §1/§4/§5 already had it site-wide.)
+- [x] **Grievance Officer broadened** — `/privacy#grievance` §8 now cites **both** the DPDP Act
+      2023 and the **IT (Intermediary Guidelines) Rules 2021**, with the registered entity +
+      address + CIN and a **24-hour acknowledge / 15-day resolve** commitment + escalation to the
+      Data Protection Board. `/contact` block relabeled to match.
+- [x] `.env.example` — worked examples for the legal-identity vars.
+- **Acceptance:** ✅ all four surfaces verified live on prod (deploy `6b91158`).
+- **Open:** the grievance mailbox (`urbanmove.services.pvt.ltd@gmail.com`) must actually be
+  monitored to the 24h/15-day SLA; move to `grievance@<domain>` once a domain exists  ← tum
+
+---
+
+## Still pending (2026-09-04)
+
+**Tum (external accounts / KYC / money):**
+- Rotate leaked secrets — `AUTH_SECRET`, `CRON_SECRET`, `ADMIN_PASSWORD`, Duffel token, Cuelinks pw
+- Custom domain (unblocks Resend email + AdSense)
+- `DATABASE_URL` (Neon/Supabase) — accounts, saved searches, price-alert cron, admin metrics
+- `RESEND_API_KEY` — verification + reset + feedback + price-alert emails
+- Travelpayouts payout method (Payoneer — PayPal India nahi chalta)
+- Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
+- RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
+- External uptime monitor → `/api/health`
+- **TBO** KYC docs (Application #185068) when they email
+- **TripJack** — submit rail agent form (Owner Name + DOB), then API access via `connect@tripjack.com` + wallet recharge
+- GetYourGuide / Viator — reapply when the site is ~2 months old
+- Cuelinks — wait for RedBus + ConfirmTkt campaigns to un-pause
+
+**Code (bol do to):**
+- Resend email wiring once `RESEND_API_KEY` exists
+- Swap erail → TripJack rail adapter when that API is live
+- `grievance@<domain>` + monitored inbox once domain exists
 
 ---
 
