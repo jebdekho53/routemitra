@@ -9,7 +9,7 @@
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
-import { toStationCode } from "@/lib/stations";
+import { resolveStation } from "@/lib/stations";
 import { erailTrains } from "@/lib/adapters/erail";
 
 function sampleTrains(from: string, to: string): RouteOption[] {
@@ -146,6 +146,27 @@ async function genericProviderTrains(
     .filter((o) => o.price > 0);
 }
 
+// When either end resolved to a "nearest station" proxy rather than the
+// searched place's own station, the train/IRCTC feed only knows the two
+// station codes — it can return a real, running train between them that
+// still doesn't actually serve one (or both) of the places the user typed.
+// Surface that plainly rather than presenting a single fallback result as a
+// confirmed direct option (see: Ajmer -> Bokaro returning an Ajmer-bound
+// "AII SRC SPL" special that ConfirmTkt itself lists as having no direct
+// Ajmer-Bokaro train).
+function stationCaveat(
+  from: string,
+  to: string,
+  resFrom: ReturnType<typeof resolveStation>,
+  resTo: ReturnType<typeof resolveStation>,
+): string | undefined {
+  const bits: string[] = [];
+  if (resFrom?.viaCity) bits.push(`${from} via ${resFrom.viaCity}`);
+  if (resTo?.viaCity) bits.push(`${to} via ${resTo.viaCity}`);
+  if (bits.length === 0) return undefined;
+  return `Nearest station used for ${bits.join(" and ")} — this train may not serve the exact place directly. Confirm the stop before booking.`;
+}
+
 // -------------------------------------------------------------- adapter ----
 export async function searchTrain({
   from,
@@ -166,16 +187,24 @@ export async function searchTrain({
 
   try {
     let out: RouteOption[] = [];
+    const resFrom = resolveStation(from);
+    const resTo = resolveStation(to);
+    const caveat = stationCaveat(from, to, resFrom, resTo);
+
     if (hasIrctc) {
-      const fc = toStationCode(from);
-      const tc = toStationCode(to);
-      if (fc && tc) out = await irctcTrains(fc, tc, date);
+      const fc = resFrom?.code ?? null;
+      const tc = resTo?.code ?? null;
+      if (fc && tc) {
+        out = await irctcTrains(fc, tc, date);
+        if (caveat) out = out.map((o) => ({ ...o, note: caveat }));
+      }
     }
     if (out.length === 0 && hasErail) {
-      const fc = toStationCode(from);
-      const tc = toStationCode(to);
+      const fc = resFrom?.code ?? null;
+      const tc = resTo?.code ?? null;
       if (fc && tc) {
         out = await erailTrains(fc, tc, date);
+        if (caveat) out = out.map((o) => ({ ...o, note: caveat }));
         if (out.length === 0) {
           console.warn(
             `[train] erail yielded nothing for ${from}->${to} (${fc}-${tc}); falling back to sample`,

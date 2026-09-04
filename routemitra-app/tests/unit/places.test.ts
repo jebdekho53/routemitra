@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toStationCode } from "@/lib/stations";
+import { toStationCode, resolveStation } from "@/lib/stations";
 import { toIata } from "@/lib/iata";
 import { DISTRICT_HUBS } from "@/lib/district-hubs";
 
@@ -30,5 +30,16 @@ describe("place resolution", () => {
     for (const [name, hub] of Object.entries(DISTRICT_HUBS)) {
       expect(hub.station || hub.iata, name).toBeTruthy();
     }
+  });
+
+  it("flags a proxy station with viaCity, but not a place's own station", () => {
+    // Rae Bareli matched its OWN station (tier 1) — no proxy caveat
+    expect(resolveStation("Rae Bareli")).toEqual({ code: "RBL" });
+    // Bokaro has no station of its own in the registry — nearest is Ranchi
+    const bokaro = resolveStation("Bokaro");
+    expect(bokaro?.code).toBe("RNC");
+    expect(bokaro?.viaCity).toBe("Ranchi");
+    // a direct city (in STATIONS) never carries a viaCity
+    expect(resolveStation("Ajmer")).toEqual({ code: "AII" });
   });
 });

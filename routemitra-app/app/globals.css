@@ -2165,6 +2165,16 @@ main.wrap {
 }
 
 /* ============ Door-to-door ============ */
+.rc-note {
+  margin: 0 var(--s-4) var(--s-4);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  color: var(--warn);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .d2d {
   margin: 0 var(--s-4);
   padding: var(--s-3) 0 var(--s-4);

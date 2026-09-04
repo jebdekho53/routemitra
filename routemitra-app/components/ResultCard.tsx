@@ -93,6 +93,8 @@ export default function ResultCard({
         </div>
       </div>
 
+      {option.note && <p className="rc-note">⚠ {option.note}</p>}
+
       {d2d && (
         <div className="d2d">
           <div className="d2d-total">

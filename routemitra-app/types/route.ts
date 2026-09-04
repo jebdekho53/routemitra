@@ -22,6 +22,10 @@ export interface RouteOption {
   stops?: number;
   /** Phase 11 — full trip incl. local legs, when origin/destination addresses given */
   door_to_door?: DoorToDoor;
+  /** short caveat shown under the operator name — e.g. when a station/airport
+   *  is a "nearest to X" proxy, so this option may not literally serve the
+   *  searched place. Not a formatting hint — plain user-facing text. */
+  note?: string;
 }
 
 export interface LocalLeg {

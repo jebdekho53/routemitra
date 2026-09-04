@@ -13,6 +13,8 @@ import TimeFilter from "@/components/TimeFilter";
 import { bucketOf } from "@/lib/time-buckets";
 import SearchForm from "@/components/SearchForm";
 import SiteHeader from "@/components/SiteHeader";
+import Masthead from "@/components/Masthead";
+import { moodFor } from "@/lib/destination-mood";
 import SiteFooter from "@/components/SiteFooter";
 import RouteActions from "@/components/RouteActions";
 import HotelCta from "@/components/HotelCta";
@@ -157,12 +159,16 @@ export default function SearchResults() {
 
   return (
     <>
-      <SiteHeader />
+      {from && to ? (
+        <Masthead title={`${from} → ${to}`} mood={moodFor(to)} />
+      ) : (
+        <>
+          <SiteHeader />
+          <h1 className="sr-only">Search</h1>
+        </>
+      )}
 
       <main className="wrap search-main" id="main">
-        <h1 className="sr-only">
-          {from && to ? `${from} to ${to} — options` : "Search"}
-        </h1>
         <SearchForm
           initialFrom={from}
           initialTo={to}
