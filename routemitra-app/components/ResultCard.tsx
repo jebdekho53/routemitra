@@ -69,6 +69,9 @@ export default function ResultCard({
             <span className="rc-track">
               <i />
               <i />
+              <span className="rc-track-mode">
+                <ModeIcon mode={option.mode} />
+              </span>
             </span>
             {stopsLabel && <span className="rc-stops">{stopsLabel}</span>}
           </div>

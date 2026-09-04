@@ -1122,11 +1122,12 @@ main.wrap {
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   border-left: 4px solid var(--line);
 }
 .rc:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 .rc.bus {
   border-left-color: var(--mode-bus);
@@ -1136,6 +1137,13 @@ main.wrap {
 }
 .rc.flight {
   border-left-color: var(--mode-flight);
+}
+/* a card carrying the "Cheapest" tag gets a soft glow so it reads as the pick */
+.rc:has(.tag-cheap) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 30%, transparent), var(--shadow-sm);
+}
+.rc:has(.tag-cheap):hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 40%, transparent), var(--shadow-md);
 }
 
 .rc-main {
@@ -1262,8 +1270,8 @@ main.wrap {
 .rc-track i {
   position: absolute;
   top: 50%;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--ink-faint);
   transform: translateY(-50%);
@@ -1274,6 +1282,15 @@ main.wrap {
 .rc-track i:last-child {
   right: 0;
 }
+.rc.bus .rc-track {
+  background: color-mix(in srgb, var(--mode-bus) 35%, var(--line-strong));
+}
+.rc.train .rc-track {
+  background: color-mix(in srgb, var(--mode-train) 35%, var(--line-strong));
+}
+.rc.flight .rc-track {
+  background: color-mix(in srgb, var(--mode-flight) 35%, var(--line-strong));
+}
 .rc.bus .rc-track i {
   background: var(--mode-bus);
 }
@@ -1282,6 +1299,36 @@ main.wrap {
 }
 .rc.flight .rc-track i {
   background: var(--mode-flight);
+}
+.rc-track-mode {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+}
+.rc-track-mode svg {
+  width: 11px;
+  height: 11px;
+}
+.rc.bus .rc-track-mode {
+  color: var(--mode-bus);
+  border-color: var(--mode-bus);
+}
+.rc.train .rc-track-mode {
+  color: var(--mode-train);
+  border-color: var(--mode-train);
+}
+.rc.flight .rc-track-mode {
+  color: var(--mode-flight);
+  border-color: var(--mode-flight);
 }
 .rc-stops {
   font-size: 10.5px;
@@ -1296,6 +1343,34 @@ main.wrap {
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
+}
+/* boarding-pass stub: a torn/perforated edge between the route info and the
+   fare+book column, punched circles coloured to the page background */
+@media (min-width: 40em) {
+  .rc-fare {
+    position: relative;
+    align-self: stretch;
+    justify-content: center;
+    padding-left: var(--s-4);
+    border-left: 1.5px dashed var(--line-strong);
+  }
+  .rc-fare::before,
+  .rc-fare::after {
+    content: "";
+    position: absolute;
+    left: -8px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .rc-fare::before {
+    top: -8px;
+  }
+  .rc-fare::after {
+    bottom: -8px;
+  }
 }
 .rc-price {
   font-size: 19px;
