@@ -49,3 +49,6 @@ next-env.d.ts
 
 # sentry
 .env.sentry-build-plugin
+
+# local data sources (district list etc.) — not for the repo
+*.xlsx
