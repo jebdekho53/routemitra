@@ -1,8 +1,9 @@
-// Email sending. Placeholder-friendly:
-//   - RESEND_API_KEY set -> send via Resend
-//   - otherwise           -> log the email to the server console
+// Email sending. Transport is picked by which env vars are set, in order:
+//   1. SMTP_HOST + SMTP_USER + SMTP_PASS -> SMTP via nodemailer (Hostinger etc.)
+//   2. RESEND_API_KEY                    -> Resend HTTP API
+//   3. nothing                           -> log the email to the server console
 //
-// Swap in any provider (SES, Postmark, SMTP) by editing sendViaProvider().
+// EMAIL_FROM is the visible From: on every message.
 
 import { SITE_URL } from "@/lib/site";
 
@@ -14,31 +15,68 @@ interface Mail {
   text: string;
 }
 
+function smtpConfigured(): boolean {
+  return Boolean(
+    process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS,
+  );
+}
+
+async function sendViaSmtp(mail: Mail): Promise<void> {
+  // dynamic import so nodemailer stays out of any bundle that never sends mail
+  const { default: nodemailer } = await import("nodemailer");
+  const port = Number(process.env.SMTP_PORT || 465);
+  const secure = process.env.SMTP_SECURE
+    ? process.env.SMTP_SECURE === "true"
+    : port === 465;
+
+  const transport = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port,
+    secure, // true for 465, false for 587/25 (STARTTLS)
+    auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+  });
+
+  await transport.sendMail({
+    from: FROM,
+    to: mail.to,
+    subject: mail.subject,
+    text: mail.text,
+  });
+}
+
+async function sendViaResend(mail: Mail, key: string): Promise<void> {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: FROM,
+      to: mail.to,
+      subject: mail.subject,
+      text: mail.text,
+    }),
+  });
+  if (!res.ok) {
+    console.error(`[email] Resend ${res.status}: ${await res.text()}`);
+  }
+}
+
 export async function sendEmail(mail: Mail): Promise<void> {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) {
+  try {
+    if (smtpConfigured()) {
+      await sendViaSmtp(mail);
+      return;
+    }
+    const key = process.env.RESEND_API_KEY;
+    if (key) {
+      await sendViaResend(mail, key);
+      return;
+    }
     console.log(
       `\n[email:placeholder] To: ${mail.to}\nSubject: ${mail.subject}\n${mail.text}\n`,
     );
-    return;
-  }
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: FROM,
-        to: mail.to,
-        subject: mail.subject,
-        text: mail.text,
-      }),
-    });
-    if (!res.ok) {
-      console.error(`[email] Resend ${res.status}: ${await res.text()}`);
-    }
   } catch (err) {
     console.error("[email] send failed:", err);
   }
