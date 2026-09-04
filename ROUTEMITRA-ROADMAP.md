@@ -29,10 +29,10 @@ copy) bhi ho chuke — detail neeche.
 | Cache, real flight/bus/train adapters | ✅ Phase 3–6 |
 | Click-tracking, SEO, deploy, growth | ✅ Phase 7–10 (prod live) |
 | Door-to-door (ghar se ghar) | ✅ Phase 11 |
-| Accounts — signup/login/logout | ✅ Phase 12 |
-| Saved searches, price alerts | ✅ Phase 13 |
+| Accounts — signup/login/logout | ✅ Phase 12 (**Neon Postgres + `AUTH_SECRET` live on prod**) |
+| Saved searches, price alerts | ✅ Phase 13 (**DB + `CRON_SECRET` live**; email delivery needs `RESEND_API_KEY`) |
 | Legal — privacy, terms, cookie consent | ✅ Phase 14 (entity + grievance-officer env vars **set on prod**) |
-| Security — CAPTCHA, rate-limit, monitoring | ✅ Phase 15 (**Sentry + source maps live**, Turnstile live) |
+| Security — CAPTCHA, rate-limit, monitoring | ✅ Phase 15 (Sentry + source maps live, Turnstile live; **rate-limit + cache no-op — no Upstash Redis on prod**) |
 | Polish — remove demo feel, PWA, error pages | ✅ Phase 16 |
 | Testing/CI | ✅ Phase 17 |
 | Admin dashboard | ✅ Phase 18 (`ADMIN_PASSWORD` set on prod) |
@@ -182,7 +182,11 @@ Har phase ke end mein "Acceptance" diya hai — jab tak wo sach na ho, agle phas
       (`lib/db.ts`, auto-schema), warna `console.log`. `GET /api/track` → clicks-by-mode + top-routes
       (partner pitch ke liye traction number)
 - [x] Plausible live — `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` set on prod (cookieless analytics)
-- [ ] Neon/Supabase Postgres — `DATABASE_URL` daalo  ← tum
+- [x] **Neon Postgres live** — `DATABASE_URL` (+ `DATABASE_URL_UNPOOLED`, `PG*`, `POSTGRES_*`) set
+      on Production/Preview/Development via the Vercel↔Neon marketplace integration (resource
+      "routemitra", us-east-1). All 9 app tables exist (`ensureSchema()` has run):
+      `users, auth_tokens, saved_searches, route_watches, favourite_routes, clicks, searches,
+      feedback, errors`. Connect pgAdmin to the same string from the Neon dashboard.
 - **Acceptance:** ✅ click par `/api/track` beacon jaata hai; bina DB ke `console.log` dikhta hai,
       DB daalte hi row insert hota hai.
 
@@ -253,11 +257,10 @@ jaisi cheezein possible hoti hain.
 - [x] `/account` — naam/email update, password change, **delete account** (cascade delete)
       via server actions
 - [x] Signup/login/forgot/reset par IP rate-limit (`lib/ratelimit.ts` — Upstash, no-op bina Redis)
-- [ ] `.env.local`: `AUTH_SECRET` (`npx auth secret`), optionally `AUTH_GOOGLE_ID/SECRET`,
-      `RESEND_API_KEY` (warna verification email console mein print hoga)  ← tum
-- **Acceptance:** ⏳ code + flows taiyaar. DB + `AUTH_SECRET` daalne ke baad end-to-end chalega
-      (signup → console/email link → verify → login → header naam → logout). Protected routes
-      (`/account`, `/dashboard`) bina login `/login?callbackUrl=` par redirect hote hain ✅ (E2E).
+- [x] `AUTH_SECRET` + `AUTH_GOOGLE_ID/SECRET` set on prod. `RESEND_API_KEY` abhi **nahi** —
+      verification/reset email console me print hote hain jab tak wo (+ domain) na aaye.
+- **Acceptance:** ✅ DB + `AUTH_SECRET` live — signup → verify → login → logout end-to-end
+      chalta hai (email step console). Protected routes bina login redirect (E2E).
 
 ### Phase 13 — Logged-in user features (Day 32–34)
 
@@ -269,8 +272,10 @@ jaisi cheezein possible hoti hain.
       `vercel.json` — roz 6am
 - [x] Favourite routes — `favourite_routes` table, "☆ Save route" button, `POST /api/favourites`
 - [x] `/dashboard` — recent searches + watches + favourites, har item se remove
-- **Acceptance:** ⏳ DB ke saath: logged-in user route watch kare → cron chale → `last_price` se
-      kam fare pe email (Resend ya console). Cron endpoint bina DB ke bhi safe (`checked: 0`).
+- **Acceptance:** ✅ DB live on prod — logged-in user "🔔 Watch price" dabaye → watch save,
+      `/dashboard` me dikhe → roz 6am cron ([vercel.json](routemitra-app/vercel.json)) re-price kare
+      (`CRON_SECRET` set, endpoint 401 without bearer — verified) → fare gire to `priceAlertEmail`.
+      **Email abhi console me** (no `RESEND_API_KEY`) — feature ka baaki sab live.
 
 ### Phase 14 — Legal, trust & compliance (Day 35–36)  ✅
 
@@ -412,7 +417,8 @@ identity ka premium polish.
 - [x] **Buses**: koi free structured API nahi. Sample rahega jab tak RedBus/AbhiBus
       **affiliate** (Cuelinks/INRDeals) sign na ho — tab "Book" links commission denge.
 - [x] `TRAVELPAYOUTS_TOKEN` + `_MARKER` (772299) set on prod — flights + hotels + trip-extras live.
-- [ ] `RAPIDAPI_IRCTC_KEY` — free tier exhausted; Pro ($9.99/mo) baad mein. Bridge = erail.in (Phase 26).
+- [x] `RAPIDAPI_IRCTC_KEY` set on prod **but free-tier quota exhausted** — adapter tries it first,
+      gets nothing, falls to erail.in (Phase 26). Pro ($9.99/mo) baad mein.
 - **Amadeus Self-Service band ho gaya (Jul 2026)** — skip.
 
 **UI v2 — richer product feel:**
@@ -606,24 +612,37 @@ Bridge until a rail API (TripJack / RapidAPI Pro) is live.
 
 ---
 
+## Already live on prod (env verified 2026-09-04)
+
+`DATABASE_URL` (Neon, all envs — 9 tables exist) · `AUTH_SECRET` · `AUTH_GOOGLE_ID/SECRET` ·
+`CRON_SECRET` · `ADMIN_USER/PASSWORD` · `TRAVELPAYOUTS_TOKEN/MARKER` · `CUELINKS_CID` ·
+`RAPIDAPI_IRCTC_KEY` (quota-exhausted) · `TRAIN_ERAIL` · `NEXT_PUBLIC_SENTRY_DSN` +
+`SENTRY_AUTH_TOKEN` · `TURNSTILE_SITE_KEY/SECRET` · `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` ·
+`GOOGLE_MAPS_API_KEY` · `NEXT_PUBLIC_AFF_*` (cars/esim/insurance/activities/transfers) ·
+`NEXT_PUBLIC_AMAZON_ASSOC_TAG` · legal-identity + grievance-officer vars.
+
 ## Still pending (2026-09-04)
 
 **Tum (external accounts / KYC / money):**
-- Rotate leaked secrets — `AUTH_SECRET`, `CRON_SECRET`, `ADMIN_PASSWORD`, Duffel token, Cuelinks pw
+- Rotate secrets that have passed through a chat transcript — `AUTH_SECRET`, `CRON_SECRET`,
+  `ADMIN_PASSWORD`, Duffel token, Cuelinks pw, **and the Neon DB password** (Neon dashboard →
+  Roles → reset `neondb_owner`; the Vercel integration auto-updates `DATABASE_URL`)
 - Custom domain (unblocks Resend email + AdSense)
-- `DATABASE_URL` (Neon/Supabase) — accounts, saved searches, price-alert cron, admin metrics
-- `RESEND_API_KEY` — verification + reset + feedback + price-alert emails
+- `RESEND_API_KEY` (+ `EMAIL_FROM`) on Vercel — the **only** thing left for price-alert / verify /
+  reset / feedback emails to actually send instead of console-logging
+- `UPSTASH_REDIS_REST_URL` + `_TOKEN` on Vercel — **not set on prod**, so the search cache and
+  all rate-limits (`/api/search` 60/min, signup, forgot/reset) are currently no-ops in production
 - Travelpayouts payout method (Payoneer — PayPal India nahi chalta)
 - Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
 - RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
-- External uptime monitor → `/api/health`
+- External uptime monitor → `/api/health` (alert on `train_feed.last_ok === false`)
 - **TBO** KYC docs (Application #185068) when they email
 - **TripJack** — submit rail agent form (Owner Name + DOB), then API access via `connect@tripjack.com` + wallet recharge
 - GetYourGuide / Viator — reapply when the site is ~2 months old
 - Cuelinks — wait for RedBus + ConfirmTkt campaigns to un-pause
 
 **Code (bol do to):**
-- Resend email wiring once `RESEND_API_KEY` exists
+- Resend email wiring is already in `lib/email.ts` — just needs the key; nothing to build
 - Swap erail → TripJack rail adapter when that API is live
 - `grievance@<domain>` + monitored inbox once domain exists
 
