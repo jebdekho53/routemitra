@@ -18,10 +18,10 @@ Related docs:
 
 Is roadmap ka kaam hai us demo ko ek real, production-ready app mein badalna.
 
-**Update (is roadmap ka v3, 2026-09-04):** Phases 0–21 code-complete. Site **production pe live**
+**Update (is roadmap ka v4, 2026-09-04):** Phases 0–21 code-complete. Site **production pe live**
 hai (`routemitra-gamma.vercel.app`) — UrbanMove Services Private Limited operate karti hai.
-Phases 22–26 (revenue system, real train data via erail.in, search UX, geolocation, compliance
-copy) bhi ho chuke — detail neeche.
+Phases 22–30 (revenue system, real train data via erail.in, search UX, geolocation, compliance
+copy, real SMTP email, district-level place resolution) bhi ho chuke — detail neeche.
 
 | Category | Status |
 |---|---|
@@ -45,8 +45,10 @@ copy) bhi ho chuke — detail neeche.
 | **Real train data — erail.in + ISR route pages** | ✅ Phase 26 (`TRAIN_ERAIL=1` on prod) |
 | **Search UX — mode checkboxes, autocomplete, geolocation** | ✅ Phase 27 |
 | **Compliance copy — aggregator disclaimer + IT-Rules grievance officer** | ✅ Phase 28 |
+| **Transactional email — real SMTP (Hostinger) send** | ✅ Phase 29 (verify/reset/price-alert emails actually deliver) |
+| **District-level place resolution (autocomplete + station/airport hub)** | ✅ Phase 30 (all 749 districts searchable) |
 | B2B travel-API onboarding (TBO / TripJack) | ⏳ in progress (agent accounts filed) |
-| Custom domain + Resend email + RapidAPI IRCTC Pro | ⏳ pending (tum) |
+| Custom domain + Upstash Redis + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
 `Masthead` + `SiteFooter` components se aata hai — kahin "Demo build · sample data" ya
@@ -610,6 +612,62 @@ Bridge until a rail API (TripJack / RapidAPI Pro) is live.
 - **Open:** the grievance mailbox (`urbanmove.services.pvt.ltd@gmail.com`) must actually be
   monitored to the 24h/15-day SLA; move to `grievance@<domain>` once a domain exists  ← tum
 
+## Phase 29 — Transactional email: real SMTP delivery ✅
+
+Price-alert / verify / reset emails go out for real now, not just console.log.
+
+- [x] `lib/email.ts` — `sendEmail()` picks a transport by env: **SMTP first**
+      (`SMTP_HOST`+`SMTP_USER`+`SMTP_PASS`, via `nodemailer`), else Resend, else console.
+      `nodemailer` pinned to `^10` (via `overrides` — `next-auth`'s `@auth/core` wants `^7||^8`
+      but doesn't exercise the Email-provider path in this app, so forcing 10 is safe and closes
+      GHSA-p6gq-j5cr-w38f).
+- [x] **Envelope-sender fix** — Hostinger rejected the first attempt with
+      `501 5.1.7 Bad sender address syntax` because `MAIL FROM` came from a display-name /
+      quote-wrapped `EMAIL_FROM`. Fixed: strip a surrounding quote pair, fall back to `SMTP_USER`
+      when there's no `@`, and always send `envelope.from` as a bare addr-spec.
+- [x] `SMTP_HOST/PORT/SECURE/USER/PASS` + `EMAIL_FROM` set on prod (Hostinger, `support@jebdekho.com`).
+- **Acceptance:** ✅ verified on prod — triggered real reset emails (`/api/auth/forgot`) to
+      `jebdekho@gmail.com` and a fresh test signup to `vermavihaan05@gmail.com`; Vercel logs show
+      no SMTP error after the envelope fix (the `501` is gone). Deliverability (inbox vs spam)
+      depends on `jebdekho.com`'s SPF/DKIM/DMARC — see "Still pending".
+- **Open:** rotate the SMTP mailbox password (it passed through a chat transcript).
+
+## Phase 30 — District-level place resolution ✅
+
+Search now understands all 749 Indian districts, not just ~60 major cities — `/list_of_stations.json`
+(India Post pincode centroids) is `lib/districts.ts`; two more files the user supplied
+(`list_of_stations.json` — 13,147 IR stations, name/code only, no coords; and
+`list-of-airports-in-india.csv` — scheduled airports with coords) power the hub fallback.
+
+- [x] `lib/districts.ts` — 749 district names (title-cased), generated from the India Post pincode
+      dataset (`Book1.xlsx`, gitignored — regenerate with `scratchpad/parse-districts.mjs`).
+- [x] `components/SearchForm.tsx` — `<datalist>` now unions sample-route cities + station cities +
+      all 749 districts (769 options) so typing e.g. "luc" suggests "Lucknow". Still a native
+      datalist — **zero API calls per keystroke**.
+- [x] `lib/district-hubs.ts` — district → nearest station code + nearest airport IATA, generated
+      by `scratchpad/gen-district-hubs.mjs`:
+  - **Station**: tier 1 = the district's own IR station where its name matches
+    `list_of_stations.json` (340 districts); tier 2 = nearest of ~60 major-city stations by
+    great-circle distance from the district centroid, capped 275 km (391 more — 735/749 total).
+    Regional hub coords added for the NE/hill belt (Agartala, Silchar, Dimapur, New Jalpaiguri,
+    Balurghat, Raiganj) so Nagaland/Manipur/Tripura/Mizoram/Sikkim/north-Bengal resolve properly.
+    The remaining 14 (Arunachal interior, Ladakh, Lakshadweep, Andaman & Nicobar) genuinely have
+    no nearby railway — left station-less rather than faking one.
+  - **Airport**: nearest of 85 scheduled airports (81 from the 2020 CSV snapshot + 4 patched in —
+    Kushinagar KBK, Sindhudurg SDW, Kalaburagi GBI, Itanagar/Donyi Polo HGI, codes verified via
+    web search since the CSV predates them), capped 450 km — **749/749 covered**.
+- [x] `lib/stations.ts` `toStationCode()` and `lib/iata.ts` `toIata()` — direct city map first,
+      then `DISTRICT_HUBS[key]` fallback. So the erail/IRCTC train adapter and the
+      Duffel/Travelpayouts flight adapter both resolve any district, not just the curated city list.
+- [x] `tests/unit/places.test.ts` — direct-city, case-insensitivity, district-fallback,
+      unknown-place, and "every hub row has station or iata" coverage (5 tests).
+- **Acceptance:** ✅ verified on prod, desktop + mobile — `Rae Bareli → Delhi` (neither city was in
+      the old ~60-city map) returns 8 real erail trains + 7 real Travelpayouts flights;
+      `Kalaburagi → Bengaluru` returns 15 real trains via its own new station (KLBG). No horizontal
+      overflow, disclaimers render correctly on both viewports.
+- **Note:** `list_of_stations.json` and the airports CSV are gitignored (local source data,
+      1.5 MB / 32 KB) — only the generated `lib/district-hubs.ts` (749 rows, ~35 KB) ships.
+
 ---
 
 ## Already live on prod (env verified 2026-09-04)
@@ -619,19 +677,26 @@ Bridge until a rail API (TripJack / RapidAPI Pro) is live.
 `RAPIDAPI_IRCTC_KEY` (quota-exhausted) · `TRAIN_ERAIL` · `NEXT_PUBLIC_SENTRY_DSN` +
 `SENTRY_AUTH_TOKEN` · `TURNSTILE_SITE_KEY/SECRET` · `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` ·
 `GOOGLE_MAPS_API_KEY` · `NEXT_PUBLIC_AFF_*` (cars/esim/insurance/activities/transfers) ·
-`NEXT_PUBLIC_AMAZON_ASSOC_TAG` · legal-identity + grievance-officer vars.
+`NEXT_PUBLIC_AMAZON_ASSOC_TAG` · legal-identity + grievance-officer vars ·
+`SMTP_HOST/PORT/SECURE/USER/PASS` + `EMAIL_FROM` (Hostinger).
 
 ## Still pending (2026-09-04)
 
 **Tum (external accounts / KYC / money):**
 - Rotate secrets that have passed through a chat transcript — `AUTH_SECRET`, `CRON_SECRET`,
-  `ADMIN_PASSWORD`, Duffel token, Cuelinks pw, **and the Neon DB password** (Neon dashboard →
-  Roles → reset `neondb_owner`; the Vercel integration auto-updates `DATABASE_URL`)
-- Custom domain (unblocks Resend email + AdSense)
-- `RESEND_API_KEY` (+ `EMAIL_FROM`) on Vercel — the **only** thing left for price-alert / verify /
-  reset / feedback emails to actually send instead of console-logging
-- `UPSTASH_REDIS_REST_URL` + `_TOKEN` on Vercel — **not set on prod**, so the search cache and
-  all rate-limits (`/api/search` 60/min, signup, forgot/reset) are currently no-ops in production
+  `ADMIN_PASSWORD`, Duffel token, Cuelinks pw, **the Neon DB password** (Neon dashboard → Roles →
+  reset `neondb_owner`; the Vercel integration auto-updates `DATABASE_URL`), **and the SMTP
+  mailbox password** (Hostinger hPanel → Emails → support@jebdekho.com → Change password, then
+  update `SMTP_PASS` on Vercel + redeploy)
+- **`jebdekho.com` SPF/DKIM/DMARC DNS** — emails send without error now, but a brand-new domain
+  needs these three records or Gmail/Outlook will spam-filter or silently drop them. SPF+DKIM
+  are usually auto-set by Hostinger (verify in hPanel → Emails → DNS records); add DMARC:
+  `_dmarc.jebdekho.com TXT "v=DMARC1; p=none; rua=mailto:support@jebdekho.com"`
+- Custom domain (unblocks AdSense; email already works via Hostinger regardless)
+- **Upstash Redis** — accept the marketplace terms
+  (`https://vercel.com/jebdekho-1810s-projects/~/integrations/accept-terms/upstash?source=cli`),
+  then say so and it gets provisioned in one step. Without it the search cache and all
+  rate-limits (`/api/search` 60/min, signup, forgot/reset) are no-ops in production
 - Travelpayouts payout method (Payoneer — PayPal India nahi chalta)
 - Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
 - RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
@@ -642,9 +707,9 @@ Bridge until a rail API (TripJack / RapidAPI Pro) is live.
 - Cuelinks — wait for RedBus + ConfirmTkt campaigns to un-pause
 
 **Code (bol do to):**
-- Resend email wiring is already in `lib/email.ts` — just needs the key; nothing to build
 - Swap erail → TripJack rail adapter when that API is live
 - `grievance@<domain>` + monitored inbox once domain exists
+- Newer post-2020 airports beyond the 4 already patched, if any matter for a specific route
 
 ---
 
