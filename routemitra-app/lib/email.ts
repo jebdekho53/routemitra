@@ -7,7 +7,24 @@
 
 import { SITE_URL } from "@/lib/site";
 
-const FROM = process.env.EMAIL_FROM || "RouteMitra <onboarding@resend.dev>";
+// EMAIL_FROM may arrive wrapped in quotes from a shell/env paste — strip one
+// surrounding pair. If it ends up without an "@", it's unusable as a sender.
+function cleanFrom(): string {
+  const raw = (process.env.EMAIL_FROM || "").trim().replace(/^"(.*)"$/, "$1");
+  if (raw.includes("@")) return raw;
+  // fall back to the authenticated SMTP mailbox, else the Resend sandbox
+  return process.env.SMTP_USER || "RouteMitra <onboarding@resend.dev>";
+}
+const FROM = cleanFrom();
+
+// bare address for the SMTP envelope (MAIL FROM) — must be just an addr-spec
+function envelopeFrom(): string {
+  const m = FROM.match(/<([^>]+)>/);
+  const addr = (m ? m[1] : FROM).trim();
+  return /^[^@\s]+@[^@\s]+$/.test(addr)
+    ? addr
+    : process.env.SMTP_USER || addr;
+}
 
 interface Mail {
   to: string;
@@ -41,6 +58,9 @@ async function sendViaSmtp(mail: Mail): Promise<void> {
     to: mail.to,
     subject: mail.subject,
     text: mail.text,
+    // pin the envelope sender to a bare addr-spec so a display-name/quoted
+    // EMAIL_FROM can't produce "501 Bad sender address syntax"
+    envelope: { from: envelopeFrom(), to: mail.to },
   });
 }
 
