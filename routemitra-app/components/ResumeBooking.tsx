@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { formatPrice } from "@/lib/format";
+import ModeIcon from "@/components/ModeIcon";
+import type { Mode } from "@/types/route";
 
 // "Cart"-style resume bar. When someone taps "Book now" we stash the option
 // in localStorage; if they bounce off the operator's site and come back, this
@@ -20,11 +22,7 @@ interface Pending {
   ts: number;
 }
 
-const MODE_GLYPH: Record<string, string> = {
-  bus: "🚌",
-  train: "🚆",
-  flight: "✈",
-};
+const KNOWN_MODES = new Set(["bus", "train", "flight"]);
 
 export default function ResumeBooking() {
   const [pending, setPending] = useState<Pending | null>(null);
@@ -85,7 +83,9 @@ export default function ResumeBooking() {
         <div className="resume-text">
           <span className="resume-eyebrow">Continue your booking</span>
           <span className="resume-detail">
-            <span aria-hidden>{MODE_GLYPH[pending.mode] ?? "•"}</span>{" "}
+            {KNOWN_MODES.has(pending.mode) && (
+              <ModeIcon mode={pending.mode as Mode} className="resume-mode-icon" />
+            )}
             <b>{pending.operator}</b> · {pending.from} → {pending.to} ·{" "}
             <b>{formatPrice(pending.price)}</b>
           </span>

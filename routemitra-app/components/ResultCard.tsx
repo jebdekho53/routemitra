@@ -1,17 +1,12 @@
 import type { RouteOption } from "@/types/route";
 import { formatDuration, formatPrice } from "@/lib/format";
 import BookButton from "@/components/BookButton";
+import ModeIcon from "@/components/ModeIcon";
 
 const MODE_LABEL: Record<RouteOption["mode"], string> = {
   bus: "Bus",
   train: "Train",
   flight: "Flight",
-};
-
-const MODE_GLYPH: Record<RouteOption["mode"], string> = {
-  bus: "🚌",
-  train: "🚆",
-  flight: "✈",
 };
 
 const TAG_CLASS: Record<string, string> = {
@@ -48,7 +43,7 @@ export default function ResultCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={option.logo} alt="" width={28} height={28} loading="lazy" />
             ) : (
-              <span aria-hidden>{MODE_GLYPH[option.mode]}</span>
+              <ModeIcon mode={option.mode} />
             )}
           </span>
           <div className="rc-op-text">

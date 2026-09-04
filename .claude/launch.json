@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "routemitra-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd routemitra-app && npm run dev"],
+      "port": 3000
+    }
+  ]
+}

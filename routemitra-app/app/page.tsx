@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import SearchForm from "@/components/SearchForm";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import HeroArt from "@/components/HeroArt";
 import { listSampleRoutes, sampleRouteSummary } from "@/lib/sample-data";
 import { toSlug } from "@/lib/routes";
 import { guideSlugs, guideFromSlug } from "@/lib/guides";
@@ -40,23 +41,27 @@ export default function Home() {
       <SiteHeader />
 
       <section className="hero">
+        <HeroArt />
         <div className="wrap">
-          <h1>
-            One place. <span className="hero-modes">Bus</span>,{" "}
-            <span className="hero-modes">train</span>,{" "}
-            <span className="hero-modes">flight</span>.
-          </h1>
-          <p className="hero-sub">
-            Compare every option between two cities side by side — choose the
-            cheapest or the fastest, then head straight to the booking platform.
-          </p>
+          <div className="hero-inner">
+            <h1>
+              One place. <span className="hero-modes">Bus</span>,{" "}
+              <span className="hero-modes">train</span>,{" "}
+              <span className="hero-modes">flight</span>.
+            </h1>
+            <p className="hero-sub">
+              Compare every option between two cities side by side — choose
+              the cheapest or the fastest, then head straight to the booking
+              platform.
+            </p>
 
-          <SearchForm />
+            <SearchForm />
 
-          <p className="hero-note">
-            Prefer a <b>door-to-door</b> total? We add the local cab legs so you
-            see the full trip. Sign in to set a price alert.
-          </p>
+            <p className="hero-note">
+              Prefer a <b>door-to-door</b> total? We add the local cab legs so
+              you see the full trip. Sign in to set a price alert.
+            </p>
+          </div>
         </div>
       </section>
 

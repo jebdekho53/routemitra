@@ -14,6 +14,7 @@ import { formatDuration, formatPrice } from "@/lib/format";
 import SearchForm from "@/components/SearchForm";
 import ResultCard from "@/components/ResultCard";
 import Masthead from "@/components/Masthead";
+import { moodFor } from "@/lib/destination-mood";
 import SiteFooter from "@/components/SiteFooter";
 import HotelCta from "@/components/HotelCta";
 import TripExtras from "@/components/TripExtras";
@@ -102,6 +103,7 @@ export default async function RoutePage({
             {from} to {to} — compare <b>bus, train and flight</b> in one place.
           </>
         }
+        mood={moodFor(to)}
       />
 
       <main className="wrap">

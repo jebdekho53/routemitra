@@ -30,6 +30,12 @@
   --mode-train: #3f57c4;
   --mode-flight: #d97706;
 
+  /* ---- warm accent — hero/destination art only, not for UI chrome ---- */
+  --warm-1: #ff8a5c;
+  --warm-2: #ff5f7e;
+  --warm-3: #ffb648;
+  --warm-ink: #7a2e12;
+
   /* ---- elevation ---- */
   --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
   --shadow-md: 0 1px 2px rgba(16, 24, 40, 0.06), 0 6px 16px rgba(16, 24, 40, 0.06);
@@ -90,6 +96,11 @@
     --mode-train: #7d92e6;
     --mode-flight: #e0a24d;
 
+    --warm-1: #e6754d;
+    --warm-2: #e0526d;
+    --warm-3: #e0a23f;
+    --warm-ink: #ffe4d6;
+
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.45), 0 20px 48px rgba(0, 0, 0, 0.55);
@@ -119,6 +130,11 @@
   --mode-bus: #46b880;
   --mode-train: #7d92e6;
   --mode-flight: #e0a24d;
+
+  --warm-1: #e6754d;
+  --warm-2: #e0526d;
+  --warm-3: #e0a23f;
+  --warm-ink: #ffe4d6;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.45);
@@ -348,6 +364,57 @@ main.wrap {
 @media (min-width: 40em) {
   .masthead {
     padding: var(--s-6) 0 var(--s-5);
+  }
+}
+
+/* ---- destination banner (route/travel guide pages) — gradient + line-art
+   silhouette instead of a photo; --dest-fg/--dest-sun feed DestinationArt ---- */
+.masthead[class*="masthead-"] {
+  position: relative;
+  overflow: hidden;
+  padding: var(--s-6) 0 calc(var(--s-7) + 20px);
+  border-bottom: 1px solid transparent;
+}
+@media (min-width: 40em) {
+  .masthead[class*="masthead-"] {
+    padding-bottom: var(--s-7);
+  }
+}
+.masthead[class*="masthead-"] h1,
+.masthead[class*="masthead-"] .tagline {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+.masthead[class*="masthead-"] .tagline b {
+  color: #fff;
+}
+.masthead-beach {
+  background: linear-gradient(115deg, #0b8f83, #14b8a6 55%, #2dd4bf);
+  --dest-fg: rgba(255, 255, 255, 0.5);
+  --dest-sun: #ffd166;
+}
+.masthead-heritage {
+  background: linear-gradient(115deg, #9a4a1f, #d17a3f 55%, #e8a463);
+  --dest-fg: rgba(255, 255, 255, 0.5);
+  --dest-sun: #ffe08a;
+}
+.masthead-metro {
+  background: linear-gradient(115deg, #262e52, #3d4a8f 55%, #5b6ac9);
+  --dest-fg: rgba(255, 255, 255, 0.45);
+  --dest-sun: #ffd166;
+}
+.dest-art {
+  position: absolute;
+  inset: auto 0 -6px 0;
+  width: 100%;
+  height: 64px;
+  opacity: 0.9;
+}
+@media (min-width: 40em) {
+  .dest-art {
+    height: 130px;
+    inset-block-end: 0;
   }
 }
 .masthead h1 {
@@ -1114,14 +1181,21 @@ main.wrap {
   height: 28px;
   object-fit: contain;
 }
+.rc-logo svg {
+  width: 19px;
+  height: 19px;
+}
 .rc-logo-bus {
   color: var(--mode-bus);
+  background: color-mix(in srgb, var(--mode-bus) 14%, var(--surface-2));
 }
 .rc-logo-train {
   color: var(--mode-train);
+  background: color-mix(in srgb, var(--mode-train) 14%, var(--surface-2));
 }
 .rc-logo-flight {
   color: var(--mode-flight);
+  background: color-mix(in srgb, var(--mode-flight) 14%, var(--surface-2));
 }
 .rc-op-text {
   min-width: 0;
@@ -1744,8 +1818,11 @@ main.wrap {
 
 /* ============ Landing page ============ */
 .hero {
+  position: relative;
+  overflow: hidden;
   padding: var(--s-6) 0 var(--s-7);
   background:
+    radial-gradient(120% 70% at 88% -10%, color-mix(in srgb, var(--warm-3) 20%, transparent) 0%, transparent 55%),
     radial-gradient(
       130% 80% at 12% -10%,
       var(--accent-soft) 0%,
@@ -1758,6 +1835,27 @@ main.wrap {
 @media (min-width: 40em) {
   .hero {
     padding: var(--s-7) 0 var(--s-8);
+  }
+}
+.hero-art {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: -40px;
+  transform: translateY(-50%);
+  width: 340px;
+  height: auto;
+  pointer-events: none;
+}
+@media (min-width: 62em) {
+  .hero-art {
+    display: block;
+  }
+  .hero .wrap {
+    max-width: calc(var(--wrap) + 260px);
+  }
+  .hero-inner {
+    max-width: 560px;
   }
 }
 .hero h1 {
@@ -2885,6 +2983,13 @@ a.admin-card:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.resume-mode-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 2px;
+  color: var(--accent);
 }
 .resume-actions {
   display: flex;

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Masthead from "@/components/Masthead";
+import { moodFor } from "@/lib/destination-mood";
 import SiteFooter from "@/components/SiteFooter";
 import HotelCta from "@/components/HotelCta";
 import TripExtras from "@/components/TripExtras";
@@ -117,6 +118,7 @@ export default async function TravelGuidePage({
       <Masthead
         title={`${from} to ${to}`}
         tagline="The real door-to-door cost and time — including the cab at each end."
+        mood={moodFor(to)}
       />
 
       <main className="wrap" id="main">
