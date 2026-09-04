@@ -4,15 +4,19 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { listSampleRoutes } from "@/lib/sample-data";
 import { STATION_CITIES } from "@/lib/stations";
+import { DISTRICTS } from "@/lib/districts";
 import type { Mode } from "@/types/route";
 
 const SAMPLE_ROUTES = listSampleRoutes();
+// sample-route cities + station cities first (these resolve to real data),
+// then every Indian district so any "luc" -> "Lucknow" style lookup works
 const CITIES = Array.from(
   new Set([
     ...SAMPLE_ROUTES.flatMap(({ from, to }) => [from, to]),
     ...STATION_CITIES,
+    ...DISTRICTS,
   ]),
-).sort();
+).sort((a, b) => a.localeCompare(b));
 
 const ALL_MODES: { key: Mode; label: string }[] = [
   { key: "bus", label: "Bus" },
