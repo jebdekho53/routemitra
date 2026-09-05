@@ -792,6 +792,12 @@ one of them is a 100 km proxy.
 - External uptime monitor → `/api/health` (alert on `train_feed.last_ok === false`)
 - **TBO** KYC docs (Application #185068) when they email
 - **TripJack** — submit rail agent form (Owner Name + DOB), then API access via `connect@tripjack.com` + wallet recharge
+- **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
+  `api_support@seatseller.travel`). No self-serve signup exists (unlike Travelpayouts) —
+  it's a sales-team application, no reply channel to check yet. Have CIN/GST ready to send
+  fast when they respond; follow up after ~5-7 business days if silent.
+- **AbhiBus bus API** — outreach emailed 2026-09-05 to `support@abhibus.com` (no dedicated
+  partnerships/API address is public — asked them to route it). Same wait/follow-up plan.
 - GetYourGuide / Viator — reapply when the site is ~2 months old
 - Cuelinks — wait for RedBus + ConfirmTkt campaigns to un-pause
 
