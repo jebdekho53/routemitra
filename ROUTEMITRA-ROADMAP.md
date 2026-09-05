@@ -790,7 +790,10 @@ one of them is a 100 km proxy.
 - Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
 - RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
 - External uptime monitor → `/api/health` (alert on `train_feed.last_ok === false`)
-- **TBO** KYC docs (Application #185068) when they email
+- **TBO** — registration confirmed (App #185068, 2026-09-03); their welcome email explicitly
+  lists "bus bookings" in the product suite, alongside flights/hotels/trains — good sign for
+  the bus-data gap. Account details promised within 48h (due ~2026-09-05 evening) — watch
+  inbox, then wire the API key once it lands.
 - **TripJack** — submit rail agent form (Owner Name + DOB), then API access via `connect@tripjack.com` + wallet recharge
 - **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
   `api_support@seatseller.travel`). No self-serve signup exists (unlike Travelpayouts) —
