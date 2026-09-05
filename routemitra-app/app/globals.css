@@ -31,6 +31,13 @@
   --ok: #17945a;
   --warn: #b7791f;
   --danger: #d93a2c;
+  /* --ok/--danger are tuned for icons/dots/borders; as small TEXT on a
+     tinted background of the same hue they fall below WCAG AA (as low as
+     3.2:1 — same "same-hue tint" trap as the accent badge fix). These are
+     darker, text-safe variants — dark mode's --ok/--danger already clear
+     AA there, so they just alias through. */
+  --ok-text: #0c6b3f;
+  --danger-text: #b8291d;
 
   --mode-bus: #17945a;
   --mode-train: #3f57c4;
@@ -98,6 +105,8 @@
     --ok: #46b880;
     --warn: #d9a441;
     --danger: #ec6a5c;
+    --ok-text: var(--ok);
+    --danger-text: var(--danger);
 
     --mode-bus: #46b880;
     --mode-train: #7d92e6;
@@ -134,6 +143,8 @@
   --ok: #46b880;
   --warn: #d9a441;
   --danger: #ec6a5c;
+  --ok-text: var(--ok);
+  --danger-text: var(--danger);
 
   --mode-bus: #46b880;
   --mode-train: #7d92e6;
@@ -786,13 +797,13 @@ main.wrap {
   padding: var(--s-2) var(--s-3);
   border-radius: var(--r-sm);
   background: color-mix(in srgb, var(--danger) 12%, transparent);
-  color: var(--danger);
+  color: var(--danger-text);
   font-size: 0.85rem;
 }
 .sf-locate-err {
   margin: var(--s-1) 0 0;
   font-size: 0.82rem;
-  color: var(--danger, #c0392b);
+  color: var(--danger-text);
 }
 @media (min-width: 34em) {
   .sf-route {
@@ -931,7 +942,7 @@ main.wrap {
   border: 1px solid var(--danger);
   border-radius: var(--r-sm);
   background: transparent;
-  color: var(--danger);
+  color: var(--danger-text);
   cursor: pointer;
 }
 .danger-btn:hover {
@@ -1509,7 +1520,7 @@ main.wrap {
 .rc-tag.tag-cheap {
   background: var(--surface-2);
   background: color-mix(in srgb, var(--ok) 16%, transparent);
-  color: var(--ok);
+  color: var(--ok-text);
 }
 .rc-tag.tag-fast {
   background: var(--surface-2);
@@ -1517,7 +1528,7 @@ main.wrap {
   color: var(--mode-train);
 }
 .rc-tag.tag-value {
-  background: var(--accent-soft);
+  background: var(--accent-tint);
   color: var(--accent);
 }
 
@@ -1728,12 +1739,12 @@ main.wrap {
   line-height: 1.5;
 }
 .auth-error {
-  color: var(--danger);
+  color: var(--danger-text);
   background: var(--surface-2);
   background: color-mix(in srgb, var(--danger) 12%, transparent);
 }
 .auth-ok {
-  color: var(--ok);
+  color: var(--ok-text);
   background: var(--surface-2);
   background: color-mix(in srgb, var(--ok) 12%, transparent);
 }
@@ -1745,7 +1756,7 @@ main.wrap {
 }
 .field-error {
   font-size: 12px;
-  color: var(--danger);
+  color: var(--danger-text);
 }
 .auth-links {
   display: flex;
@@ -1830,7 +1841,7 @@ main.wrap {
   padding: 0 6px;
 }
 .link-x:hover {
-  color: var(--danger);
+  color: var(--danger-text);
 }
 
 /* ============ Route actions (watch / save) ============ */
