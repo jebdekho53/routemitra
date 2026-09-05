@@ -226,6 +226,7 @@ export function ancillaryStatus(): { key: string; label: string; live: boolean }
     { key: "esim", label: "Travel eSIM", live: has("NEXT_PUBLIC_AFF_ESIM") },
     { key: "insurance", label: "Trip insurance", live: has("NEXT_PUBLIC_AFF_INSURANCE") },
     { key: "activities", label: "Activities / tours", live: has("NEXT_PUBLIC_AFF_ACTIVITIES") },
+    { key: "hotels", label: "Hotels (custom / Cuelinks)", live: has("NEXT_PUBLIC_AFF_HOTELS") },
     { key: "transfer", label: "Airport transfers", live: has("NEXT_PUBLIC_AFF_TRANSFERS") },
     { key: "lounge", label: "Lounge access", live: has("NEXT_PUBLIC_AFF_LOUNGE") },
     { key: "forex", label: "Forex card", live: has("NEXT_PUBLIC_AFF_FOREX") },

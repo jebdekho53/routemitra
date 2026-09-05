@@ -1,15 +1,44 @@
 // Hotels — affiliate deep links only. Travelpayouts deprecated the free
 // Hotellook price API, so we don't show structured hotel results; instead we
-// send the user to Hotellook's search for the destination city with our
-// marker attached (hotels pay ~4–7% commission, the best rate we have).
+// send the user to a hotel search for the destination city with our marker
+// attached (hotels pay ~4–7% commission, the best rate we have).
+//
+// Default target is Hotellook (Travelpayouts marker). Set NEXT_PUBLIC_AFF_HOTELS
+// to a full search-URL template to override it — e.g. a Cuelinks-wrapped
+// Booking.com / MakeMyTrip Hotels link (both auto-approved on Cuelinks). The
+// template may contain {city} / {checkIn} / {checkOut} placeholders, which are
+// substituted URL-encoded (both bare `{city}` and an already-encoded
+// `%7Bcity%7D`, since Cuelinks' link generator encodes the wrapped URL).
 
 const HOTELLOOK_SEARCH = "https://search.hotellook.com/";
 
-/** Affiliate link to hotels in `city`. Uses TRAVELPAYOUTS_MARKER when set. */
+function fillHotelTemplate(
+  template: string,
+  vars: { city: string; checkIn?: string | null; checkOut?: string | null },
+): string {
+  const sub = (s: string, key: string, value: string) =>
+    s
+      .replace(new RegExp(`\\{${key}\\}`, "g"), encodeURIComponent(value))
+      .replace(new RegExp(`%7B${key}%7D`, "gi"), encodeURIComponent(value));
+  let out = sub(template, "city", vars.city);
+  const ci = vars.checkIn && /^\d{4}-\d{2}-\d{2}$/.test(vars.checkIn) ? vars.checkIn : "";
+  const co = vars.checkOut && /^\d{4}-\d{2}-\d{2}$/.test(vars.checkOut) ? vars.checkOut : "";
+  out = sub(out, "checkIn", ci);
+  out = sub(out, "checkOut", co);
+  return out;
+}
+
+/** Affiliate link to hotels in `city`. Uses NEXT_PUBLIC_AFF_HOTELS if set,
+ *  otherwise Hotellook with TRAVELPAYOUTS_MARKER. */
 export function hotelSearchLink(
   city: string,
   opts: { checkIn?: string | null; checkOut?: string | null } = {},
 ): string {
+  const custom = process.env.NEXT_PUBLIC_AFF_HOTELS?.trim();
+  if (custom) {
+    return fillHotelTemplate(custom, { city, checkIn: opts.checkIn, checkOut: opts.checkOut });
+  }
+
   // NEXT_PUBLIC_ copy so client components (search results) can attribute too;
   // the marker is public anyway — it's in every affiliate link on the site.
   const marker =
