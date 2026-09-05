@@ -10,7 +10,17 @@ import { estimateLocalLeg } from "@/lib/adapters/local";
 // boarding / check-in margin before the line-haul departs
 const BUFFER_MIN: Record<Mode, number> = { flight: 90, train: 20, bus: 15 };
 
-function nearestHub(point: GeoPoint, mode: Mode): Hub | null {
+// Only ~30 cities have a hub (lib/city-hubs.ts) — a home address far from all
+// of them (e.g. Leh, a hill town) still finds "nearest", just a very distant
+// one. Presenting that as a normal "Uber (est.)" leg is actively misleading
+// (a 490 km, 20-hour "cab ride" isn't a real Uber option) — past this radius
+// there's no local cab, so don't attach a door-to-door total at all.
+const MAX_LOCAL_KM = 80;
+
+function nearestHub(
+  point: GeoPoint,
+  mode: Mode,
+): { hub: Hub; km: number } | null {
   let best: Hub | null = null;
   let bestKm = Infinity;
   for (const { hub } of allHubs(mode)) {
@@ -20,7 +30,7 @@ function nearestHub(point: GeoPoint, mode: Mode): Hub | null {
       best = hub;
     }
   }
-  return best;
+  return best ? { hub: best, km: bestKm } : null;
 }
 
 export async function attachDoorToDoor(
@@ -43,9 +53,10 @@ export async function attachDoorToDoor(
     const originHub = nearestHub(origin, opt.mode);
     const destHub = nearestHub(destination, opt.mode);
     if (!originHub || !destHub) return opt;
+    if (originHub.km > MAX_LOCAL_KM || destHub.km > MAX_LOCAL_KM) return opt;
 
-    const access = estimateLocalLeg(origin, originAddr, originHub, "access");
-    const egress = estimateLocalLeg(destination, destinationAddr, destHub, "egress");
+    const access = estimateLocalLeg(origin, originAddr, originHub.hub, "access");
+    const egress = estimateLocalLeg(destination, destinationAddr, destHub.hub, "egress");
     const buffer_min = BUFFER_MIN[opt.mode];
 
     const d2d: DoorToDoor = {
