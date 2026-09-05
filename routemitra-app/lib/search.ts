@@ -12,6 +12,7 @@ import {
 } from "@/lib/cache";
 import { attachDoorToDoor } from "@/lib/door-to-door";
 import { getSampleOptions } from "@/lib/sample-data";
+import { canonicalCity } from "@/lib/city-alias";
 import type {
   RouteResult,
   SearchParams,
@@ -26,7 +27,9 @@ export interface SearchOutcome {
 
 // Sample-only result with normalized (tracked) links — for the always-static
 // /routes/[slug] pages so they never call a live provider.
-export function sampleSearch(from: string, to: string): RouteResult {
+export function sampleSearch(fromInput: string, toInput: string): RouteResult {
+  const from = canonicalCity(fromInput);
+  const to = canonicalCity(toInput);
   const byMode = getSampleOptions(from, to).reduce<
     Record<Mode, RouteOption[]>
   >(
@@ -43,7 +46,12 @@ export function sampleSearch(from: string, to: string): RouteResult {
   return { from, to, date: null, options };
 }
 
-export async function runSearch(params: SearchParams): Promise<SearchOutcome> {
+export async function runSearch(rawParams: SearchParams): Promise<SearchOutcome> {
+  const params: SearchParams = {
+    ...rawParams,
+    from: canonicalCity(rawParams.from),
+    to: canonicalCity(rawParams.to),
+  };
   const { from, to, date, origin, destination, modes } = params;
   const key = searchCacheKey(from, to, date, origin, destination, modes);
 

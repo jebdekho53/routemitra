@@ -77,7 +77,7 @@ export function toIata(city: string): string | null {
 // IATA code -> city/municipality name, from list-of-airports-in-india.csv
 // (+ the 4 post-2020 airports patched into district-hubs.ts). Used only to
 // phrase the "nearest airport" caveat in resolveAirport() below.
-const AIRPORT_CITY: Record<string, string> = {
+export const AIRPORT_CITY: Record<string, string> = {
   AIP: "Adampur",
   AJL: "Aizawl",
   AMD: "Ahmedabad",
