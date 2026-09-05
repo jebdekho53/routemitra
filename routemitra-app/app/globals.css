@@ -38,6 +38,7 @@
      AA there, so they just alias through. */
   --ok-text: #0c6b3f;
   --danger-text: #b8291d;
+  --warn-text: #7d5411;
 
   --mode-bus: #17945a;
   --mode-train: #3f57c4;
@@ -107,6 +108,7 @@
     --danger: #ec6a5c;
     --ok-text: var(--ok);
     --danger-text: var(--danger);
+    --warn-text: var(--warn);
 
     --mode-bus: #46b880;
     --mode-train: #7d92e6;
@@ -145,6 +147,7 @@
   --danger: #ec6a5c;
   --ok-text: var(--ok);
   --danger-text: var(--danger);
+  --warn-text: var(--warn);
 
   --mode-bus: #46b880;
   --mode-train: #7d92e6;
@@ -1969,7 +1972,7 @@ main.wrap {
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--warn);
+  color: var(--warn-text);
   background: var(--surface-2);
   background: color-mix(in srgb, var(--warn) 15%, transparent);
   vertical-align: middle;
@@ -2291,7 +2294,7 @@ main.wrap {
   padding: var(--s-2) var(--s-3);
   border-radius: var(--r-sm);
   background: color-mix(in srgb, var(--warn) 12%, transparent);
-  color: var(--warn);
+  color: var(--warn-text);
   font-size: 12px;
   line-height: 1.5;
 }
