@@ -18,10 +18,11 @@ Related docs:
 
 Is roadmap ka kaam hai us demo ko ek real, production-ready app mein badalna.
 
-**Update (is roadmap ka v4, 2026-09-04):** Phases 0–21 code-complete. Site **production pe live**
+**Update (is roadmap ka v5, 2026-09-05):** Phases 0–21 code-complete. Site **production pe live**
 hai (`routemitra-gamma.vercel.app`) — UrbanMove Services Private Limited operate karti hai.
-Phases 22–30 (revenue system, real train data via erail.in, search UX, geolocation, compliance
-copy, real SMTP email, district-level place resolution) bhi ho chuke — detail neeche.
+Phases 22–32 (revenue system, real train data via erail.in, search UX, geolocation, compliance
+copy, real SMTP email, district-level place resolution, full visual refresh, a data-trust bug
+fix) bhi ho chuke — detail neeche.
 
 | Category | Status |
 |---|---|
@@ -47,6 +48,8 @@ copy, real SMTP email, district-level place resolution) bhi ho chuke — detail 
 | **Compliance copy — aggregator disclaimer + IT-Rules grievance officer** | ✅ Phase 28 |
 | **Transactional email — real SMTP (Hostinger) send** | ✅ Phase 29 (verify/reset/price-alert emails actually deliver) |
 | **District-level place resolution (autocomplete + station/airport hub)** | ✅ Phase 30 (all 749 districts searchable) |
+| **Full visual refresh — hero art, destination banners, icon set, ticket cards** | ✅ Phase 31 |
+| **Bug fix — proxy-station/airport results now flagged, not presented as exact matches** | ✅ Phase 32 |
 | B2B travel-API onboarding (TBO / TripJack) | ⏳ in progress (agent accounts filed) |
 | Custom domain + Upstash Redis + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
@@ -668,9 +671,95 @@ Search now understands all 749 Indian districts, not just ~60 major cities — `
 - **Note:** `list_of_stations.json` and the airports CSV are gitignored (local source data,
       1.5 MB / 32 KB) — only the generated `lib/district-hubs.ts` (749 rows, ~35 KB) ships.
 
+## Phase 31 — Full visual refresh ✅
+
+The site read as flat/generic — no images anywhere, one blue accent, every page
+identical. Fix: **original SVG art**, not stock photos, so no licensing risk.
+
+- [x] `components/HeroArt.tsx` — decorative "journey line" (bus stop → train →
+      plane, dotted route) with a warm gradient glow on the homepage hero.
+      Desktop only (≥62em), dark-mode aware. New `--warm-1/2/3` + `--warm-ink`
+      tokens (light + both dark blocks), kept separate from `--accent` so
+      existing UI chrome is untouched.
+- [x] `components/DestinationArt.tsx` + `lib/destination-mood.ts` — route,
+      travel-guide, **and now `/search`** pages get a gradient banner + line-art
+      silhouette keyed to the destination's mood: **beach** (waves + palm,
+      teal — Goa, Kochi, Vizag, Trivandrum…), **heritage** (fort/arches,
+      terracotta-gold — Jaipur, Udaipur, Jodhpur, Agra, Varanasi, Amritsar…),
+      or **metro** (skyline + lit windows, indigo — everything else, the
+      default). White text + shadow for contrast regardless of mood. Wired
+      into `Masthead` via a `mood` prop; `/search` previously had no banner at
+      all (plain `SiteHeader` + a visually-hidden h1) despite being the page
+      most searches land on first — fixed.
+- [x] `components/ModeIcon.tsx` — stroke-based bus/train/flight icon set
+      replacing emoji glyphs in `ResultCard`/`ResumeBooking`; the mode badge
+      gets a tinted background in the mode's color instead of flat grey.
+- [x] **Result cards — boarding-pass treatment**: a dashed "tear line" before
+      the price/book column with two circular notches punched through in the
+      page-background color (desktop, `:has()`-free — plain `::before`/`::after`);
+      the mode icon now rides the timeline (was two bare dots); a card
+      carrying the "Cheapest" tag gets a soft green ring via `:has(.tag-cheap)`;
+      1px hover lift.
+- [x] `.claude/launch.json` — `routemitra-dev` preview config for future
+      `npm run dev` sessions.
+- **Acceptance:** ✅ verified via dev-server screenshots (homepage hero,
+      beach/heritage/metro banners on Mumbai→Goa / Delhi→Jaipur / Mumbai→Delhi,
+      mobile with no text/art overlap, dark mode) and confirmed live on prod
+      via a mix of screenshots and computed-style checks when the preview
+      pane wasn't paintable that turn.
+
+## Phase 32 — Bug: a proxy station/airport can present a route that doesn't exist ✅
+
+User caught this live: `Ajmer → Bokaro` returned **one** erail "result" —
+`AII SRC SPL (08612)`, tagged both Cheapest and Fastest — booking straight to
+`confirmtkt.com/trains/ajmer-to-bokaro-train-tickets`. ConfirmTkt's own page
+for that exact route says *"No direct train found from Ajmer to Bokaro"* and
+lists different alternates entirely.
+
+Root cause: Bokaro has no station of its own in the registry, so it resolved
+to the nearest railhead (Ranchi, via `district-hubs.ts`). erail returned a
+real, running Ajmer↔Ranchi train and it got presented as if it were an
+Ajmer-Bokaro option — the feed only knows the two codes it's handed, not that
+one of them is a 100 km proxy.
+
+- [x] `lib/stations.ts` — `resolveStation()` returns `{ code, viaCity? }`;
+      `viaCity` is set only when the match came from the district-hub
+      "nearest railhead" fallback, not the searched place's own station
+      (340/749 districts matched their own station by name; those never
+      carry a `viaCity`). `MAJOR_STATION_CITY` names the ~55 fallback-only
+      codes. `toStationCode()` now wraps it (back-compat).
+- [x] `lib/adapters/train.ts` — when either endpoint is a proxy, every option
+      gets `note: "Nearest station used for X via Y — this train may not
+      serve the exact place directly. Confirm the stop before booking."`
+      Applied to both the irctc1 and erail paths.
+- [x] `lib/iata.ts` — the same for flights: `resolveAirport()` /
+      `AIRPORT_CITY` (78 codes, generated from the airports CSV + the 4
+      patched post-2020 ones). **Every** district-hub airport is a proxy
+      (there's no "own airport" tier like stations have), so any district
+      without its own airport gets `note: "Nearest airport used for X via Y."`
+      on its flights. Lower severity than the train case — Duffel/
+      Travelpayouts only return real bookable flights, so there's no
+      "this route doesn't exist" risk — but the departure city can still
+      surprise someone who typed a small town.
+- [x] `types/route.ts` — `RouteOption.note`; `ResultCard` renders it as a
+      small warning strip (amber, `⚠`) below the timeline/price row.
+- [x] Audited the rest of the fallback surface: 415/749 districts use the
+      tier-2 station proxy. Spot-checked 8 spread across regions/states
+      (Agar Malwa, Bemetara, Goalpara, Kamareddy, Sundargarh, Paschim
+      Bardhaman, West Garo Hills, and a both-sides-proxy pair) — the note
+      attaches correctly every time; no other route reproduced the
+      single-wrong-result pattern.
+- [x] `tests/unit/places.test.ts` — `resolveStation`/`resolveAirport` viaCity
+      behavior (36 tests total, all green).
+- **Acceptance:** ✅ verified directly against the adapter and live on prod —
+      `Ajmer → Bokaro`'s `AII SRC SPL` result now carries the caveat instead
+      of presenting a clean match; `Sitapur → Mumbai` shows no note on its
+      (own-station) trains but "Nearest airport used for Sitapur via
+      Lucknow." on its flights.
+
 ---
 
-## Already live on prod (env verified 2026-09-04)
+## Already live on prod (env verified 2026-09-05)
 
 `DATABASE_URL` (Neon, all envs — 9 tables exist) · `AUTH_SECRET` · `AUTH_GOOGLE_ID/SECRET` ·
 `CRON_SECRET` · `ADMIN_USER/PASSWORD` · `TRAVELPAYOUTS_TOKEN/MARKER` · `CUELINKS_CID` ·
@@ -680,7 +769,7 @@ Search now understands all 749 Indian districts, not just ~60 major cities — `
 `NEXT_PUBLIC_AMAZON_ASSOC_TAG` · legal-identity + grievance-officer vars ·
 `SMTP_HOST/PORT/SECURE/USER/PASS` + `EMAIL_FROM` (Hostinger).
 
-## Still pending (2026-09-04)
+## Still pending (2026-09-05)
 
 **Tum (external accounts / KYC / money):**
 - Rotate secrets that have passed through a chat transcript — `AUTH_SECRET`, `CRON_SECRET`,
