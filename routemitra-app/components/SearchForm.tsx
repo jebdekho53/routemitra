@@ -59,7 +59,7 @@ export default function SearchForm({
 
   const [locating, setLocating] = useState(false);
   const [locateError, setLocateError] = useState("");
-  const [sameCityError, setSameCityError] = useState(false);
+  const [formError, setFormError] = useState("");
 
   function useMyLocation() {
     setLocateError("");
@@ -110,12 +110,18 @@ export default function SearchForm({
   function go(nextFrom: string, nextTo: string) {
     const f = nextFrom.trim();
     const t = nextTo.trim();
-    if (!f || !t) return;
-    if (f.toLowerCase() === t.toLowerCase()) {
-      setSameCityError(true);
+    if (!f || !t) {
+      // native `required` already blocks this + shows the browser's own
+      // validation bubble, but that's easy to miss (and invisible to
+      // anything that only checks the DOM) — say it plainly too
+      setFormError("Enter a From and To city to search.");
       return;
     }
-    setSameCityError(false);
+    if (f.toLowerCase() === t.toLowerCase()) {
+      setFormError("From and To can't be the same place — pick two different cities.");
+      return;
+    }
+    setFormError("");
     const qs = new URLSearchParams({ from: f, to: t });
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) qs.set("date", date);
     if (mode === "d2d" && originAddr.trim() && destAddr.trim()) {
@@ -207,7 +213,7 @@ export default function SearchForm({
               value={from}
               onChange={(e) => {
                 setFrom(e.target.value);
-                setSameCityError(false);
+                setFormError("");
               }}
             />
           </div>
@@ -222,6 +228,14 @@ export default function SearchForm({
               if (mode === "d2d") {
                 setOriginAddr(destAddr);
                 setDestAddr(originAddr);
+                return;
+              }
+              // already looking at a route (came in via a URL with from/to,
+              // e.g. a results or route page) — swapping should show the
+              // reversed trip immediately, not silently leave stale results
+              // on screen until Search is pressed again
+              if (initialFrom && initialTo && to.trim() && from.trim()) {
+                go(to, from);
               }
             }}
             onKeyDown={(e) => {
@@ -229,6 +243,15 @@ export default function SearchForm({
                 e.preventDefault();
                 setFrom(to);
                 setTo(from);
+                if (
+                  mode === "city" &&
+                  initialFrom &&
+                  initialTo &&
+                  to.trim() &&
+                  from.trim()
+                ) {
+                  go(to, from);
+                }
               }
             }}
           >
@@ -248,16 +271,15 @@ export default function SearchForm({
               value={to}
               onChange={(e) => {
                 setTo(e.target.value);
-                setSameCityError(false);
+                setFormError("");
               }}
             />
           </div>
         </div>
 
-        {sameCityError && (
+        {formError && (
           <p className="sf-error" role="alert">
-            From and To can&apos;t be the same place — pick two different
-            cities.
+            {formError}
           </p>
         )}
 

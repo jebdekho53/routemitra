@@ -173,7 +173,7 @@ export default async function RoutePage({
         </nav>
 
         <Link href="/" className="back-link">
-          ← Nayi search
+          ← New search
         </Link>
       </main>
 

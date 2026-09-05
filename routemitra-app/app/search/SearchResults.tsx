@@ -20,13 +20,14 @@ import RouteActions from "@/components/RouteActions";
 import HotelCta from "@/components/HotelCta";
 import TripExtras from "@/components/TripExtras";
 
-type Status = "loading" | "results" | "empty" | "error";
+type Status = "loading" | "results" | "empty" | "error" | "invalid";
 
 const SAMPLE_ROUTES = listSampleRoutes();
 
 type Fetched =
   | { key: string; data: RouteResult }
-  | { key: string; error: true };
+  | { key: string; error: true }
+  | { key: string; validationError: string };
 
 export default function SearchResults() {
   const params = useSearchParams();
@@ -79,15 +80,33 @@ export default function SearchResults() {
 
     let cancelled = false;
     fetch(`/api/search?${qs.toString()}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      .then(async (res) => {
+        if (!res.ok) {
+          // a 400 here is a validation failure (e.g. same from/to), not a
+          // transient server error — surface the real message when we can
+          if (res.status === 400) {
+            const body = await res.json().catch(() => null);
+            const msg: string | undefined = body?.errors?.to ?? body?.errors?.from;
+            if (msg) {
+              const err = new Error(msg);
+              err.name = "ValidationError";
+              throw err;
+            }
+          }
+          throw new Error(`HTTP ${res.status}`);
+        }
         return res.json() as Promise<RouteResult>;
       })
       .then((json) => {
         if (!cancelled) setFetched({ key: queryKey, data: json });
       })
-      .catch(() => {
-        if (!cancelled) setFetched({ key: queryKey, error: true });
+      .catch((err) => {
+        if (cancelled) return;
+        if (err instanceof Error && err.name === "ValidationError") {
+          setFetched({ key: queryKey, validationError: err.message });
+        } else {
+          setFetched({ key: queryKey, error: true });
+        }
       });
 
     return () => {
@@ -102,11 +121,15 @@ export default function SearchResults() {
     ? "empty"
     : !current
       ? "loading"
-      : "error" in current
-        ? "error"
-        : data && data.options.length > 0
-          ? "results"
-          : "empty";
+      : "validationError" in current
+        ? "invalid"
+        : "error" in current
+          ? "error"
+          : data && data.options.length > 0
+            ? "results"
+            : "empty";
+  const validationMessage =
+    current && "validationError" in current ? current.validationError : null;
 
   const allOptions = useMemo(() => data?.options ?? [], [data]);
 
@@ -215,6 +238,15 @@ export default function SearchResults() {
           <section className="empty-state">
             <p>
               <b>Something went wrong.</b> Please try again in a moment.
+            </p>
+          </section>
+        )}
+
+        {status === "invalid" && (
+          <section className="empty-state">
+            <p>
+              <b>{validationMessage ?? "That search isn't valid."}</b> Change
+              the From or To city above and search again.
             </p>
           </section>
         )}
@@ -394,7 +426,7 @@ export default function SearchResults() {
         )}
 
         <Link href="/" className="back-link">
-          ← Nayi search
+          ← New search
         </Link>
       </main>
 

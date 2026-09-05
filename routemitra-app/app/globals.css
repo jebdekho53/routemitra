@@ -21,6 +21,12 @@
   --accent-strong: #085aac;
   --accent-soft: rgba(10, 110, 209, 0.1);
   --accent-tint: rgba(10, 110, 209, 0.055);
+  /* solid button fills (white text on top) — same as --accent in light mode,
+     but dark mode needs its own value here: --accent there is deliberately
+     lightened for link/text legibility against the near-black page, which
+     drops white-on-it below WCAG AA (2.82:1). Keeping this pinned to the
+     light-mode blue keeps every filled CTA at ~5:1 in both themes. */
+  --accent-fill: var(--accent);
 
   --ok: #17945a;
   --warn: #b7791f;
@@ -87,6 +93,7 @@
     --accent-strong: #6bb2ef;
     --accent-soft: rgba(77, 159, 232, 0.16);
     --accent-tint: rgba(77, 159, 232, 0.1);
+    --accent-fill: #0a6ed1; /* WCAG AA for white text — see :root comment */
 
     --ok: #46b880;
     --warn: #d9a441;
@@ -122,6 +129,7 @@
   --accent-strong: #6bb2ef;
   --accent-soft: rgba(77, 159, 232, 0.16);
   --accent-tint: rgba(77, 159, 232, 0.1);
+  --accent-fill: #0a6ed1; /* WCAG AA for white text — see :root comment */
 
   --ok: #46b880;
   --warn: #d9a441;
@@ -510,8 +518,8 @@ main.wrap {
   border: 0;
   border-radius: var(--r-pill);
   background: none;
-  font-size: 12px;
-  color: var(--ink-faint);
+  font-size: 13px;
+  color: var(--ink-soft);
   cursor: pointer;
   line-height: 1;
 }
@@ -535,8 +543,8 @@ main.wrap {
   font-weight: 600;
   padding: 8px 16px;
   border-radius: var(--r-pill);
-  border: 1px solid var(--accent);
-  background: var(--accent);
+  border: 1px solid var(--accent-fill);
+  background: var(--accent-fill);
   color: #fff;
   text-decoration: none;
   cursor: pointer;
@@ -663,7 +671,7 @@ main.wrap {
   border-radius: 0 var(--r-sm) var(--r-sm) 0;
 }
 .nav-theme-opts .sort-tab.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   border-color: var(--accent);
 }
@@ -875,7 +883,7 @@ main.wrap {
   padding: 0 24px;
   border: none;
   border-radius: var(--r-sm);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   cursor: pointer;
   transition: filter 0.12s ease, transform 0.08s ease;
@@ -1128,7 +1136,7 @@ main.wrap {
   cursor: default;
 }
 .tf-chip.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: var(--accent);
   color: #fff;
 }
@@ -1512,8 +1520,8 @@ main.wrap {
   min-height: 38px;
   padding: 0 14px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--accent);
-  background: var(--accent);
+  border: 1px solid var(--accent-fill);
+  background: var(--accent-fill);
   color: #fff;
   text-decoration: none;
   white-space: nowrap;
@@ -2323,14 +2331,14 @@ main.wrap {
 }
 .sf-beta {
   font-family: var(--font-mono), monospace;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: var(--r-pill);
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-fill);
 }
 .sf-mode-hint {
   font-size: 12px;
@@ -2406,7 +2414,7 @@ html.has-cookie-banner body {
   padding: 0 22px;
   border: none;
   border-radius: var(--r-sm);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   cursor: pointer;
   white-space: nowrap;
@@ -2427,7 +2435,7 @@ html.has-cookie-banner body {
   left: -9999px;
   top: 0;
   z-index: 100;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   padding: 10px 16px;
   border-radius: 0 0 var(--r-sm) 0;
@@ -2649,7 +2657,7 @@ html.has-cookie-banner body {
   border-color: var(--accent);
 }
 .fb-kind.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: var(--accent);
   color: #fff;
 }
@@ -2890,7 +2898,7 @@ html.has-cookie-banner body {
   display: block;
 }
 .admin-bar-fill.s {
-  background: var(--accent);
+  background: var(--accent-fill);
 }
 .admin-bar-fill.c {
   background: var(--line-strong);
@@ -2909,7 +2917,7 @@ html.has-cookie-banner body {
   margin-top: 8px;
 }
 .admin-shell .dot.s {
-  background: var(--accent);
+  background: var(--accent-fill);
 }
 .admin-shell .dot.c {
   background: var(--line-strong);
@@ -3033,7 +3041,7 @@ html.has-cookie-banner body {
   color: var(--ink);
 }
 .admin-nav a.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
 }
 .admin-sidebar-foot {
@@ -3182,7 +3190,7 @@ a.admin-card:hover {
   font-size: 13px;
   text-decoration: none;
   color: #fff;
-  background: var(--accent);
+  background: var(--accent-fill);
   border-radius: var(--r-sm);
   padding: 7px 12px;
   white-space: nowrap;

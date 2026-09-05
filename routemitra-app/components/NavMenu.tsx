@@ -110,7 +110,7 @@ export default function NavMenu() {
                 className="oauth-btn"
                 onClick={() => setOpen(false)}
               >
-                Naya account
+                Sign up
               </Link>
             </>
           )}
