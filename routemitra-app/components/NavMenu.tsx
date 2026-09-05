@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { getTheme, setTheme, type Theme } from "@/lib/theme";
 
-const NAV_LINKS = [
-  { href: "/", label: "Search" },
-  { href: "/dashboard", label: "My dashboard" },
+const NAV_LINKS = [{ href: "/", label: "Search" }];
+// only meaningful once signed in — both pages redirect to /login otherwise
+const ACCOUNT_LINKS = [
+  { href: "/dashboard", label: "Saved & alerts" },
   { href: "/account", label: "Account" },
 ];
 const SECONDARY = [
@@ -77,7 +78,7 @@ export default function NavMenu() {
         </div>
 
         <ul className="nav-list">
-          {NAV_LINKS.map((l) => (
+          {[...NAV_LINKS, ...(session?.user ? ACCOUNT_LINKS : [])].map((l) => (
             <li key={l.href}>
               <Link href={l.href} onClick={() => setOpen(false)}>
                 {l.label}
@@ -144,8 +145,65 @@ export default function NavMenu() {
     </div>
   );
 
+  // Desktop (>=64em, CSS-gated) gets a real inline nav instead of a hamburger
+  // — there's room for it, and hiding every link behind a drawer wasted the
+  // whole right half of the app bar.
+  const desktopNav = (
+    <nav className="appbar-nav" aria-label="Main menu">
+      <ul className="appbar-nav-links">
+        {[...NAV_LINKS, ...(session?.user ? ACCOUNT_LINKS : [])].map((l) => (
+          <li key={l.href}>
+            <Link href={l.href}>{l.label}</Link>
+          </li>
+        ))}
+        <li>
+          <Link href="/help">Help</Link>
+        </li>
+        <li>
+          <Link href="/contact">Contact</Link>
+        </li>
+      </ul>
+
+      <div className="appbar-nav-theme" role="group" aria-label="Theme">
+        {THEMES.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            className={`appbar-theme-btn${theme === t.key ? " active" : ""}`}
+            title={t.label}
+            aria-label={`${t.label} theme`}
+            aria-pressed={theme === t.key}
+            onClick={() => pickTheme(t.key)}
+          >
+            {t.key === "system" ? "🖥" : t.key === "light" ? "☀" : "🌙"}
+          </button>
+        ))}
+      </div>
+
+      {session?.user ? (
+        <button
+          type="button"
+          className="appbar-nav-btn"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
+          Logout
+        </button>
+      ) : (
+        <>
+          <Link href="/login" className="appbar-nav-link">
+            Login
+          </Link>
+          <Link href="/signup" className="appbar-nav-btn">
+            Sign up
+          </Link>
+        </>
+      )}
+    </nav>
+  );
+
   return (
     <>
+      {desktopNav}
       <button
         type="button"
         className="nav-menu-btn"

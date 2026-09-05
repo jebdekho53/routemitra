@@ -436,7 +436,7 @@ main.wrap {
   display: contents;
 }
 
-/* ============ Nav: hamburger button + slide-in sheet ============ */
+/* ============ Nav: hamburger button + slide-in sheet (mobile/tablet) ============ */
 .nav-menu-btn {
   width: 44px;
   height: 44px;
@@ -457,6 +457,93 @@ main.wrap {
 }
 .nav-menu-btn:active {
   transform: scale(0.94);
+}
+
+/* ============ Nav: inline app-bar nav (desktop — real width, so a hamburger
+   drawer just wasted it) ============ */
+.appbar-nav {
+  display: none;
+}
+@media (min-width: 64em) {
+  .appbar-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .nav-menu-btn {
+    display: none;
+  }
+}
+.appbar-nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.appbar-nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.appbar-nav-links a:hover {
+  color: var(--accent);
+}
+.appbar-nav-theme {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+.appbar-theme-btn {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: 12px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  line-height: 1;
+}
+.appbar-theme-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.appbar-nav-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.appbar-nav-link:hover {
+  color: var(--accent);
+}
+.appbar-nav-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.appbar-nav-btn:hover {
+  filter: brightness(1.06);
 }
 
 .nav-scrim {
