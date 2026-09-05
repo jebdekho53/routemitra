@@ -27,4 +27,21 @@ describe("searchQuerySchema", () => {
     });
     expect(errors?.to).toBeTruthy();
   });
+
+  it("rejects a nickname/canonical pair for the same city (Bombay vs Mumbai)", () => {
+    const { data, errors } = parse(searchQuerySchema, {
+      from: "Bombay",
+      to: "Mumbai",
+    });
+    expect(data).toBeNull();
+    expect(errors?.to).toMatch(/can't be the same/i);
+  });
+
+  it("rejects an IATA code paired with its own city (BOM vs Mumbai)", () => {
+    const { errors } = parse(searchQuerySchema, {
+      from: "BOM",
+      to: "Mumbai",
+    });
+    expect(errors?.to).toBeTruthy();
+  });
 });

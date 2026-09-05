@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { listSampleRoutes } from "@/lib/sample-data";
 import { STATION_CITIES } from "@/lib/stations";
 import { DISTRICTS } from "@/lib/districts";
+import { canonicalCity } from "@/lib/city-alias";
 import type { Mode } from "@/types/route";
 
 const SAMPLE_ROUTES = listSampleRoutes();
@@ -133,7 +134,7 @@ export default function SearchForm({
       (!f ? fromRef : toRef).current?.focus();
       return;
     }
-    if (f.toLowerCase() === t.toLowerCase()) {
+    if (canonicalCity(f).toLowerCase() === canonicalCity(t).toLowerCase()) {
       setInvalidFields(new Set(["to"]));
       setFormError("From and To can't be the same place — pick two different cities.");
       toRef.current?.focus();

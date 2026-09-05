@@ -1,6 +1,7 @@
 // Phase 15 — input schemas (zod). Used by auth + search API routes and forms.
 
 import { z } from "zod";
+import { canonicalCity } from "@/lib/city-alias";
 
 export const emailSchema = z
   .string()
@@ -60,10 +61,12 @@ export const searchQuerySchema = z.object({
     .trim()
     .regex(/^(bus|train|flight)(,(bus|train|flight))*$/)
     .nullish(),
-}).refine((v) => v.from.trim().toLowerCase() !== v.to.trim().toLowerCase(), {
-  message: "From and To can't be the same place.",
-  path: ["to"],
-});
+}).refine(
+  // compare canonical forms so "Bombay" vs "Mumbai" (or "BOM" vs "Mumbai")
+  // is caught too, not just an exact string match
+  (v) => canonicalCity(v.from).toLowerCase() !== canonicalCity(v.to).toLowerCase(),
+  { message: "From and To can't be the same place.", path: ["to"] },
+);
 
 export const watchSchema = z.object({
   from: citySchema,
