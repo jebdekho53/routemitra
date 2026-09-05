@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { RouteResult, RouteOption, SortKey, Mode } from "@/types/route";
 import { listSampleRoutes } from "@/lib/sample-data";
+import { isKnownPlace } from "@/lib/known-place";
 import { formatDuration, formatPrice } from "@/lib/format";
 import { computeMeta, tagsFor } from "@/lib/result-meta";
 import ResultCard from "@/components/ResultCard";
@@ -403,14 +404,23 @@ export default function SearchResults() {
 
         {status === "empty" && (
           <section className="empty-state">
-            <p>
-              <b>
-                {from && to
-                  ? "No options found for this route yet."
-                  : "Search a route above."}
-              </b>{" "}
-              Try one of these sample routes:
-            </p>
+            {from && to && isKnownPlace(from) && isKnownPlace(to) ? (
+              <p>
+                <b>We don&apos;t have transport data for {from} → {to} yet.</b>{" "}
+                This route may still run by bus or train — we just haven&apos;t
+                added it. Try a direct search on RedBus or IRCTC, or check
+                back soon as we add more coverage.
+              </p>
+            ) : (
+              <p>
+                <b>
+                  {from && to
+                    ? "No options found for this route yet."
+                    : "Search a route above."}
+                </b>{" "}
+                Try one of these sample routes:
+              </p>
+            )}
             <div className="examples">
               {SAMPLE_ROUTES.map(({ from: f, to: t }) => (
                 <Link
