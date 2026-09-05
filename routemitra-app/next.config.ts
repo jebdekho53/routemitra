@@ -32,7 +32,9 @@ const csp = [
   `img-src 'self' data: blob: https://pics.avs.io${adImg}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io https://challenges.cloudflare.com${adScript}`,
+  // 'unsafe-eval' is only for dev (Turbopack/Fast Refresh use eval-based
+  // sourcemaps) — the production bundle doesn't need it, so don't ship it.
+  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"} https://plausible.io https://challenges.cloudflare.com${adScript}`,
   `frame-src https://challenges.cloudflare.com${adFrame}`,
   [
     "connect-src 'self'",

@@ -60,6 +60,9 @@ export const searchQuerySchema = z.object({
     .trim()
     .regex(/^(bus|train|flight)(,(bus|train|flight))*$/)
     .nullish(),
+}).refine((v) => v.from.trim().toLowerCase() !== v.to.trim().toLowerCase(), {
+  message: "From and To can't be the same place.",
+  path: ["to"],
 });
 
 export const watchSchema = z.object({

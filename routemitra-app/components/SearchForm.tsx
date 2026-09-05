@@ -59,6 +59,7 @@ export default function SearchForm({
 
   const [locating, setLocating] = useState(false);
   const [locateError, setLocateError] = useState("");
+  const [sameCityError, setSameCityError] = useState(false);
 
   function useMyLocation() {
     setLocateError("");
@@ -110,6 +111,11 @@ export default function SearchForm({
     const f = nextFrom.trim();
     const t = nextTo.trim();
     if (!f || !t) return;
+    if (f.toLowerCase() === t.toLowerCase()) {
+      setSameCityError(true);
+      return;
+    }
+    setSameCityError(false);
     const qs = new URLSearchParams({ from: f, to: t });
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) qs.set("date", date);
     if (mode === "d2d" && originAddr.trim() && destAddr.trim()) {
@@ -199,7 +205,10 @@ export default function SearchForm({
               placeholder="e.g. Pune"
               required
               value={from}
-              onChange={(e) => setFrom(e.target.value)}
+              onChange={(e) => {
+                setFrom(e.target.value);
+                setSameCityError(false);
+              }}
             />
           </div>
           <div
@@ -237,10 +246,20 @@ export default function SearchForm({
               placeholder="e.g. Bengaluru"
               required
               value={to}
-              onChange={(e) => setTo(e.target.value)}
+              onChange={(e) => {
+                setTo(e.target.value);
+                setSameCityError(false);
+              }}
             />
           </div>
         </div>
+
+        {sameCityError && (
+          <p className="sf-error" role="alert">
+            From and To can&apos;t be the same place — pick two different
+            cities.
+          </p>
+        )}
 
         {mode === "d2d" && (
           <div className="field">

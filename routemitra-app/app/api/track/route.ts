@@ -5,6 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { sql, dbEnabled, ensureSchema } from "@/lib/db";
+import { rateLimit, clientIp } from "@/lib/ratelimit";
 import type { Mode } from "@/types/route";
 
 interface TrackBody {
@@ -17,6 +18,11 @@ interface TrackBody {
 }
 
 export async function POST(request: Request) {
+  const rl = await rateLimit("track-post", clientIp(request), 30, "1 m");
+  if (!rl.ok) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
+
   let body: TrackBody;
   try {
     body = await request.json();
@@ -53,7 +59,12 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const rl = await rateLimit("track-get", clientIp(request), 20, "1 m");
+  if (!rl.ok) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
+
   if (!dbEnabled || !sql) {
     return NextResponse.json({ enabled: false, byMode: [], topRoutes: [] });
   }
