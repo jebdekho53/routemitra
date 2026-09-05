@@ -812,6 +812,28 @@ because `lib/sample-data.ts` keys routes on the literal typed string with no ali
       instead of 0; `Bangalore→Chennai` now shows Bus 7 · Train 15 · Flight 9 (previously Bus 0),
       matching `Bengaluru→Chennai` exactly — checked on both desktop and mobile (375px).
 
+## Phase 35 — Bug: real dead-end corridors read as "broken" ✅
+
+QA report flagged Madurai↔Rameswaram, Chandigarh↔Manali, Shillong↔Guwahati and Gangtok↔Kolkata
+returning a bare "No options found" — same message as a typo/gibberish search — even though
+some of these are real corridors. Investigating each: Rameswaram, Manali and Gangtok aren't
+districts and have no station/airport of their own (genuinely unresolvable in our data, not a
+missing-data bug); Shillong↔Guwahati resolves fine on both ends but has no sample entry and no
+live bus API, so it's a real coverage gap. Rather than fabricate data for either case, this
+makes the app honest about which one it's showing:
+
+- [x] `lib/known-place.ts` (new) — `isKnownPlace()`: true if a city is a real district, or has
+      its own station/airport (via `resolveStation`/`resolveAirport`, alias/IATA-aware).
+- [x] `app/search/SearchResults.tsx` — the empty-results state now branches: if both From and To
+      are known places, says so plainly ("We don't have transport data for X → Y yet... try a
+      direct search on RedBus or IRCTC") instead of the generic message that implies the route
+      doesn't exist; an actually-unrecognized place keeps the original message + sample routes.
+- [x] `tests/unit/known-place.test.ts` — districts/stations/airports/nicknames recognized;
+      Rameswaram/Manali (no district, no station, no airport) and gibberish correctly rejected.
+- **Acceptance:** ✅ verified live on prod: `Shillong→Guwahati` now shows the honest
+      coming-soon message; `Rameswaram→Madurai` (an unresolvable place) still shows the original
+      generic empty state — the two cases render differently as intended.
+
 ---
 
 ## Already live on prod (env verified 2026-09-05)
@@ -863,12 +885,6 @@ because `lib/sample-data.ts` keys routes on the literal typed string with no ali
 - Swap erail → TripJack rail adapter when that API is live
 - `grievance@<domain>` + monitored inbox once domain exists
 - Newer post-2020 airports beyond the 4 already patched, if any matter for a specific route
-- **Real dead-end routes** (QA report, 2026-09-05): Madurai↔Rameswaram, Chandigarh↔Manali,
-  Shillong↔Guwahati and Gangtok↔Kolkata return a bare "No options found" even though real
-  trains/daily buses run them — these aren't in `lib/sample-data.ts`'s ROUTES table at all
-  (unlike the Phase 32 case, there's no wrong result here, just a missing one). Either add
-  sample entries for the busiest of these or show a "coming soon" state instead of the generic
-  empty one.
 
 ---
 
