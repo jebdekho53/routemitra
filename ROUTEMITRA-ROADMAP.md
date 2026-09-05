@@ -759,6 +759,61 @@ one of them is a 100 km proxy.
 
 ---
 
+## Phase 33 — External QA pass: 6 bugs found and fixed ✅
+
+An outside tester ran a full-scope functional/a11y/security/perf pass on prod (2026-09-05) —
+7 findings, 0 critical. A re-test the same day caught two fixes that looked done but weren't:
+
+- [x] **BUG-01** same From/To showed a generic "Something went wrong" instead of a validation
+      message — `SearchResults.tsx` now inspects a 400's `errors.from`/`errors.to` body and
+      renders the real message instead of the generic error state.
+- [x] **BUG-02** dark-mode primary buttons (Search/Sign up/Book now/...) were white-on-#4d9fe8 =
+      2.82:1, failing WCAG AA — added an `--accent-fill` token (`#0a6ed1` in dark, same as light)
+      and repointed all 12 button-fill rules to it instead of `--accent`.
+- [x] **BUG-03** empty-field search was a silent no-op. First fix attempt only added a
+      `setFormError()` call inside `go()` — dead code, because the `<form>` had `required` inputs
+      and no `noValidate`, so the browser's native constraint validation ate the submit before
+      `go()` ever ran. Re-test correctly caught it ("no message, no highlight, focus on body").
+      Real fix: `noValidate` on the form + `go()` as the sole validation authority, with
+      `aria-invalid` + `useRef`-based focus on the actual bad field (`SearchForm.tsx`).
+- [x] **BUG-04** same action had 3 different labels across viewports ("Sign up" / "Naya account" /
+      "Nayi search") — standardized to English everywhere.
+- [x] **BUG-05** the ⇄ swap button flipped the fields but left stale results on screen — now
+      re-runs the search immediately when already on a route.
+- [x] **BUG-07** the BETA badge was dark-blue text on a translucent blue tint ≈ 1.8:1. First fix
+      attempt swapped the text color to the new `--accent-fill` token — worse (≈2.6:1), because
+      blending a dark color as *text* against an already-tinted-toward-the-same-hue background
+      converges the two colors as opacity rises, counterintuitive but verified with a contrast
+      script. Real fix: drop the tinted fill entirely — `background: var(--surface); border: 1px
+      solid var(--accent); color: var(--accent)` — 5.04:1 light / 6.04:1 dark.
+- Not a bug: **BUG-06** Delhi→Mumbai returns 0 buses — expected, no real bus API yet (tracked
+  below under RedBus/AbhiBus/TBO outreach).
+- **Acceptance:** ✅ all 6 re-verified live on prod across light/dark theme and desktop/mobile
+      viewports by the external tester; a second, independent re-test the same day confirmed
+      "0 bugs open."
+
+## Phase 34 — Bug: city nicknames and IATA codes returned zero results ✅
+
+The same QA report's data-completeness section flagged this as the "cheapest, highest-ROI" fix:
+`Bombay` (unrecognized anywhere), `DEL`/`BOM`/`BLR` (airport codes, unsupported), and
+`Bangalore` (resolved train/flight via their own alias tables but silently dropped bus results,
+because `lib/sample-data.ts` keys routes on the literal typed string with no alias layer).
+
+- [x] `lib/city-alias.ts` (new) — `canonicalCity()`: a nickname table (Bombay→Mumbai,
+      Bangalore→Bengaluru, Madras→Chennai, Calcutta→Kolkata, Vizag→Visakhapatnam, +11 more) plus
+      a 3-letter-IATA-code check (reuses `AIRPORT_CITY` from `lib/iata.ts`, now exported).
+- [x] `lib/search.ts` — `runSearch()` and `sampleSearch()` canonicalize `from`/`to` once, in one
+      place, before adapters/cache-key/booking-links see them — so bus/train/flight and the
+      static `/routes/[slug]` pages all agree on one spelling per city.
+- [x] `tests/unit/city-alias.test.ts` — nickname + IATA-code resolution, and a regression test
+      that "Bangalore" now returns the same bus count as "Bengaluru".
+- **Acceptance:** ✅ verified live on prod: `Bombay→Chennai` now returns real train/flight
+      results (`from` normalizes to `Mumbai` in the API response); `DEL→BOM` returns 16 options
+      instead of 0; `Bangalore→Chennai` now shows Bus 7 · Train 15 · Flight 9 (previously Bus 0),
+      matching `Bengaluru→Chennai` exactly — checked on both desktop and mobile (375px).
+
+---
+
 ## Already live on prod (env verified 2026-09-05)
 
 `DATABASE_URL` (Neon, all envs — 9 tables exist) · `AUTH_SECRET` · `AUTH_GOOGLE_ID/SECRET` ·
@@ -808,6 +863,12 @@ one of them is a 100 km proxy.
 - Swap erail → TripJack rail adapter when that API is live
 - `grievance@<domain>` + monitored inbox once domain exists
 - Newer post-2020 airports beyond the 4 already patched, if any matter for a specific route
+- **Real dead-end routes** (QA report, 2026-09-05): Madurai↔Rameswaram, Chandigarh↔Manali,
+  Shillong↔Guwahati and Gangtok↔Kolkata return a bare "No options found" even though real
+  trains/daily buses run them — these aren't in `lib/sample-data.ts`'s ROUTES table at all
+  (unlike the Phase 32 case, there's no wrong result here, just a missing one). Either add
+  sample entries for the busiest of these or show a "coming soon" state instead of the generic
+  empty one.
 
 ---
 
