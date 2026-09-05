@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { listSampleRoutes } from "@/lib/sample-data";
 import { STATION_CITIES } from "@/lib/stations";
 import { DISTRICTS } from "@/lib/districts";
@@ -60,6 +60,12 @@ export default function SearchForm({
   const [locating, setLocating] = useState(false);
   const [locateError, setLocateError] = useState("");
   const [formError, setFormError] = useState("");
+  // which field(s) formError is actually about — drives aria-invalid + focus
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
+  const fromRef = useRef<HTMLInputElement>(null);
+  const toRef = useRef<HTMLInputElement>(null);
+  const originRef = useRef<HTMLInputElement>(null);
+  const destRef = useRef<HTMLInputElement>(null);
 
   function useMyLocation() {
     setLocateError("");
@@ -111,20 +117,52 @@ export default function SearchForm({
     const f = nextFrom.trim();
     const t = nextTo.trim();
     if (!f || !t) {
-      // native `required` already blocks this + shows the browser's own
-      // validation bubble, but that's easy to miss (and invisible to
-      // anything that only checks the DOM) — say it plainly too
-      setFormError("Enter a From and To city to search.");
+      // the form has noValidate — native `required` never blocks submit or
+      // shows a bubble, so this is the only feedback empty fields get
+      const empty = new Set<string>();
+      if (!f) empty.add("from");
+      if (!t) empty.add("to");
+      setInvalidFields(empty);
+      setFormError(
+        !f && !t
+          ? "Enter a From and To city to search."
+          : !f
+            ? "Enter a From city to search."
+            : "Enter a To city to search.",
+      );
+      (!f ? fromRef : toRef).current?.focus();
       return;
     }
     if (f.toLowerCase() === t.toLowerCase()) {
+      setInvalidFields(new Set(["to"]));
       setFormError("From and To can't be the same place — pick two different cities.");
+      toRef.current?.focus();
       return;
     }
+    if (mode === "d2d") {
+      const o = originAddr.trim();
+      const d = destAddr.trim();
+      if (!o || !d) {
+        const empty = new Set<string>();
+        if (!o) empty.add("origin");
+        if (!d) empty.add("destination");
+        setInvalidFields(empty);
+        setFormError(
+          !o && !d
+            ? "Enter a pickup and drop-off address for door-to-door."
+            : !o
+              ? "Enter a pickup address for door-to-door."
+              : "Enter a drop-off address for door-to-door.",
+        );
+        (!o ? originRef : destRef).current?.focus();
+        return;
+      }
+    }
     setFormError("");
+    setInvalidFields(new Set());
     const qs = new URLSearchParams({ from: f, to: t });
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) qs.set("date", date);
-    if (mode === "d2d" && originAddr.trim() && destAddr.trim()) {
+    if (mode === "d2d") {
       qs.set("origin", originAddr.trim());
       qs.set("destination", destAddr.trim());
     }
@@ -166,6 +204,7 @@ export default function SearchForm({
       <form
         id="search-form"
         autoComplete="off"
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           go(from, to);
@@ -190,9 +229,13 @@ export default function SearchForm({
               name="origin"
               type="text"
               placeholder="e.g. Indirapuram, Ghaziabad"
-              required
+              ref={originRef}
+              aria-invalid={invalidFields.has("origin")}
               value={originAddr}
-              onChange={(e) => setOriginAddr(e.target.value)}
+              onChange={(e) => {
+                setOriginAddr(e.target.value);
+                setFormError("");
+              }}
             />
             {locateError && <p className="sf-locate-err">{locateError}</p>}
           </div>
@@ -209,7 +252,8 @@ export default function SearchForm({
               type="text"
               list="cities"
               placeholder="e.g. Pune"
-              required
+              ref={fromRef}
+              aria-invalid={invalidFields.has("from")}
               value={from}
               onChange={(e) => {
                 setFrom(e.target.value);
@@ -267,7 +311,8 @@ export default function SearchForm({
               type="text"
               list="cities"
               placeholder="e.g. Bengaluru"
-              required
+              ref={toRef}
+              aria-invalid={invalidFields.has("to")}
               value={to}
               onChange={(e) => {
                 setTo(e.target.value);
@@ -291,9 +336,13 @@ export default function SearchForm({
               name="destination"
               type="text"
               placeholder="e.g. Lanka, Varanasi"
-              required
+              ref={destRef}
+              aria-invalid={invalidFields.has("destination")}
               value={destAddr}
-              onChange={(e) => setDestAddr(e.target.value)}
+              onChange={(e) => {
+                setDestAddr(e.target.value);
+                setFormError("");
+              }}
             />
           </div>
         )}

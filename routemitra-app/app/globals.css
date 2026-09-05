@@ -846,6 +846,13 @@ main.wrap {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
+.field input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.field input[aria-invalid="true"]:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
+}
 .field input::placeholder {
   color: var(--ink-faint);
 }
@@ -2337,8 +2344,12 @@ main.wrap {
   text-transform: uppercase;
   padding: 1px 6px;
   border-radius: var(--r-pill);
-  background: var(--accent-soft);
-  color: var(--accent-fill);
+  /* a tinted bg blended toward --accent's own hue *reduces* contrast against
+     --accent text (same hue converging) — plain --surface + a colour border
+     reads as a badge just as clearly and holds ~5:1 / ~6:1 (light/dark) */
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
 .sf-mode-hint {
   font-size: 12px;
