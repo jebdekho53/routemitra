@@ -4,6 +4,13 @@
 //   3. nothing                           -> log the email to the server console
 //
 // EMAIL_FROM is the visible From: on every message.
+//
+// EMAIL_PAUSED=1 forces the console-log path regardless of what's configured
+// — a kill switch for testing signup/login without real mail going out.
+// SMTP/Resend creds stay untouched; unset EMAIL_PAUSED (or set it to
+// anything falsy) to resume sending. Doesn't gate login: the Credentials
+// provider (auth.ts) never checks email_verified_at, so pausing this has no
+// effect on being able to sign up and log straight in.
 
 import { SITE_URL } from "@/lib/site";
 
@@ -83,8 +90,19 @@ async function sendViaResend(mail: Mail, key: string): Promise<void> {
   }
 }
 
+function isPaused(): boolean {
+  const v = (process.env.EMAIL_PAUSED || "").trim().toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+
 export async function sendEmail(mail: Mail): Promise<void> {
   try {
+    if (isPaused()) {
+      console.log(
+        `\n[email:paused] EMAIL_PAUSED is set — not sending. To: ${mail.to}\nSubject: ${mail.subject}\n${mail.text}\n`,
+      );
+      return;
+    }
     if (smtpConfigured()) {
       await sendViaSmtp(mail);
       return;
