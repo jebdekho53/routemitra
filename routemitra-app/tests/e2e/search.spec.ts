@@ -22,12 +22,15 @@ test("home -> search -> results -> book link", async ({ page }) => {
   await expect(cards.first()).toBeVisible();
   expect(await cards.count()).toBeGreaterThan(1);
 
-  // booking links carry tracking params
+  // booking links carry tracking params — bus/train links go through the
+  // Cuelinks affiliate wrapper (linksredirect.com), which percent-encodes
+  // the whole original URL as a query value, so the literal "=" becomes
+  // "%3D". Decode before asserting so this works both wrapped and not.
   const href = await page
     .getByRole("link", { name: /Book now/ })
     .first()
     .getAttribute("href");
-  expect(href).toContain("utm_source=routemitra");
+  expect(decodeURIComponent(href ?? "")).toContain("utm_source=routemitra");
 });
 
 test("landing route card navigates to that route", async ({ page }) => {
