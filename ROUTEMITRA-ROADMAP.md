@@ -834,6 +834,81 @@ makes the app honest about which one it's showing:
       coming-soon message; `Rameswaram→Madurai` (an unresolvable place) still shows the original
       generic empty state — the two cases render differently as intended.
 
+## Phase 36 — Regressions + latent bugs found while self-auditing ✅
+
+After Phases 33-35, a self-audit turned up four more real issues:
+
+- [x] **Same-city bypass** (regression from Phase 34's `canonicalCity`) — "Bombay" vs "Mumbai"
+      (or "BOM" vs "Mumbai") passed the same-city guard as two different strings, but
+      `lib/search.ts` canonicalizes both to "Mumbai" before the adapters run → the search
+      silently ran Mumbai-vs-Mumbai and returned local-train results. Fixed by comparing
+      `canonicalCity()` forms in `lib/validation.ts` and `components/SearchForm.tsx`.
+- [x] **Door-to-door fabricated a cab leg 100s of km away** — only ~30 cities have a hub
+      (`lib/city-hubs.ts`); a home address far from all of them (e.g. Leh) still matched a
+      "nearest" hub 491 km away and presented it as a normal "Uber (est.)" leg (a real prod
+      response showed a ₹7,421 / 20-hour "cab"). `lib/door-to-door.ts` now skips attaching
+      `door_to_door` when either access/egress leg exceeds `MAX_LOCAL_KM` (80 km); the plain
+      intercity option still shows.
+- [x] **Light-mode WCAG AA contrast** (same root cause as BUG-07) — `--ok`, `--danger` and
+      `--warn` are fine as icons/borders but fail as small TEXT on a same-hue tint in light
+      mode: measured as low as 3.1-3.2:1 (need 4.5:1). Affected the "CHEAPEST" / "BEST VALUE"
+      result tags, every auth-flow success/error message (signup/login/forgot/reset + the
+      same-city/empty-field validation text), the "INDICATIVE" / "est." badge on **every**
+      result card, and the Phase 32 proxy-station safety note. Added `--ok-text` (#0c6b3f),
+      `--danger-text` (#b8291d) and `--warn-text` (#7d5411) — darker text-safe light-mode
+      variants that alias through to the base colour in dark mode (already AA there) — and
+      repointed every text usage; `.rc-tag.tag-value` swapped `--accent-soft` (10%) for the
+      existing `--accent-tint` (5.5%).
+- [x] Cheapest/Fastest tag logic audited (interactive test on prod across mode + sort
+      changes) — reference-based tagging is correct, no mismatch. Not a bug.
+- [x] New tests: `tests/unit/city-alias.test.ts` (same-city canonical pair), `door-to-door.test.ts`,
+      `known-place.test.ts`, `hotels.test.ts`.
+- **Acceptance:** ✅ all four fixed, deployed, and verified live on prod across mobile /
+      desktop / dark mode. Contrast now: tag-cheap 3.2→5.4, badge 3.1→5.3, auth-ok 3.4→6.6
+      (light; dark unchanged).
+
+## Phase 37 — E2E suite: 9 stale failures → green ✅
+
+Ran the full Playwright suite (95 tests × chromium/android/ios/ios-small) against
+`routemitra-gamma.vercel.app`. 9 failures, all stale test assumptions — no product bugs:
+
+- [x] `search.spec.ts` booking-link UTM check — the Cuelinks affiliate wrap (Phase 22)
+      percent-encodes the whole URL, so `utm_source=routemitra` became `utm_source%3D…`;
+      test now decodes before asserting.
+- [x] `mobile.spec.ts` nav sheet — expected a "My dashboard" link (renamed to "Saved & alerts",
+      and account-only anyway); now checks links a logged-out visitor sees.
+- [x] `mobile.spec.ts` nav sheet on chromium — desktop (≥64em) has an inline nav bar, no
+      hamburger; test now `test.skip`s for the chromium (desktop) project.
+- [x] `mobile.spec.ts` horizontal-overflow — `HeroArt` is deliberately `right: -40px` (bleed,
+      clipped by `overflow-x: hidden`); check now excludes `aria-hidden` decorative elements.
+- **Acceptance:** ✅ 103 passed, 1 skipped, 0 failed. Test-only changes, no deploy.
+
+## Phase 38 — Cuelinks travel research + hotel-link enabler ✅
+
+Drove the Cuelinks publisher dashboard (Campaign Explorer → Travel → India) to survey what's
+available beyond the paused RedBus/ConfirmTkt bus/train campaigns.
+
+- **Finding:** ~50 India travel campaigns (Skyscanner India 48.75%/sale, Cleartrip Flight
+      EPC ₹11-12, Klook EPC ₹6.96, Thrillophilia ₹4050 flat, MakeMyTrip Hotels, Booking.com,
+      Agoda, Nasher Miles 9% luggage, Nomad eSIM, airlines…). **But** most (Klook, Skyscanner,
+      …) carry a "Request Now" approval gated on *subscriber requirements* (traffic/audience
+      size) that a brand-new site doesn't meet — the generated tracking link is a valid
+      redirect but earns ₹0 until approved. Skyscanner **Hotels** is separately paused by the
+      advertiser.
+- [x] `lib/hotels.ts` — `hotelSearchLink()` now checks `NEXT_PUBLIC_AFF_HOTELS` first: a full
+      search-URL template with `{city}` / `{checkIn}` / `{checkOut}` placeholders (bare or
+      already `%7Bcity%7D`-encoded, since Cuelinks encodes the wrapped URL). Lets a
+      Cuelinks-wrapped Booking.com / MakeMyTrip Hotels link drop in with no code change;
+      Hotellook stays the default. Surfaced in `ancillaryStatus()` for `/admin/system`.
+      5 tests (`tests/unit/hotels.test.ts`).
+- **Decision:** hold off on generating + wiring the Cuelinks travel links until the site has
+      some traffic (matches the existing GetYourGuide/Viator/Skyscanner "reapply when older"
+      plan) — then submit all the "Request Now" approvals at once and set the env vars. Code
+      side (`NEXT_PUBLIC_AFF_HOTELS`, `NEXT_PUBLIC_AFF_ACTIVITIES`, `NEXT_PUBLIC_AFF_ESIM`) is
+      ready.
+- **Acceptance:** ✅ enabler deployed, dormant (no env var set → Hotellook fallback, verified
+      on prod mobile/desktop/dark — no regression).
+
 ---
 
 ## Already live on prod (env verified 2026-09-05)
@@ -879,7 +954,14 @@ makes the app honest about which one it's showing:
 - **AbhiBus bus API** — outreach emailed 2026-09-05 to `support@abhibus.com` (no dedicated
   partnerships/API address is public — asked them to route it). Same wait/follow-up plan.
 - GetYourGuide / Viator — reapply when the site is ~2 months old
-- Cuelinks — wait for RedBus + ConfirmTkt campaigns to un-pause
+- Cuelinks — wait for RedBus + ConfirmTkt bus/train campaigns to un-pause
+- **Cuelinks travel campaigns** (surveyed 2026-09-05, Phase 38): Skyscanner, Cleartrip Flight,
+  Klook, Thrillophilia, MakeMyTrip Hotels, Booking.com, Agoda, Nasher Miles, Nomad eSIM, etc.
+  are all available — but most need a "Request Now" approval gated on subscriber/traffic
+  requirements a brand-new site won't pass. Once there's some organic traffic: submit all the
+  approvals in one go, then set `NEXT_PUBLIC_AFF_HOTELS` (Booking.com/MMT),
+  `NEXT_PUBLIC_AFF_ACTIVITIES` (Klook) and `NEXT_PUBLIC_AFF_ESIM` (Nomad) — code is already
+  wired for all three.
 
 **Code (bol do to):**
 - Swap erail → TripJack rail adapter when that API is live
