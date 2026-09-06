@@ -31,11 +31,12 @@ export interface RouteOption {
 export interface LocalLeg {
   from: string;
   to: string;
-  provider: string; // "Uber (est.)" etc.
+  provider: string; // "Estimate" — the fare is distance-based, not a live quote
   price: number;
   duration_min: number;
   distance_km: number;
-  link: string;
+  /** ride-app deep links, pickup/drop pre-filled where the app supports it */
+  apps: { name: string; url: string }[];
   estimated: true;
 }
 

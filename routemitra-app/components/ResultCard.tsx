@@ -1,4 +1,4 @@
-import type { RouteOption } from "@/types/route";
+import type { RouteOption, LocalLeg } from "@/types/route";
 import { formatDuration, formatPrice } from "@/lib/format";
 import BookButton from "@/components/BookButton";
 import ModeIcon from "@/components/ModeIcon";
@@ -103,25 +103,13 @@ export default function ResultCard({
             <span className="badge">est.</span>
           </div>
           <ol className="d2d-legs">
-            {d2d.access && (
-              <li>
-                Cab → {shorten(d2d.access.to)} · {d2d.access.distance_km} km ·{" "}
-                {formatPrice(d2d.access.price)} ·{" "}
-                {formatDuration(d2d.access.duration_min)}
-              </li>
-            )}
+            {d2d.access && <CabLegLi leg={d2d.access} />}
             <li>Wait / boarding buffer · {formatDuration(d2d.buffer_min)}</li>
             <li>
               {d2d.line_haul.label} · {formatPrice(d2d.line_haul.price)} ·{" "}
               {formatDuration(d2d.line_haul.duration_min)}
             </li>
-            {d2d.egress && (
-              <li>
-                Cab → {shorten(d2d.egress.to)} · {d2d.egress.distance_km} km ·{" "}
-                {formatPrice(d2d.egress.price)} ·{" "}
-                {formatDuration(d2d.egress.duration_min)}
-              </li>
-            )}
+            {d2d.egress && <CabLegLi leg={d2d.egress} />}
           </ol>
         </div>
       )}
@@ -131,4 +119,26 @@ export default function ResultCard({
 
 function shorten(label: string): string {
   return label.split(",").slice(0, 2).join(",").trim();
+}
+
+function CabLegLi({ leg }: { leg: LocalLeg }) {
+  return (
+    <li>
+      Cab → {shorten(leg.to)} · {leg.distance_km} km · {formatPrice(leg.price)} ·{" "}
+      {formatDuration(leg.duration_min)}
+      {leg.apps.length > 0 && (
+        <span className="d2d-apps">
+          {" — "}
+          {leg.apps.map((a, i) => (
+            <span key={a.name}>
+              {i > 0 && <span aria-hidden> · </span>}
+              <a href={a.url} target="_blank" rel="noopener nofollow">
+                {a.name}
+              </a>
+            </span>
+          ))}
+        </span>
+      )}
+    </li>
+  );
 }
