@@ -931,6 +931,42 @@ Thane/Raigad) — plus most hill stations and pilgrimage towns — were absent f
 - **Acceptance:** ✅ live on prod — `Noida → Mumbai` returns 15 trains + 5 flights with the
       "via Delhi" / "via New Delhi" caveats; datalist matches Noida / Manali / Jamshedpur / etc.
 
+## Phase 40 — Door-to-door: cover every district, not just 30 curated hubs ✅
+
+`attachDoorToDoor` only knew the ~30 cities in `lib/city-hubs.ts` — a d2d search from an
+address anywhere else silently dropped the cab legs (Phase 36's 80 km cap).
+
+- [x] `lib/door-to-door.ts` — `attachDoorToDoor()` now also takes the searched `from`/`to`
+      cities. When no curated hub is within 80 km of a geocoded address, it geocodes the
+      city's centre and names the hub from `resolveStation`/`resolveAirport` ("Ballia
+      station" / "… airport"). The 80 km local-cab cap still applies to the fallback point,
+      so a genuinely remote address (Leh) still gets no d2d rather than a fake 490 km "cab".
+- [x] `lib/search.ts` — passes `from`/`to` through. `tests/unit/door-to-door.test.ts` — a
+      town with no curated hub now anchors on its centre (~8 km access leg).
+- **Acceptance:** ✅ live on prod — `Ballia → Delhi` d2d now stitches all 13 options
+      ("Bansdih Road, Ballia → Ballia station · 15.3 km · ₹279 → train → cab", total ₹1,189).
+
+### Cab-leg fare source — where things stand (researched 2026-09-05)
+
+The local cab legs are a **transparent distance estimate** (₹50 base + ₹15/km, clearly
+labelled "(est.)") plus an **Uber deep link** (`m.uber.com/ul/`, no key needed). On the
+real-fare question:
+
+- **Uber / Ola / Rapido / inDrive consumer APIs** — not an option. Uber deprecated the
+  fare-estimate endpoint (Dec 2022) and gates all API access behind a BD contact; Ola's
+  developer platform is effectively abandoned (they pivoted to Ola Electric / Ola Maps);
+  Rapido and inDrive have no public API at all. Deep links are the only thing that works
+  self-serve.
+- **Better near-term:** add **Ola** (`book.olacabs.com/?...`) and **Rapido** deep links
+  next to the Uber one so the user picks their app (needs a small `LocalLeg` shape change
+  to hold >1 link).
+- **Real quoted fares + revenue:** **Gozo Cabs / Savaari** intercity-cab APIs — they give
+  bookable first/last-mile quotes *and* pay affiliate commission (this is already the
+  `NEXT_PUBLIC_AFF_TRANSFERS` slot). Optionally **Google Maps Routes API** for exact road
+  distance (replaces the straight-line × 1.3 approximation).
+- **Long-term:** Uber for Business / Guest Rides API once the site has the volume to get a
+  BD contact — real estimates + booking + commission.
+
 ---
 
 ## Already live on prod (env verified 2026-09-05)
