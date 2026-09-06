@@ -949,17 +949,15 @@ address anywhere else silently dropped the cab legs (Phase 36's 80 km cap).
 ### Cab-leg fare source — where things stand (researched 2026-09-05)
 
 The local cab legs are a **transparent distance estimate** (₹50 base + ₹15/km, clearly
-labelled "(est.)") plus an **Uber deep link** (`m.uber.com/ul/`, no key needed). On the
-real-fare question:
+labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`) — Uber
+& Ola pre-fill pickup/drop lat-lng, Rapido has no web deep link so it just opens the app.
+`LocalLeg.link` (string) → `LocalLeg.apps` (`{name,url}[]`). On the real-fare question:
 
 - **Uber / Ola / Rapido / inDrive consumer APIs** — not an option. Uber deprecated the
   fare-estimate endpoint (Dec 2022) and gates all API access behind a BD contact; Ola's
   developer platform is effectively abandoned (they pivoted to Ola Electric / Ola Maps);
   Rapido and inDrive have no public API at all. Deep links are the only thing that works
-  self-serve.
-- **Better near-term:** add **Ola** (`book.olacabs.com/?...`) and **Rapido** deep links
-  next to the Uber one so the user picks their app (needs a small `LocalLeg` shape change
-  to hold >1 link).
+  self-serve — now wired for all three.
 - **Real quoted fares + revenue:** **Gozo Cabs / Savaari** intercity-cab APIs — they give
   bookable first/last-mile quotes *and* pay affiliate commission (this is already the
   `NEXT_PUBLIC_AFF_TRANSFERS` slot). Optionally **Google Maps Routes API** for exact road
