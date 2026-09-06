@@ -909,6 +909,23 @@ available beyond the paused RedBus/ConfirmTkt bus/train campaigns.
 - **Acceptance:** ✅ enabler deployed, dormant (no env var set → Hotellook fallback, verified
       on prod mobile/desktop/dark — no regression).
 
+## Phase 39 — Bug: satellite cities (Noida …) didn't autocomplete or resolve ✅
+
+Reported: typing "noi" in From/To showed nothing. Big cities that sit inside a
+differently-named IR district — Noida is in "Gautam Buddha Nagar", Navi Mumbai straddles
+Thane/Raigad, Kalyan is in Thane — were absent from the `<datalist>` (built from sample
+routes + STATIONS + the 749 districts) and wouldn't resolve.
+
+- [x] `lib/place-aliases.ts` (new) — `EXTRA_HUBS`, `DISTRICT_HUBS`-shaped rows for Noida,
+      Greater Noida, Navi Mumbai, Kalyan (nearest major railhead + airport). `resolveStation()`
+      / `resolveAirport()` fall back to it after `DISTRICT_HUBS`; codes are all major
+      railheads (NDLS, CSMT) so the Phase 32 proxy caveat surfaces automatically.
+      `EXTRA_CITIES` (title-cased) feeds `components/SearchForm.tsx`'s `CITIES` set.
+- [x] `tests/unit/places.test.ts` — Noida→NDLS/DEL "via Delhi", Navi Mumbai→CSMT "via Mumbai".
+- **Acceptance:** ✅ live on prod — `Noida → Mumbai` returns 15 trains + 5 flights with
+      *"Nearest station used for Noida via Delhi …"* / *"Nearest airport used for Noida via
+      New Delhi."*; the datalist matches Noida / Greater Noida / Navi Mumbai / Kalyan.
+
 ---
 
 ## Already live on prod (env verified 2026-09-05)
