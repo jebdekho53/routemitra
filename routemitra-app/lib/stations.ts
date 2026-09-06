@@ -109,7 +109,10 @@ export function resolveStation(city: string): ResolvedStation | null {
   const hub = DISTRICT_HUBS[key] ?? EXTRA_HUBS[key];
   if (!hub?.station) return null;
   const viaCity = MAJOR_STATION_CITY[hub.station];
-  return viaCity ? { code: hub.station, viaCity } : { code: hub.station };
+  // don't say "X via X" when the railhead's city is the searched place itself
+  return viaCity && viaCity.toLowerCase() !== key
+    ? { code: hub.station, viaCity }
+    : { code: hub.station };
 }
 
 // Title-cased city names we can resolve to a station — used to populate the

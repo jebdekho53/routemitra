@@ -171,5 +171,8 @@ export function resolveAirport(city: string): ResolvedAirport | null {
   const iata = (DISTRICT_HUBS[key] ?? EXTRA_HUBS[key])?.iata;
   if (!iata) return null;
   const viaCity = AIRPORT_CITY[iata];
-  return viaCity ? { code: iata, viaCity } : { code: iata };
+  // don't say "X via X" when the airport's city is the searched place itself
+  return viaCity && viaCity.toLowerCase() !== key
+    ? { code: iata, viaCity }
+    : { code: iata };
 }

@@ -16,7 +16,7 @@ describe("isKnownPlace", () => {
 
   it("returns false for a town that's neither a district nor has its own station/airport", () => {
     expect(isKnownPlace("Rameswaram")).toBe(false);
-    expect(isKnownPlace("Manali")).toBe(false);
+    expect(isKnownPlace("Auli")).toBe(false);
   });
 
   it("returns false for gibberish", () => {
