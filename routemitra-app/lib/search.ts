@@ -76,7 +76,7 @@ export async function runSearch(rawParams: SearchParams): Promise<SearchOutcome>
 
   // Phase 11 — stitch local cab legs on when home/final addresses are given
   if (origin && destination) {
-    options = await attachDoorToDoor(options, origin, destination);
+    options = await attachDoorToDoor(options, origin, destination, from, to);
   }
 
   const result: RouteResult = { from, to, date, options };
