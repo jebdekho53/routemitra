@@ -909,22 +909,27 @@ available beyond the paused RedBus/ConfirmTkt bus/train campaigns.
 - **Acceptance:** ✅ enabler deployed, dormant (no env var set → Hotellook fallback, verified
       on prod mobile/desktop/dark — no regression).
 
-## Phase 39 — Bug: satellite cities (Noida …) didn't autocomplete or resolve ✅
+## Phase 39 — Bug: satellite / tourist cities (Noida, Manali …) didn't autocomplete or resolve ✅
 
 Reported: typing "noi" in From/To showed nothing. Big cities that sit inside a
-differently-named IR district — Noida is in "Gautam Buddha Nagar", Navi Mumbai straddles
-Thane/Raigad, Kalyan is in Thane — were absent from the `<datalist>` (built from sample
-routes + STATIONS + the 749 districts) and wouldn't resolve.
+differently-named IR district (Noida is in "Gautam Buddha Nagar", Navi Mumbai straddles
+Thane/Raigad) — plus most hill stations and pilgrimage towns — were absent from the
+`<datalist>` (built from sample routes + STATIONS + the 749 districts) and wouldn't resolve.
 
-- [x] `lib/place-aliases.ts` (new) — `EXTRA_HUBS`, `DISTRICT_HUBS`-shaped rows for Noida,
-      Greater Noida, Navi Mumbai, Kalyan (nearest major railhead + airport). `resolveStation()`
-      / `resolveAirport()` fall back to it after `DISTRICT_HUBS`; codes are all major
-      railheads (NDLS, CSMT) so the Phase 32 proxy caveat surfaces automatically.
-      `EXTRA_CITIES` (title-cased) feeds `components/SearchForm.tsx`'s `CITIES` set.
+- [x] `lib/place-aliases.ts` (new) — `EXTRA_HUBS`, `DISTRICT_HUBS`-shaped rows for ~30
+      well-known non-district places: NCR (Noida, Greater Noida), Mumbai/Pune metro
+      (Navi Mumbai, Kalyan, Vasai-Virar, Ulhasnagar, Bhiwandi, Pimpri-Chinchwad, Lonavala,
+      Mahabaleshwar), the eastern industrial belt (Jamshedpur→TATA, Kharagpur→KGP, Durgapur,
+      Asansol, Rourkela, Bhilai), pilgrimage (Katra/Vaishno Devi→SVDK, Shirdi→SNSI,
+      Rishikesh→RKSH) and hill stations (Haldwani/Nainital, Manali, Gangtok, Ooty, Munnar,
+      Kodaikanal). `resolveStation()`/`resolveAirport()` fall back to it after `DISTRICT_HUBS`;
+      own-junction towns resolve clean, the rest carry the Phase 32 proxy caveat.
+      `EXTRA_CITIES` feeds `components/SearchForm.tsx`'s `CITIES` set.
+- [x] `resolveStation`/`resolveAirport` no longer emit a "X via X" caveat when the
+      railhead/airport city is the searched place itself (Shirdi→SAG).
 - [x] `tests/unit/places.test.ts` — Noida→NDLS/DEL "via Delhi", Navi Mumbai→CSMT "via Mumbai".
-- **Acceptance:** ✅ live on prod — `Noida → Mumbai` returns 15 trains + 5 flights with
-      *"Nearest station used for Noida via Delhi …"* / *"Nearest airport used for Noida via
-      New Delhi."*; the datalist matches Noida / Greater Noida / Navi Mumbai / Kalyan.
+- **Acceptance:** ✅ live on prod — `Noida → Mumbai` returns 15 trains + 5 flights with the
+      "via Delhi" / "via New Delhi" caveats; datalist matches Noida / Manali / Jamshedpur / etc.
 
 ---
 
