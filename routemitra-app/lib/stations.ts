@@ -2,6 +2,7 @@
 // Extend as routes grow.
 
 import { DISTRICT_HUBS } from "@/lib/district-hubs";
+import { EXTRA_HUBS } from "@/lib/place-aliases";
 
 const STATIONS: Record<string, string> = {
   agra: "AGC",
@@ -105,7 +106,7 @@ export interface ResolvedStation {
 export function resolveStation(city: string): ResolvedStation | null {
   const key = city.trim().toLowerCase();
   if (STATIONS[key]) return { code: STATIONS[key] };
-  const hub = DISTRICT_HUBS[key];
+  const hub = DISTRICT_HUBS[key] ?? EXTRA_HUBS[key];
   if (!hub?.station) return null;
   const viaCity = MAJOR_STATION_CITY[hub.station];
   return viaCity ? { code: hub.station, viaCity } : { code: hub.station };

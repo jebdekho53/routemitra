@@ -49,4 +49,16 @@ describe("place resolution", () => {
     expect(sitapur?.code).toBe("LKO");
     expect(sitapur?.viaCity).toBe("Lucknow");
   });
+
+  it("resolves satellite cities that aren't their own district (Noida, Navi Mumbai)", () => {
+    // Noida isn't a district ("Gautam Buddha Nagar" is) — falls back to Delhi
+    const noidaTrain = resolveStation("Noida");
+    expect(noidaTrain?.code).toBe("NDLS");
+    expect(noidaTrain?.viaCity).toBe("Delhi");
+    expect(resolveAirport("noida")?.code).toBe("DEL");
+
+    expect(resolveStation("Greater Noida")?.code).toBe("NDLS");
+    expect(resolveStation("Navi Mumbai")?.code).toBe("CSMT");
+    expect(resolveStation("Navi Mumbai")?.viaCity).toBe("Mumbai");
+  });
 });

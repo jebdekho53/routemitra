@@ -2,6 +2,7 @@
 // and Skyscanner deep links. Extend as more routes are added.
 
 import { DISTRICT_HUBS } from "@/lib/district-hubs";
+import { EXTRA_HUBS } from "@/lib/place-aliases";
 
 const IATA: Record<string, string> = {
   "andaman": "IXZ",
@@ -167,7 +168,7 @@ export interface ResolvedAirport {
 export function resolveAirport(city: string): ResolvedAirport | null {
   const key = city.trim().toLowerCase();
   if (IATA[key]) return { code: IATA[key] };
-  const iata = DISTRICT_HUBS[key]?.iata;
+  const iata = (DISTRICT_HUBS[key] ?? EXTRA_HUBS[key])?.iata;
   if (!iata) return null;
   const viaCity = AIRPORT_CITY[iata];
   return viaCity ? { code: iata, viaCity } : { code: iata };

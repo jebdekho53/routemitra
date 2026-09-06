@@ -5,17 +5,20 @@ import { useRef, useState } from "react";
 import { listSampleRoutes } from "@/lib/sample-data";
 import { STATION_CITIES } from "@/lib/stations";
 import { DISTRICTS } from "@/lib/districts";
+import { EXTRA_CITIES } from "@/lib/place-aliases";
 import { canonicalCity } from "@/lib/city-alias";
 import type { Mode } from "@/types/route";
 
 const SAMPLE_ROUTES = listSampleRoutes();
 // sample-route cities + station cities first (these resolve to real data),
-// then every Indian district so any "luc" -> "Lucknow" style lookup works
+// then every Indian district so any "luc" -> "Lucknow" style lookup works,
+// plus a few big satellite cities that aren't their own district (Noida …)
 const CITIES = Array.from(
   new Set([
     ...SAMPLE_ROUTES.flatMap(({ from, to }) => [from, to]),
     ...STATION_CITIES,
     ...DISTRICTS,
+    ...EXTRA_CITIES,
   ]),
 ).sort((a, b) => a.localeCompare(b));
 
