@@ -38,9 +38,12 @@ export function integrationStatus(): IntegrationStatus[] {
     {
       key: "bus",
       label: "Bus provider",
-      live: has(process.env.BUS_PROVIDER_API_URL) && has(process.env.BUS_PROVIDER_API_KEY),
-      detail:
-        has(process.env.BUS_PROVIDER_API_URL) && has(process.env.BUS_PROVIDER_API_KEY)
+      live:
+        has(process.env.TRIPJACK_API_KEY) ||
+        (has(process.env.BUS_PROVIDER_API_URL) && has(process.env.BUS_PROVIDER_API_KEY)),
+      detail: has(process.env.TRIPJACK_API_KEY)
+        ? "TripJack (live, indicative)"
+        : has(process.env.BUS_PROVIDER_API_URL) && has(process.env.BUS_PROVIDER_API_KEY)
           ? "HTTP provider (indicative)"
           : "sample data fallback",
     },

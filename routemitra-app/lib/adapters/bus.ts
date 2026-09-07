@@ -1,14 +1,14 @@
-// Bus adapter.
-//   - BUS_PROVIDER_API_URL + BUS_PROVIDER_API_KEY set -> real HTTP call
-//     (interim: a RapidAPI bus aggregator; later: RedBus Seat Seller / GDS)
-//   - otherwise -> sample data (Phase 2 behaviour)
+// Bus adapter. Source priority:
+//   1. TRIPJACK_API_KEY      -> TripJack B2B GDS (live inventory; lib/adapters/tripjack-bus)
+//   2. BUS_PROVIDER_API_URL + BUS_PROVIDER_API_KEY -> generic HTTP provider
+//   3. sample data (Phase 2 behaviour)
 //
-// Interim provider fares are marked `indicative: true` — the UI shows an
-// "indicative" badge. Swap mapBusResponse() when the real provider is known;
-// see docs/outreach/redbus.md for the partnership request in flight.
+// Provider fares are marked `indicative: true` — the UI shows an "indicative"
+// badge — until RouteMitra hosts its own seat-select + checkout.
 
 import type { RouteOption, SearchParams } from "@/types/route";
 import { getSampleOptions } from "@/lib/sample-data";
+import { tripjackBusEnabled, tripjackBusSearch } from "@/lib/adapters/tripjack-bus";
 
 function sampleBuses(from: string, to: string): RouteOption[] {
   return getSampleOptions(from, to)
@@ -64,7 +64,19 @@ function parseDuration(s: string): number {
 export async function searchBus({
   from,
   to,
+  date,
 }: SearchParams): Promise<RouteOption[]> {
+  // 1. TripJack live inventory
+  if (tripjackBusEnabled()) {
+    try {
+      const tj = await tripjackBusSearch(from, to, date);
+      if (tj.length > 0) return tj;
+      console.warn(`[bus] tripjack yielded nothing for ${from}->${to}; falling back`);
+    } catch (err) {
+      console.error("[bus] tripjack call failed:", err);
+    }
+  }
+
   const url = process.env.BUS_PROVIDER_API_URL;
   const key = process.env.BUS_PROVIDER_API_KEY;
   const host = process.env.BUS_PROVIDER_API_HOST;
