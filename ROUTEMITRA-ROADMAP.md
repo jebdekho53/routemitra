@@ -998,13 +998,15 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
 - Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
 - RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
 - External uptime monitor → `/api/health` (alert on `train_feed.last_ok === false`)
-- **TBO** — registration confirmed (App #185068, 2026-09-03). e-KYC team emailed
-  2026-09-07 (`ekyc@tbo.com`) asking for **Corporate** documents to activate the Portal ID:
-  Director Aadhaar (JPG), **Company PAN**, **GST Certificate**, **Certificate of
-  Incorporation**; if the GST cert has no HSN code, also MOA / Trade Licence / MSME cert
-  (applicant must be listed as tour operator). **Action: reply to `ekyc@tbo.com` with those
-  files + Application Number 185068 + the registered email.** Then wire the API key once the
-  ID is active.
+- **TBO** — registration confirmed (App #185068, 2026-09-03). Registered email
+  `urbanmove.services.pvt.ltd@gmail.com`. e-KYC docs **submitted 2026-09-07** to
+  `ekyc@tbo.com` (Corporate): Director Aadhaar (Rahul Seth), Company PAN `AADCU9117A`, GST
+  cert `09AADCU9117A1ZH`, Certificate of Incorporation, e-MOA (INC-33) as the
+  no-HSN-on-GST supporting doc. **Watch:** TBO's clause wants the supporting doc to show
+  "tour operator" — the MOA says "aggregating transportation / mobility solutions" but not
+  that exact phrase, so they may push back. Fallback: GST amendment to add SAC 998551/998552
+  (tour operator / travel agency), or an Udyam/MSME reg mentioning it. Wire the API key once
+  the Portal ID is active.
 - **TripJack** — ✅ **account fully activated 2026-09-07** (address proof verified;
   no-reply@tripjack.com). Portal live for flights/hotels; can add wallet funds and transact.
   **Rail** API is a separate enablement — still need: rail agent form (Owner Name + DOB) →
