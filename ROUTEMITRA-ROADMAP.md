@@ -1013,13 +1013,14 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   returned **224 live buses** (operator, seat layout, AC/sleeper, mTicket, GST-inclusive
   fares, seat selection). No activation needed for bus. **Train** is the only module still
   gated ("REGISTER FOR TRAIN" in the nav — separate agent form).
-  **What's left to wire it into RouteMitra:** (1) **API credentials + docs** — the portal is
-  the B2B UI; the REST API needs separate keys — request from the sales rep /
-  `connect@tripjack.com` quoting account 21204437 (ask for bus + flight API, rail too);
-  (2) **wallet recharge** — search/display is usually free, booking debits the wallet.
-  This is the **fastest bus-data path** (account + bus both ready). Once API creds land,
-  wire `lib/adapters/bus.ts` (currently sample + Cuelinks deep links) and swap the erail
-  train adapter after the rail form.
+  **API access requested 2026-09-07** — emailed `connect@tripjack.com` (cc `salessupport@`,
+  `support@`) quoting account 21204437; asked for API creds + Bus/Flight docs + test env +
+  wallet/commercial terms + rail-API enablement process + a sales rep (none assigned — "no
+  rep found" on the portal). Awaiting reply.
+  **Then to wire it in:** wallet recharge (search is usually free, booking debits it) →
+  `lib/adapters/bus.ts` (currently sample + Cuelinks deep links) gets the TripJack search/
+  seat-layout calls; erail train adapter swapped after the separate rail agent form.
+  This is the **fastest bus-data path** — account + bus inventory both already live.
 - **Bus data — active pipeline (any one unblocks the bus gap):**
   - **eTravelSmart (ETS)** — Bus API enquiry **submitted 2026-09-07** (`customersupport@etravelsmart.com`
     / +91-8886255200; ack from `support@etravelsmart.co.in`). 3,000+ operators, 80,000+
