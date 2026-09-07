@@ -50,7 +50,7 @@ fix) bhi ho chuke — detail neeche.
 | **District-level place resolution (autocomplete + station/airport hub)** | ✅ Phase 30 (all 749 districts searchable) |
 | **Full visual refresh — hero art, destination banners, icon set, ticket cards** | ✅ Phase 31 |
 | **Bug fix — proxy-station/airport results now flagged, not presented as exact matches** | ✅ Phase 32 |
-| B2B travel-API onboarding (TBO / TripJack) | ⏳ TripJack account activated 2026-09-07 (rail API + wallet still pending); TBO awaiting KYC docs |
+| B2B travel-API onboarding (TBO / TripJack) | ⏳ TripJack live incl. **bus** (224-bus test search OK) — needs API creds + wallet; TBO awaiting KYC; eTravelSmart bus enquiry filed |
 | Custom domain + Upstash Redis + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
@@ -1007,20 +1007,28 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   that exact phrase, so they may push back. Fallback: GST amendment to add SAC 998551/998552
   (tour operator / travel agency), or an Udyam/MSME reg mentioning it. Wire the API key once
   the Portal ID is active.
-- **TripJack** — ✅ **account fully activated 2026-09-07** (address proof verified;
-  no-reply@tripjack.com). Portal live for flights/hotels; can add wallet funds and transact.
-  **Rail** API is a separate enablement — still need: rail agent form (Owner Name + DOB) →
-  API credentials via `connect@tripjack.com`/`salessupport@tripjack.com` → wallet recharge.
-  Once the rail API creds + wallet are in place, swap the erail adapter (see Code section).
+- **TripJack** — ✅ **account fully activated 2026-09-07** (account no. **21204437**, login
+  `urbanmove.services.pvt.ltd@gmail.com`, wallet ₹100). Portal live for **flights, hotels,
+  transfers AND bus** — verified in Chrome 2026-09-07: `tripjack.com/bus` search Delhi→Jaipur
+  returned **224 live buses** (operator, seat layout, AC/sleeper, mTicket, GST-inclusive
+  fares, seat selection). No activation needed for bus. **Train** is the only module still
+  gated ("REGISTER FOR TRAIN" in the nav — separate agent form).
+  **What's left to wire it into RouteMitra:** (1) **API credentials + docs** — the portal is
+  the B2B UI; the REST API needs separate keys — request from the sales rep /
+  `connect@tripjack.com` quoting account 21204437 (ask for bus + flight API, rail too);
+  (2) **wallet recharge** — search/display is usually free, booking debits the wallet.
+  This is the **fastest bus-data path** (account + bus both ready). Once API creds land,
+  wire `lib/adapters/bus.ts` (currently sample + Cuelinks deep links) and swap the erail
+  train adapter after the rail form.
 - **Bus data — active pipeline (any one unblocks the bus gap):**
   - **eTravelSmart (ETS)** — Bus API enquiry **submitted 2026-09-07** (`customersupport@etravelsmart.com`
     / +91-8886255200; ack from `support@etravelsmart.co.in`). 3,000+ operators, 80,000+
     routes, REST/JSON, commission model, all major aggregators + direct operators integrated.
     Awaiting sales team contact — this is the strongest dedicated-bus option; chase if silent
     after ~5 business days.
-  - **TripJack bus** — account already activated (Phase 39/40 note). TripJack sells bus too;
-    ask `connect@tripjack.com`/`salessupport@tripjack.com` to enable the bus module + fund
-    wallet. Likely faster than RedBus since the account exists.
+  - **TripJack bus** — ✅ **already live in the account** (see TripJack entry above; 224 buses
+    on a test Delhi→Jaipur search). Only needs API credentials + wallet recharge. **Priority
+    path.**
   - **TBO** — bus is in the product suite; comes with Portal ID activation (e-KYC submitted
     2026-09-07).
   - **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
