@@ -50,7 +50,7 @@ fix) bhi ho chuke — detail neeche.
 | **District-level place resolution (autocomplete + station/airport hub)** | ✅ Phase 30 (all 749 districts searchable) |
 | **Full visual refresh — hero art, destination banners, icon set, ticket cards** | ✅ Phase 31 |
 | **Bug fix — proxy-station/airport results now flagged, not presented as exact matches** | ✅ Phase 32 |
-| B2B travel-API onboarding (TBO / TripJack) | ⏳ in progress (agent accounts filed) |
+| B2B travel-API onboarding (TBO / TripJack) | ⏳ TripJack account activated 2026-09-07 (rail API + wallet still pending); TBO awaiting KYC docs |
 | Custom domain + Upstash Redis + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
@@ -998,11 +998,18 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
 - Amazon Associates payment/tax (company PAN `AADCU9117A` + bank) — else tag suspends at 180 days
 - RapidAPI IRCTC **Pro** ($9.99/mo) — real fares + live status, better than erail
 - External uptime monitor → `/api/health` (alert on `train_feed.last_ok === false`)
-- **TBO** — registration confirmed (App #185068, 2026-09-03); their welcome email explicitly
-  lists "bus bookings" in the product suite, alongside flights/hotels/trains — good sign for
-  the bus-data gap. Account details promised within 48h (due ~2026-09-05 evening) — watch
-  inbox, then wire the API key once it lands.
-- **TripJack** — submit rail agent form (Owner Name + DOB), then API access via `connect@tripjack.com` + wallet recharge
+- **TBO** — registration confirmed (App #185068, 2026-09-03). e-KYC team emailed
+  2026-09-07 (`ekyc@tbo.com`) asking for **Corporate** documents to activate the Portal ID:
+  Director Aadhaar (JPG), **Company PAN**, **GST Certificate**, **Certificate of
+  Incorporation**; if the GST cert has no HSN code, also MOA / Trade Licence / MSME cert
+  (applicant must be listed as tour operator). **Action: reply to `ekyc@tbo.com` with those
+  files + Application Number 185068 + the registered email.** Then wire the API key once the
+  ID is active.
+- **TripJack** — ✅ **account fully activated 2026-09-07** (address proof verified;
+  no-reply@tripjack.com). Portal live for flights/hotels; can add wallet funds and transact.
+  **Rail** API is a separate enablement — still need: rail agent form (Owner Name + DOB) →
+  API credentials via `connect@tripjack.com`/`salessupport@tripjack.com` → wallet recharge.
+  Once the rail API creds + wallet are in place, swap the erail adapter (see Code section).
 - **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
   `api_support@seatseller.travel`). No self-serve signup exists (unlike Travelpayouts) —
   it's a sales-team application, no reply channel to check yet. Have CIN/GST ready to send
