@@ -1012,12 +1012,27 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   **Rail** API is a separate enablement — still need: rail agent form (Owner Name + DOB) →
   API credentials via `connect@tripjack.com`/`salessupport@tripjack.com` → wallet recharge.
   Once the rail API creds + wallet are in place, swap the erail adapter (see Code section).
-- **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
-  `api_support@seatseller.travel`). No self-serve signup exists (unlike Travelpayouts) —
-  it's a sales-team application, no reply channel to check yet. Have CIN/GST ready to send
-  fast when they respond; follow up after ~5-7 business days if silent.
-- **AbhiBus bus API** — outreach emailed 2026-09-05 to `support@abhibus.com` (no dedicated
-  partnerships/API address is public — asked them to route it). Same wait/follow-up plan.
+- **Bus data — active pipeline (any one unblocks the bus gap):**
+  - **eTravelSmart (ETS)** — Bus API enquiry **submitted 2026-09-07** (`customersupport@etravelsmart.com`
+    / +91-8886255200; ack from `support@etravelsmart.co.in`). 3,000+ operators, 80,000+
+    routes, REST/JSON, commission model, all major aggregators + direct operators integrated.
+    Awaiting sales team contact — this is the strongest dedicated-bus option; chase if silent
+    after ~5 business days.
+  - **TripJack bus** — account already activated (Phase 39/40 note). TripJack sells bus too;
+    ask `connect@tripjack.com`/`salessupport@tripjack.com` to enable the bus module + fund
+    wallet. Likely faster than RedBus since the account exists.
+  - **TBO** — bus is in the product suite; comes with Portal ID activation (e-KYC submitted
+    2026-09-07).
+  - **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
+    `api_support@seatseller.travel`). Sales-team application, no reply channel; follow up
+    after ~5-7 business days if silent.
+  - **AbhiBus bus API** — outreach emailed 2026-09-05 to `support@abhibus.com`. Note AbhiBus
+    is now owned by **ixigo** — could also approach ixigo's partner program directly.
+  - **Not yet contacted:** Bitla Software (powers most private operators' booking systems —
+    one integration = many operators), TravClan (B2B portal, easier onboarding than TBO).
+- **Interim (no data, booking still works):** Cuelinks / affiliate deep links to RedBus /
+  AbhiBus already wired — user can book, just no fare/availability *display* until an API
+  lands.
 - GetYourGuide / Viator — reapply when the site is ~2 months old
 - Cuelinks — wait for RedBus + ConfirmTkt bus/train campaigns to un-pause
 - **Cuelinks travel campaigns** (surveyed 2026-09-05, Phase 38): Skyscanner, Cleartrip Flight,
