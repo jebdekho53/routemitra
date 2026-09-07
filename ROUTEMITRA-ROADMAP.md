@@ -1017,10 +1017,15 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   `support@`) quoting account 21204437; asked for API creds + Bus/Flight docs + test env +
   wallet/commercial terms + rail-API enablement process + a sales rep (none assigned — "no
   rep found" on the portal). Awaiting reply.
-  **Then to wire it in:** wallet recharge (search is usually free, booking debits it) →
-  `lib/adapters/bus.ts` (currently sample + Cuelinks deep links) gets the TripJack search/
-  seat-layout calls; erail train adapter swapped after the separate rail agent form.
-  This is the **fastest bus-data path** — account + bus inventory both already live.
+  **Adapter scaffolded 2026-09-08** (`af80267`): `lib/adapters/tripjack-bus.ts` — cityId
+  resolution (TripJack keys routes on numeric ids), `apikey` header, `{status:{success}}`
+  envelope, RouteOption mapping (final), 12s timeout, never throws; `bus.ts` tries it first,
+  then the generic provider, then sample; `status.ts` reflects it. **Dormant** until
+  `TRIPJACK_API_KEY` is set. The ~6 endpoint paths / response field paths that need the
+  real docs are marked `TODO(tripjack-docs)` — ~20 min to fill in + test once creds land.
+  **Then:** set `TRIPJACK_API_KEY` (+ `TRIPJACK_API_BASE` if prod ≠ apitest), recharge
+  wallet, confirm the TODO paths against the docs, deploy. erail train adapter swapped after
+  the separate rail agent form. **Fastest bus-data path** — account + inventory both live.
 - **Bus data — active pipeline (any one unblocks the bus gap):**
   - **eTravelSmart (ETS)** — enquiry 2026-09-07; **commercials received same day** (Balaji,
     `support@etravelsmart.com`; Bhukya Software Technologies Pvt Ltd, Hyderabad, GSTIN
