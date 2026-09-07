@@ -1022,14 +1022,25 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   seat-layout calls; erail train adapter swapped after the separate rail agent form.
   This is the **fastest bus-data path** — account + bus inventory both already live.
 - **Bus data — active pipeline (any one unblocks the bus gap):**
-  - **eTravelSmart (ETS)** — Bus API enquiry **submitted 2026-09-07** (`customersupport@etravelsmart.com`
-    / +91-8886255200; ack from `support@etravelsmart.co.in`). 3,000+ operators, 80,000+
-    routes, REST/JSON, commission model, all major aggregators + direct operators integrated.
-    Awaiting sales team contact — this is the strongest dedicated-bus option; chase if silent
-    after ~5 business days.
+  - **eTravelSmart (ETS)** — enquiry 2026-09-07; **commercials received same day** (Balaji,
+    `support@etravelsmart.com`; Bhukya Software Technologies Pvt Ltd, Hyderabad, GSTIN
+    36AAGCB1528B1Z7). 6,000+ operators, 6L+ routes, some Govt RTC, REST/JSON. Docs:
+    `etravelsmart.com/bus/busApi.htm`.
+    **Commercials:** one-time **non-refundable onboarding fee → revenue-share tier**:
+    ₹20k+GST → 60%, ₹35k+GST → 70%, ₹50k+GST → 80% (of ETS's incoming margin). No
+    recurring charges. Prepaid wallet, **min ₹10,000/top-up**. Sandbox creds same business
+    day after onboarding payment. Own markup + own payment gateway allowed. Onboarding:
+    commercial finalise → pay fee → agreement → sandbox → integrate → certify → go-live.
+    **Decision: hold** — the ₹20–50k up-front (before sandbox creds) isn't worth it
+    pre-launch when TripJack is ₹0 and covers bus + flights in one integration. Revisit ETS
+    once RouteMitra has traffic + converting bus bookings (6,000 operators >> TripJack bus,
+    and the ₹50k/80% tier recovers fast at volume). Sent a holding reply 2026-09-07.
   - **TripJack bus** — ✅ **already live in the account** (see TripJack entry above; 224 buses
-    on a test Delhi→Jaipur search). Only needs API credentials + wallet recharge. **Priority
-    path.**
+    on a test Delhi→Jaipur search). Only needs API credentials + wallet recharge, **₹0
+    up-front**. API-access email sent 2026-09-07; the dashboard "API Configuration" page
+    (`dashboard.tripjack.com/manage-user/api-configuration/21204437`) only has an "Air
+    Version" field + IP/email whitelist — the actual key is provisioned by TripJack's team
+    after the request. **Priority path.**
   - **TBO** — bus is in the product suite; comes with Portal ID activation (e-KYC submitted
     2026-09-07).
   - **RedBus SeatSeller API** — outreach emailed 2026-09-05 to `partners@redbus.in` (cc
