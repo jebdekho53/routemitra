@@ -1002,21 +1002,22 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   `urbanmove.services.pvt.ltd@gmail.com`. e-KYC docs **submitted 2026-09-07** to
   `ekyc@tbo.com` (Corporate): Director Aadhaar (Rahul Seth), Company PAN `AADCU9117A`, GST
   cert `09AADCU9117A1ZH`, Certificate of Incorporation, e-MOA (INC-33) as the
-  no-HSN-on-GST supporting doc. **Watch:** TBO's clause wants the supporting doc to show
-  "tour operator" — the MOA says "aggregating transportation / mobility solutions" but not
-  that exact phrase, so they may push back. Fallback: GST amendment to add SAC 998551/998552
-  (tour operator / travel agency), or an Udyam/MSME reg mentioning it. Wire the API key once
-  the Portal ID is active.
+  no-HSN-on-GST supporting doc. **2026-09-08: TBO e-KYC Compliance (Ayosha Pradhan,
+  ticket #8462895) acknowledged receipt — "allow us some time"; in the queue.** **Watch:**
+  TBO's clause wants the supporting doc to show "tour operator" — the MOA says "aggregating
+  transportation / mobility solutions" but not that exact phrase, so they may push back.
+  Fallback: GST amendment to add SAC 998551/998552 (tour operator / travel agency), or an
+  Udyam/MSME reg mentioning it. Wire the API key once the Portal ID is active.
 - **TripJack** — ✅ **account fully activated 2026-09-07** (account no. **21204437**, login
   `urbanmove.services.pvt.ltd@gmail.com`, wallet ₹100). Portal live for **flights, hotels,
   transfers AND bus** — verified in Chrome 2026-09-07: `tripjack.com/bus` search Delhi→Jaipur
   returned **224 live buses** (operator, seat layout, AC/sleeper, mTicket, GST-inclusive
   fares, seat selection). No activation needed for bus. **Train** is the only module still
   gated ("REGISTER FOR TRAIN" in the nav — separate agent form).
-  **API access requested 2026-09-07** — emailed `connect@tripjack.com` (cc `salessupport@`,
-  `support@`) quoting account 21204437; asked for API creds + Bus/Flight docs + test env +
-  wallet/commercial terms + rail-API enablement process + a sales rep (none assigned — "no
-  rep found" on the portal). Awaiting reply.
+  **API access:** requested 2026-09-07 (`connect@tripjack.com`). **2026-09-08 Sales Support
+  (Vishal Rajguru) routed it to the API contact → Mr. Khizer Peshimam, `khizer.peshimam@
+  tripjack.com`, +91 9820089706.** Next: email/call Khizer for API credentials + Bus/Flight
+  docs + test env + wallet minimum + rail-API enablement.
   **Adapter scaffolded 2026-09-08** (`af80267`): `lib/adapters/tripjack-bus.ts` — cityId
   resolution (TripJack keys routes on numeric ids), `apikey` header, `{status:{success}}`
   envelope, RouteOption mapping (final), 12s timeout, never throws; `bus.ts` tries it first,
