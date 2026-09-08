@@ -50,7 +50,7 @@ fix) bhi ho chuke — detail neeche.
 | **District-level place resolution (autocomplete + station/airport hub)** | ✅ Phase 30 (all 749 districts searchable) |
 | **Full visual refresh — hero art, destination banners, icon set, ticket cards** | ✅ Phase 31 |
 | **Bug fix — proxy-station/airport results now flagged, not presented as exact matches** | ✅ Phase 32 |
-| B2B travel-API onboarding (TBO / TripJack) | ⏳ TripJack live incl. **bus** (224-bus test search OK) — needs API creds + wallet; TBO awaiting KYC; eTravelSmart bus enquiry filed |
+| B2B travel-API onboarding (TBO / TripJack) | ⏳ TripJack live incl. **bus** — API contact received (Khizer P.); TBO e-KYC docs + Udyam cert submitted, awaiting Portal ID; eTravelSmart enquiry on hold |
 | Custom domain + Upstash Redis + RapidAPI IRCTC Pro | ⏳ pending (tum) |
 
 **"Demo" text ka fix:** ✅ ho gaya (Phase 16). Sabhi pages ka masthead/footer ab shared
@@ -1002,12 +1002,13 @@ labelled "est.") plus **Uber / Ola / Rapido deep links** on each leg (`020a07d`)
   `urbanmove.services.pvt.ltd@gmail.com`. e-KYC docs **submitted 2026-09-07** to
   `ekyc@tbo.com` (Corporate): Director Aadhaar (Rahul Seth), Company PAN `AADCU9117A`, GST
   cert `09AADCU9117A1ZH`, Certificate of Incorporation, e-MOA (INC-33) as the
-  no-HSN-on-GST supporting doc. **2026-09-08: TBO e-KYC Compliance (Ayosha Pradhan,
-  ticket #8462895) acknowledged receipt — "allow us some time"; in the queue.** **Watch:**
-  TBO's clause wants the supporting doc to show "tour operator" — the MOA says "aggregating
-  transportation / mobility solutions" but not that exact phrase, so they may push back.
-  Fallback: GST amendment to add SAC 998551/998552 (tour operator / travel agency), or an
-  Udyam/MSME reg mentioning it. Wire the API key once the Portal ID is active.
+  no-HSN-on-GST supporting doc. **2026-09-08:** TBO (ticket #8462895) asked for the "tour
+  operator" classification — either add HSN/SAC `00440063` on the GST portal, or an
+  additional doc (Udyam / trade licence). **Fixed same day: Udyam (MSME) registration done —
+  `UDYAM-UP-38-0100079`**, Micro/Services, NIC `79120` (Tour operator activities) +
+  `79110` (Travel agency) + `79900` (reservation services) + `49229` + `52109`. Udyam cert
+  sent to `ekyc@tbo.com` in reply. Awaiting Portal ID activation. Wire the API key once
+  active (bus is in TBO's product suite).
 - **TripJack** — ✅ **account fully activated 2026-09-07** (account no. **21204437**, login
   `urbanmove.services.pvt.ltd@gmail.com`, wallet ₹100). Portal live for **flights, hotels,
   transfers AND bus** — verified in Chrome 2026-09-07: `tripjack.com/bus` search Delhi→Jaipur
